@@ -19,6 +19,6 @@ message(STATUS "Link path is = ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
 #set(ToByte_DIR ToByte)
 #build_execute(ToByte Log)
 
-set(Test_DIR Test)
-build_execute(Test Log)
+set(UT_Log_DIR Test/Log)
+build_execute(UT_Log Log)
 
