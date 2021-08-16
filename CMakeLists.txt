@@ -9,10 +9,6 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/package/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/package/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/package/bin)
 
-
-include_directories(Cout)
-include_directories(Test)
-include_directories(Cin)
 include_directories(include)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/Cmake)
 
