@@ -9,11 +9,11 @@
 #add_library(Cout SHARED ${MODULE_SRC})
 
 #the third way to add library which use the function user defined
-set(Cout_DIR Cout)
-build_library(Cout Cin)
-
-set(Cin_DIR Cin)
-build_library(Cin)
+#set(Cout_DIR Cout)
+#build_library(Cout Cin)
+#
+#set(Cin_DIR Cin)
+#build_library(Cin)
 
 set(Log_DIR Log)
 build_library(Log)
