@@ -10,7 +10,7 @@
 class Log
 {
 public:
-    Log(int iLineNumber);
+    Log(std::string sFile,int iLineNumber);
 
     template <class T> Log &operator<<(T val)
     {
@@ -28,7 +28,7 @@ protected:
 class Logger : public Log
 {
 public:
-    Logger(int iLineNumber);
+    Logger(std::string sFile,int iLineNumber);
 };
 
 #endif // CSW_TEST_LOG_RECORD_H

@@ -7,7 +7,7 @@
 #include "log_record.h"
 
 #ifndef ZLOG
-#define ZLOG Logger(__LINE__)
+#define ZLOG Logger(__FILE__,__LINE__)
 #endif
 
 #endif // CSW_TEST_LOG_H
