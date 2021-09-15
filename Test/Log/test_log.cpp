@@ -9,5 +9,6 @@ int main()
     int a = 10;
     int b = 20;
     ZLOG << " the message is " << (a + b);
+    ZLOG << " the message is " << (a + b);
 }
 
