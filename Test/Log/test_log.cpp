@@ -7,7 +7,7 @@
 int main()
 {
     int a = 10;
-    int b = 20;
+    int b = 30;
     ZLOG << " the message is " << (a + b);
     ZLOG << " the message is " << (a + b);
 }
