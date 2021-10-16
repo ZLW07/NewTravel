@@ -11,7 +11,7 @@ int main()
     oMatrix[2][2] = 10;
     std::cout << oMatrix[2][2]<< std::endl;
 
-    Vector3 oVector3{1,2,3};
+    Vector3D oVector3{1,2,3};
     auto aResult = oVector3.GetSkewSymmetric();
     std::cout << aResult[0][1] << std::endl;
 }

@@ -37,6 +37,9 @@ double &Vector::operator[](int iIndex)
 {
     if (iIndex >= m_iVecSize)
     {
+        ZLOG << " The input size is out of max index";
+        ZLOG << " The max index is " << (m_iVecSize - 1);
+        ZLOG << " The input index is " << iIndex;
         exit(-1);
     }
     return m_pVec[iIndex];
@@ -68,6 +71,9 @@ Vector &Matrix::operator[](int iIndex)
 {
     if (iIndex > m_iHeight)
     {
+        ZLOG << " The input size is out of max index";
+        ZLOG << " The max index is " << (m_iHeight - 1);
+        ZLOG << " The input index is " << iIndex;
         exit(-1);
     }
     return m_pVector[iIndex];

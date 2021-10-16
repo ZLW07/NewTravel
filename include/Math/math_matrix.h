@@ -4,8 +4,11 @@
 
 #ifndef NEWTRAVEL_MATH_MATRIX_H
 #define NEWTRAVEL_MATH_MATRIX_H
+
 #include <iostream>
 #include <vector>
+
+#include "Log/log.h"
 
 class Vector
 {
