@@ -25,3 +25,6 @@ build_execute(UT_Log Log)
 set(UT_Mutex_DIR Test/Mutex)
 build_execute(UT_Mutex  Mutex Log)
 
+set(UT_Math_DIR Test/Math)
+build_execute(UT_Math  Math)
+
