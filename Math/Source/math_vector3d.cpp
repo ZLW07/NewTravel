@@ -1,31 +1,186 @@
+////
+//// Created by zw on 2021/10/16.
+////
 //
-// Created by zw on 2021/10/16.
-//
-
 #include "Math/math_vector3d.h"
+//
 
-Vector3D::Vector3D()
+Vector6D::Vector6D() : m_oV6D(6, 1) {}
+
+Vector6D::Vector6D(double dData1, double dData2, double dData3, double dData4, double dData5, double dData6)
+    : m_oV6D(6, 1)
 {
-    m_v3d = {0.0,0.0,0.0};
+    (*this)[0] = dData1;
+    (*this)[1] = dData2;
+    (*this)[2] = dData3;
+    (*this)[3] = dData4;
+    (*this)[4] = dData5;
+    (*this)[5] = dData6;
 }
 
-Vector3D::Vector3D(double dData1, double dData2, double dData3)
+double &Vector6D::operator[](unsigned int iIndex)
 {
-    m_v3d = {dData1,dData2,dData3};
+    return m_oV6D[iIndex][0];
+}
+
+Vector3D::Vector3D() : m_oV3D(3, 1) {}
+
+Vector3D::~Vector3D(){};
+
+Vector3D::Vector3D(double dData1, double dData2, double dData3) : m_oV3D(3, 1)
+{
+    (*this)[0] = dData1;
+    (*this)[1] = dData2;
+    (*this)[2] = dData3;
+}
+
+Vector3D::Vector3D(const Vector3D &oVector3D) : m_oV3D(3, 1)
+{
+    for (int ii = 0; ii < 3; ii++)
+    {
+        (*this)[ii] = oVector3D[ii];
+    }
+}
+
+std::ostream &operator<<(std::ostream &out, Vector3D &oVector3D)
+{
+    out << oVector3D.m_oV3D;
+}
+
+double &Vector3D::operator[](unsigned int iIndex) const
+{
+    return m_oV3D[iIndex][0];
+}
+
+double &Vector3D::operator*(const Vector3D &oVector3D)
+{
+    double dResult = 0.0;
+    for (int ii = 0; ii < 3; ii++)
+    {
+        dResult = (*this)[ii] * oVector3D[ii] + dResult;
+    }
+    return dResult;
+}
+
+Vector3D &Vector3D::operator*(const double &dData)
+{
+    for (int ii = 0; ii < 3; ii++)
+    {
+        (*this)[ii] = (*this)[ii] * dData;
+    }
+    return *this;
+}
+
+Vector3D &Vector3D::operator+(const Vector3D &dData)
+{
+    for (int ii = 0; ii < 3; ii++)
+    {
+        (*this)[ii] = (*this)[ii] + dData[ii];
+    }
+    return *this;
+}
+
+Vector3D &Vector3D::GetVectorCross(const Vector3D &oVector3D)
+{
+
+    double dFirstValue = (*this)[1] * oVector3D[2];
+    double dSecondValue =  (*this)[2] * oVector3D[1];
+    double dTemp0 = dFirstValue - dSecondValue;
+    dFirstValue = (*this)[2]*oVector3D[0];
+    dSecondValue = (*this)[0] * oVector3D[2];
+    double dTemp1 = dFirstValue - dSecondValue;
+    dFirstValue = (*this)[0]*oVector3D[1];
+    dSecondValue = (*this)[1] * oVector3D[0];
+    double dTemp2 = (dFirstValue - dSecondValue);
+    (*this)[0] = dTemp0;
+    (*this)[1] = dTemp1;
+    (*this)[2] = dTemp2;
+    return *this;
 }
 
 Matrix Vector3D::GetSkewSymmetric()
 {
-    Matrix oSkewSymmetric(3);
-    oSkewSymmetric[0][1] = -m_v3d[2];
-    oSkewSymmetric[0][2] = m_v3d[1];
+    Matrix oSkewSymmetric(3, 3);
+    oSkewSymmetric[0][1] = -(*this)[2];
+    oSkewSymmetric[0][2] = (*this)[1];
 
-    oSkewSymmetric[1][0] = m_v3d[2];
-    oSkewSymmetric[1][2] = -m_v3d[0];
+    oSkewSymmetric[1][0] = (*this)[2];
+    oSkewSymmetric[1][2] = -(*this)[0];
 
-    oSkewSymmetric[2][0] = -m_v3d[1];
-    oSkewSymmetric[2][1] = m_v3d[0];
+    oSkewSymmetric[2][0] = -(*this)[1];
+    oSkewSymmetric[2][1] = (*this)[0];
     return oSkewSymmetric;
 }
 
+double Vector3D::Nom2()
+{
+    return m_oV3D.Norm2();
+}
 
+Vector6D Vector3D::GetScrewAxis(Vector3D &v3dPoint, Vector3D &v3dDirection, double dPitch)
+{
+    Vector6D oVector6D;
+    for (unsigned int ii = 0; ii < 3; ii++)
+    {
+        oVector6D[ii] = v3dDirection[ii];
+    }
+    Vector3D oNormalVec = v3dPoint.GetVectorCross(v3dDirection);
+    Vector3D oTangentVec = v3dDirection * dPitch;
+    oNormalVec = oNormalVec + oTangentVec;
+    for( int ii = 0; ii < 6; ii ++)
+    {
+        if (ii < 3)
+        {
+            oVector6D[ii] = v3dDirection[ii];
+        }
+        else
+        {
+            oVector6D[ii] = oNormalVec[ii];
+        }
+    }
+    return oVector6D;
+}
+
+VectorD3::VectorD3() : m_oVD3(1, 3)
+{
+    ZLOG << " new D3";
+}
+VectorD3::~VectorD3()
+{
+    ZLOG << " delete D3";
+};
+
+VectorD3::VectorD3(double dData1, double dData2, double dData3) : m_oVD3(1, 3)
+{
+    ZLOG << " new D3";
+    (*this)[0] = dData1;
+    (*this)[1] = dData2;
+    (*this)[2] = dData3;
+}
+VectorD3::VectorD3(const VectorD3 &oVectorD3) : m_oVD3(1, 3)
+{
+    for (int ii = 0; ii < 3; ii++)
+    {
+        (*this)[ii] = oVectorD3[ii];
+    }
+}
+
+double &VectorD3::operator[](unsigned int uiIndex) const
+{
+    return m_oVD3[0][uiIndex];
+}
+
+std::ostream &operator<<(std::ostream &out, VectorD3 &oVectorD3)
+{
+    out << oVectorD3.m_oVD3;
+}
+
+double VectorD3::operator*(Vector3D &oVector3D)
+{
+    double dResult = 0.0;
+    for (int ii = 0; ii < 3; ii++)
+    {
+        dResult = (*this)[ii] * oVector3D[ii] + dResult;
+    }
+    return dResult;
+}

@@ -7,30 +7,30 @@
 
 #include <iostream>
 #include <vector>
+#include <math.h>
 
 #include "Log/log.h"
 
-class Vector
-{
-public:
-    Vector();
-    ~Vector();
-    double &operator[](int iIndex);
-    static void SetSize(int iSize);
-private:
-    double *m_pVec;
-    static int m_iVecSize;
-};
-
 class Matrix
 {
+    friend std::ostream &operator<<(std::ostream &out, Matrix &oMatrix);
 public:
-    Matrix(int iRow, int iCol = 0);
+    Matrix(int iRow, int iCol);
+    Matrix(int iRow, int iCol, double dInitialValue);
     ~Matrix();
-    Vector &operator[](int iIndex);
+    void Initial();
+    int GetRow();
+    int GetCol();
+    Matrix(const Matrix &oMatrix);
+
+    double* operator[](int iIndex) const;
+    Matrix operator* (const Matrix &oMatrix);
+    Matrix &operator=(const Matrix &oMatrix);
+    double Norm2();
 private:
-    Vector *m_pVector;
-    int m_iHeight;
+    int m_iRow;
+    int m_iCol;
+    double **m_pVector;
 };
 
 #endif // NEWTRAVEL_MATH_MATRIX_H
