@@ -5,24 +5,6 @@
 #include "Math/math_vector3d.h"
 //
 
-Vector6D::Vector6D() : m_oV6D(6, 1) {}
-
-Vector6D::Vector6D(double dData1, double dData2, double dData3, double dData4, double dData5, double dData6)
-    : m_oV6D(6, 1)
-{
-    (*this)[0] = dData1;
-    (*this)[1] = dData2;
-    (*this)[2] = dData3;
-    (*this)[3] = dData4;
-    (*this)[4] = dData5;
-    (*this)[5] = dData6;
-}
-
-double &Vector6D::operator[](unsigned int iIndex)
-{
-    return m_oV6D[iIndex][0];
-}
-
 Vector3D::Vector3D() : m_oV3D(3, 1) {}
 
 Vector3D::~Vector3D(){};
@@ -143,16 +125,15 @@ Vector6D Vector3D::GetScrewAxis(Vector3D &v3dPoint, Vector3D &v3dDirection, doub
 
 VectorD3::VectorD3() : m_oVD3(1, 3)
 {
-    ZLOG << " new D3";
+
 }
 VectorD3::~VectorD3()
 {
-    ZLOG << " delete D3";
+
 };
 
 VectorD3::VectorD3(double dData1, double dData2, double dData3) : m_oVD3(1, 3)
 {
-    ZLOG << " new D3";
     (*this)[0] = dData1;
     (*this)[1] = dData2;
     (*this)[2] = dData3;

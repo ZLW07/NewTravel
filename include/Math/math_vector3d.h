@@ -8,17 +8,7 @@
 #include <vector>
 
 #include "Math/math_matrix.h"
-
-class Vector6D
-{
-public:
-    Vector6D();
-    Vector6D(double dData1, double dData2, double dData3, double dData4, double dData5, double dData6);
-    double &operator[](unsigned int iIndex);
-
-private:
-    Matrix m_oV6D;
-};
+#include "Math/math_vector6d.h"
 
 class VectorD3;
 
@@ -43,6 +33,7 @@ private:
     Matrix m_oV3D;
 };
 
+
 class VectorD3
     {
     friend std::ostream &operator<<(std::ostream &out, VectorD3 &oVectorD3);
@@ -56,5 +47,7 @@ class VectorD3
     private:
         Matrix m_oVD3;
     };
+
+
 
 #endif // NEWTRAVEL_MATH_VECTOR3D_H
