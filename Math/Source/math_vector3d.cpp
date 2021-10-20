@@ -53,6 +53,20 @@ Vector3D &Vector3D::operator*(const double &dData)
     return *this;
 }
 
+void Vector3D::operator/(const double &dData)
+{
+    if (NearZero(dData))
+    {
+        return;
+    }
+    double  dTemp = 0.0;
+    for (int ii = 0; ii < 3; ii++)
+    {
+        dTemp = (*this)[ii] / dData;
+        (*this)[ii] = dTemp;
+    }
+}
+
 Vector3D &Vector3D::operator+(const Vector3D &dData)
 {
     for (int ii = 0; ii < 3; ii++)
@@ -66,12 +80,12 @@ Vector3D &Vector3D::GetVectorCross(const Vector3D &oVector3D)
 {
 
     double dFirstValue = (*this)[1] * oVector3D[2];
-    double dSecondValue =  (*this)[2] * oVector3D[1];
+    double dSecondValue = (*this)[2] * oVector3D[1];
     double dTemp0 = dFirstValue - dSecondValue;
-    dFirstValue = (*this)[2]*oVector3D[0];
+    dFirstValue = (*this)[2] * oVector3D[0];
     dSecondValue = (*this)[0] * oVector3D[2];
     double dTemp1 = dFirstValue - dSecondValue;
-    dFirstValue = (*this)[0]*oVector3D[1];
+    dFirstValue = (*this)[0] * oVector3D[1];
     dSecondValue = (*this)[1] * oVector3D[0];
     double dTemp2 = (dFirstValue - dSecondValue);
     (*this)[0] = dTemp0;
@@ -80,23 +94,28 @@ Vector3D &Vector3D::GetVectorCross(const Vector3D &oVector3D)
     return *this;
 }
 
-Matrix Vector3D::GetSkewSymmetric()
+RotateMat Vector3D::GetSkewSymmetric()
 {
-    Matrix oSkewSymmetric(3, 3);
-    oSkewSymmetric[0][1] = -(*this)[2];
-    oSkewSymmetric[0][2] = (*this)[1];
+    RotateMat oRotateMat;
+    oRotateMat[0][1] = -(*this)[2];
+    oRotateMat[0][2] = (*this)[1];
 
-    oSkewSymmetric[1][0] = (*this)[2];
-    oSkewSymmetric[1][2] = -(*this)[0];
+    oRotateMat[1][0] = (*this)[2];
+    oRotateMat[1][2] = -(*this)[0];
 
-    oSkewSymmetric[2][0] = -(*this)[1];
-    oSkewSymmetric[2][1] = (*this)[0];
-    return oSkewSymmetric;
+    oRotateMat[2][0] = -(*this)[1];
+    oRotateMat[2][1] = (*this)[0];
+    return oRotateMat;
 }
 
-double Vector3D::Nom2()
+double Vector3D::Norm2()
 {
     return m_oV3D.Norm2();
+}
+
+Matrix Vector3D::GetMatrix()
+{
+    return m_oV3D;
 }
 
 Vector6D Vector3D::GetScrewAxis(Vector3D &v3dPoint, Vector3D &v3dDirection, double dPitch)
@@ -109,26 +128,23 @@ Vector6D Vector3D::GetScrewAxis(Vector3D &v3dPoint, Vector3D &v3dDirection, doub
     Vector3D oNormalVec = v3dPoint.GetVectorCross(v3dDirection);
     Vector3D oTangentVec = v3dDirection * dPitch;
     oNormalVec = oNormalVec + oTangentVec;
-    for( int ii = 0; ii < 6; ii ++)
+    std::cout << "----" << oNormalVec << std::endl;
+    for (int ii = 0; ii < 3; ii++)
     {
-        if (ii < 3)
-        {
-            oVector6D[ii] = v3dDirection[ii];
-        }
-        else
-        {
-            oVector6D[ii] = oNormalVec[ii];
-        }
+
+        oVector6D[ii + 3] = oNormalVec[ii];
     }
     return oVector6D;
 }
 
-VectorD3::VectorD3() : m_oVD3(1, 3)
+double Vector3D::GetAxisAng3()
 {
-
+    double dTheta = this->Norm2();
+    *this / dTheta;
+    return dTheta;
 }
-VectorD3::~VectorD3()
-{
+VectorD3::VectorD3() : m_oVD3(1, 3) {}
+VectorD3::~VectorD3(){
 
 };
 

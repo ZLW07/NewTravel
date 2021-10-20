@@ -8,10 +8,29 @@
 #include <iostream>
 #include <vector>
 #include <math.h>
+#include <iomanip>
 
 #include "Log/log.h"
 
-class Matrix
+class CheckZero
+    {
+    public:
+        bool NearZero(const double &dData)
+        {
+            if (std::abs(dData) < 1e-6)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    };
+
+
+class Se3Matrix;
+class Matrix : public CheckZero
 {
     friend std::ostream &operator<<(std::ostream &out, Matrix &oMatrix);
 public:
@@ -27,6 +46,8 @@ public:
     Matrix operator* (const Matrix &oMatrix);
     Matrix &operator=(const Matrix &oMatrix);
     double Norm2();
+    Matrix SetEyeMatrix(int iSize);
+
 private:
     int m_iRow;
     int m_iCol;

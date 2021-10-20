@@ -117,12 +117,21 @@ int Matrix::GetCol()
 
 std::ostream &operator<<(std::ostream &out, Matrix &oMatrix)
 {
-    out << "The Matrix is \n";
+    out << "The Matrix is \n" ;
     for (int ii = 0; ii < oMatrix.m_iRow; ii++)
     {
         for (int jj = 0; jj < oMatrix.m_iCol; jj++)
         {
-            out << "  " << oMatrix[ii][jj];
+            double dValue = oMatrix[ii][jj];
+            if (std::abs(dValue) < 1e-3)
+            {
+                out << std::setw(5) << 0.0;
+            }
+            else
+            {
+                out << std::setw(5) << dValue;
+            }
+
         }
         out << std::endl;
     }
@@ -200,4 +209,14 @@ double Matrix::Norm2()
     }
     dValue = pow(dValue, 0.5);
     return dValue;
+}
+
+Matrix Matrix::SetEyeMatrix(int iSize)
+{
+    Matrix oResultMat(iSize,iSize);
+    for (int ii = 0; ii < iSize; ii++)
+    {
+        oResultMat[ii][ii] = 1.0;
+    }
+    return oResultMat;
 }
