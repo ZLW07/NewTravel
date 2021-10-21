@@ -2,13 +2,11 @@
 // Created by wei-shao on 8/16/21.
 //
 
-#include "Log/log.h"
+#include "test_log.h"
 
-int main()
+int main( int argc, char** argv)
 {
-    int a = 10;
-    int b = 30;
-    ZLOG << " the message is " << (a + b);
-    ZLOG << " the message is " << (a + b);
+    testing::InitGoogleTest(&argc,argv);
+    return RUN_ALL_TESTS();
 }
 
