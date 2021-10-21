@@ -128,7 +128,6 @@ Vector6D Vector3D::GetScrewAxis(Vector3D &v3dPoint, Vector3D &v3dDirection, doub
     Vector3D oNormalVec = v3dPoint.GetVectorCross(v3dDirection);
     Vector3D oTangentVec = v3dDirection * dPitch;
     oNormalVec = oNormalVec + oTangentVec;
-    std::cout << "----" << oNormalVec << std::endl;
     for (int ii = 0; ii < 3; ii++)
     {
 

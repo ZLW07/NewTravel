@@ -92,7 +92,7 @@ function(build_gtest MODULE_NAME)
     endforeach (file)
     add_executable(${MODULE_NAME} ${MODULE_SRC})
     target_link_libraries(${MODULE_NAME} ${ARGN})
-endfunction(build_execute)
+endfunction(build_gtest)
 
 include(LibraryTarget)
 include(ExecuteTarget)
