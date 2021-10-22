@@ -23,7 +23,7 @@ public:
     Vector3D(const Vector3D &oVector3D);
 
     double &operator[](unsigned int uiIndex) const;
-    double &operator*(const Vector3D &oVector3D);
+    double operator*(const Vector3D &oVector3D);
     Vector3D &operator*(const double &dData);
     void operator/(const double &dData);
     Vector3D &operator+(const Vector3D &dData);

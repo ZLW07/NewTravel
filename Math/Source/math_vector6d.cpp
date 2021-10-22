@@ -20,7 +20,7 @@ Vector6D::Vector6D(double dData1, double dData2, double dData3, double dData4, d
 
 std::ostream &operator<<(std::ostream &out, Vector6D &oVector6D)
 {
-    out << oVector6D.m_oV6D;
+    return out << oVector6D.m_oV6D;
 }
 
 double &Vector6D::operator[](unsigned int iIndex) const

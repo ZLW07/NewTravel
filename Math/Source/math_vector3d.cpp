@@ -26,7 +26,7 @@ Vector3D::Vector3D(const Vector3D &oVector3D) : m_oV3D(3, 1)
 
 std::ostream &operator<<(std::ostream &out, Vector3D &oVector3D)
 {
-    out << oVector3D.m_oV3D;
+    return out << oVector3D.m_oV3D;
 }
 
 double &Vector3D::operator[](unsigned int iIndex) const
@@ -34,7 +34,7 @@ double &Vector3D::operator[](unsigned int iIndex) const
     return m_oV3D[iIndex][0];
 }
 
-double &Vector3D::operator*(const Vector3D &oVector3D)
+double Vector3D::operator*(const Vector3D &oVector3D)
 {
     double dResult = 0.0;
     for (int ii = 0; ii < 3; ii++)
@@ -168,7 +168,7 @@ double &VectorD3::operator[](unsigned int uiIndex) const
 
 std::ostream &operator<<(std::ostream &out, VectorD3 &oVectorD3)
 {
-    out << oVectorD3.m_oVD3;
+    return out << oVectorD3.m_oVD3;
 }
 
 double VectorD3::operator*(Vector3D &oVector3D)

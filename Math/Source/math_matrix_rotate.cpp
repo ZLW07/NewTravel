@@ -6,7 +6,7 @@
 
 std::ostream &operator<<(std::ostream &out, RotateMat &oRotateMat)
 {
-    out << oRotateMat.m_oRateMat;
+    return out << oRotateMat.m_oRateMat;
 }
 
 RotateMat::RotateMat() : m_oRateMat(3, 3) {}

@@ -6,7 +6,7 @@
 
 std::ostream &operator <<(std::ostream &out, Se3Matrix &oSe3Matrix)
 {
-    out << oSe3Matrix.m_oMat4;
+    return out << oSe3Matrix.m_oMat4;
 }
 
 Se3Matrix::Se3Matrix(): m_oMat4(4,4){}
