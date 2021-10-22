@@ -13,7 +13,7 @@ void Matrix::Initial()
     }
 }
 
-Matrix::Matrix(int iRow, int iCol)
+Matrix::Matrix(int iRow, int iCol):m_iRow(0),m_iCol(0)
 {
     m_iRow = iRow;
     m_iCol = iCol;
@@ -27,7 +27,7 @@ Matrix::Matrix(int iRow, int iCol)
     }
 }
 
-Matrix::Matrix(int iRow, int iCol, double dInitialValue)
+Matrix::Matrix(int iRow, int iCol, double dInitialValue):m_iRow(0),m_iCol(0)
 {
     m_iRow = iRow;
     m_iCol = iCol;
@@ -58,32 +58,34 @@ Matrix::~Matrix()
     }
 }
 
-Matrix::Matrix(const Matrix &oMatrix)
+Matrix::Matrix(const Matrix &oMatrix):m_iRow(0),m_iCol(0)
 {
     if (this == &oMatrix)
     {
         return;
     }
-    if (m_iRow != oMatrix.m_iRow || m_iCol != oMatrix.m_iCol)
+    if (0 != m_iRow && 0 != m_iCol)
     {
-        for (int ii = 0; ii < m_iRow; ii++)
+        if (m_iRow != oMatrix.m_iRow || m_iCol != oMatrix.m_iCol)
         {
-            if (m_pVector[ii])
+            for (int ii = 0; ii < m_iRow; ii++)
             {
-                delete[] m_pVector[ii];
-                m_pVector[ii] = nullptr;
+                if (m_pVector[ii])
+                {
+                    delete[] m_pVector[ii];
+                    m_pVector[ii] = nullptr;
+                }
+            }
+            if (m_pVector)
+            {
+                delete[] m_pVector;
+                m_pVector = nullptr;
             }
         }
-        if (m_pVector)
-        {
-            delete[] m_pVector;
-            m_pVector = nullptr;
-        }
-
-        m_iRow = oMatrix.m_iRow;
-        m_iCol = oMatrix.m_iCol;
-        Initial();
     }
+    m_iRow = oMatrix.m_iRow;
+    m_iCol = oMatrix.m_iCol;
+    Initial();
     for (int ii = 0; ii < m_iRow; ii++)
     {
         for (int jj = 0; jj < m_iCol; jj++)
@@ -167,26 +169,28 @@ Matrix &Matrix::operator=(const Matrix &oMatrix)
     {
         return *this;
     }
-    if (m_iRow != oMatrix.m_iRow || m_iCol != oMatrix.m_iCol)
+    if (0 != m_iRow && 0 != m_iCol)
     {
-        for (int ii = 0; ii < m_iRow; ii++)
+        if (m_iRow != oMatrix.m_iRow || m_iCol != oMatrix.m_iCol)
         {
-            if (m_pVector[ii])
+            for (int ii = 0; ii < m_iRow; ii++)
             {
-                delete[] m_pVector[ii];
-                m_pVector[ii] = nullptr;
+                if (m_pVector[ii])
+                {
+                    delete[] m_pVector[ii];
+                    m_pVector[ii] = nullptr;
+                }
+            }
+            if (m_pVector)
+            {
+                delete[] m_pVector;
+                m_pVector = nullptr;
             }
         }
-        if (m_pVector)
-        {
-            delete[] m_pVector;
-            m_pVector = nullptr;
-        }
-
-        m_iRow = oMatrix.m_iRow;
-        m_iCol = oMatrix.m_iCol;
-        Initial();
     }
+    m_iRow = oMatrix.m_iRow;
+    m_iCol = oMatrix.m_iCol;
+    Initial();
     for (int ii = 0; ii < m_iRow; ii++)
     {
         for (int jj = 0; jj < m_iCol; jj++)

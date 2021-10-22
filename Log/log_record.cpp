@@ -12,7 +12,12 @@
 
 Log::Log(std::string sFile, int iLineNumber)
 {
-    CLOG(sFile, iLineNumber);
+    sFile = sFile.substr(sFile.find_last_of('/') + 1);
+    sStream << sFile;
+    sStream << ":";
+    sStream << iLineNumber;
+    sStream << " ";
+//    CLOG(sFile, iLineNumber);
 }
 
 Log::~Log()

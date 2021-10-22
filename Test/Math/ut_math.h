@@ -42,6 +42,7 @@ TEST_F(MathTest, MatrixMultiplication)
     Matrix oMatrix(2, 3, 2);
     Matrix oMatrix1(3, 2, 10.0);
     Matrix oMat = oMatrix * oMatrix1;
+    Matrix oMatrix2(3, 2, 10.0);
     ZLOG << oMat;
 }
 
