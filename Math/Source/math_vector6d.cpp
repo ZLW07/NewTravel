@@ -47,3 +47,23 @@ Vector6D &Vector6D::operator* (double dData)
     return *this;
 }
 
+//Global function
+Vector6D GetScrewAxis(Vector3D &v3dPoint, Vector3D &v3dDirection, double dPitch)
+{
+    Vector6D oVector6D;
+    for (unsigned int ii = 0; ii < 3; ii++)
+    {
+        oVector6D[ii] = v3dDirection[ii];
+    }
+    Vector3D oNormalVec = v3dPoint.GetVectorCross(v3dDirection);
+    Vector3D oTangentVec = v3dDirection * dPitch;
+    oNormalVec = oNormalVec + oTangentVec;
+    for (int ii = 0; ii < 3; ii++)
+    {
+
+        oVector6D[ii + 3] = oNormalVec[ii];
+    }
+    return oVector6D;
+}
+
+

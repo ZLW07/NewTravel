@@ -4,7 +4,7 @@
 
 #include "Math/math_six_axis.h"
 
-Se3Matrix Axis6Se3::GetKinSpace(Se3Matrix &oSe3Mat, SixAxisVec6DArray &oSixAxisVec6DAry, Vector6D &oVec6D)
+Se3Matrix Axis6Se3::GetKinSpace(Se3Matrix &oSe3Mat, Axis6ScrewAry &oSixAxisVec6DAry, Vector6D &oVec6D)
 {
     Se3Matrix oSe3M = oSe3Mat;
     int iTotalAxis = oSixAxisVec6DAry.GetTotalNumber();

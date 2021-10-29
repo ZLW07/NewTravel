@@ -24,4 +24,6 @@ public:
 private:
     Matrix m_oV6D;
 };
+
+Vector6D GetScrewAxis(Vector3D &v3dPoint, Vector3D &v3dDirection, double dPitch);
 #endif // NEWTRAVEL_MATH_VECTOR6D_H

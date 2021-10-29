@@ -10,9 +10,9 @@
 #include "Math/math_matrix.h"
 #include "Math/math_matrix_rotate.h"
 #include "Math/math_se3mat.h"
-#include "Math/math_vector3d.h"
-#include "Math/math_six_axis_vec6d.h"
 #include "Math/math_six_axis.h"
+#include "Math/math_six_axis_screw_array.h"
+#include "Math/math_vector3d.h"
 
 class MathTest : public ::testing::Test
 {
@@ -73,7 +73,7 @@ TEST_F(MathTest, Vec3DCross)
 TEST_F(MathTest, Vec3DSkewSymmetric)
 {
     Vector3D oVec3D(1.0, 0, 0);
-    RotateMat oMat = oVec3D.GetSkewSymmetric();
+    RotateMat oMat = GetSkewSymmetric(oVec3D);
     std::cout << " SkewSymmetric Value  " << oMat;
 }
 
@@ -88,15 +88,15 @@ TEST_F(MathTest, VecD3Product)
 TEST_F(MathTest, ScrewAxis)
 {
     Vector3D oW(0, 0, 1);
-    Vector3D oQ(3, 3, 0);
-    Vector6D oS = oW.GetScrewAxis(oQ, oW, 2); //(0,0,-1,0,-3,2)
+    Vector3D oQ(3, 0, 0);
+    Vector6D oS = GetScrewAxis(oQ, oW, 2); //(0,0,1,0,-3,2)
     std::cout << " ScrewAxis Value  " << oS;
 }
 
 TEST_F(MathTest, RotateExp3)
 {
     Vector3D oVec3D(1, 2, 3);
-    RotateMat oMat = oVec3D.GetSkewSymmetric();
+    RotateMat oMat = GetSkewSymmetric(oVec3D);
     oMat = oMat.GetMatrixExp3();
     /*
         -0.6949    0.7135    0.0893
@@ -109,7 +109,7 @@ TEST_F(MathTest, RotateExp3)
 TEST_F(MathTest, Se3Exp6)
 {
     Vector3D oVec3D(1.5708, 0, 0);
-    RotateMat oMat = oVec3D.GetSkewSymmetric();
+    RotateMat oMat = GetSkewSymmetric(oVec3D);
     Vector3D oVecP(0, 2.3562, 2.3562);
     Se3Matrix oSe3(oMat, oVecP);
     oSe3[3][3] = 0.0;
@@ -127,7 +127,7 @@ TEST_F(MathTest, Se3Exp6)
 TEST_F(MathTest, SixAxisArray)
 {
     Vector6D oVec6D(1, 2, 3, 4, 5, 6);
-    SixAxisVec6DArray oSixAxisVec6DAry;
+    Axis6ScrewAry oSixAxisVec6DAry;
     oSixAxisVec6DAry.PushBack(oVec6D);
     oSixAxisVec6DAry.PushBack(oVec6D);
     ZLOG << oSixAxisVec6DAry;
@@ -138,7 +138,7 @@ TEST_F(MathTest, Axis6Math)
     Vector6D oVec6D1(0, 0, 1, 4, 0,    0);
     Vector6D oVec6D2(0, 0, 0, 0, 1,    0);
     Vector6D oVec6D3(0, 0, -1, -6, 0,    -0.1);
-    SixAxisVec6DArray oSixAxisVec6DAry;
+    Axis6ScrewAry oSixAxisVec6DAry;
     oSixAxisVec6DAry.PushBack(oVec6D1);
     oSixAxisVec6DAry.PushBack(oVec6D2);
     oSixAxisVec6DAry.PushBack(oVec6D3);

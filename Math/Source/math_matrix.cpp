@@ -127,11 +127,11 @@ std::ostream &operator<<(std::ostream &out, Matrix &oMatrix)
             double dValue = oMatrix[ii][jj];
             if (std::abs(dValue) < 1e-3)
             {
-                out << std::setiosflags(std::ios::left) << std::setw(5) << 0.0;
+                out << std::setw(5) << 0.0 << ", ";
             }
             else
             {
-                out << std::setiosflags(std::ios::left) << std::setw(5) << dValue;
+                out << std::setw(5) << dValue << ", ";
             }
 
         }

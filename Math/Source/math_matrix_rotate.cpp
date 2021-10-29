@@ -96,7 +96,7 @@ RotateMat RotateMat::operator*(RotateMat &dData)
     return oResult;
 }
 
-Vector3D RotateMat::operator * (Vector3D &oVec3D)
+Vector3D RotateMat::operator*(const Vector3D &oVec3D)
 {
     Vector3D oResult;
     double dValue = 0.0;
@@ -130,5 +130,21 @@ RotateMat RotateMat::GetMatrixExp3()
     oRotMat1 = oRotMat1 * dTheta1;
     oResultRot = oRotMat0 + oRotMat1 + oResultRot;
     return oResultRot;
+}
+
+
+//Global function
+RotateMat GetSkewSymmetric(const Vector3D &oV3dData)
+{
+    RotateMat oRotateMat;
+    oRotateMat[0][1] = -oV3dData[2];
+    oRotateMat[0][2] = oV3dData[1];
+
+    oRotateMat[1][0] = oV3dData[2];
+    oRotateMat[1][2] = -oV3dData[0];
+
+    oRotateMat[2][0] = -oV3dData[1];
+    oRotateMat[2][1] = oV3dData[0];
+    return oRotateMat;
 }
 

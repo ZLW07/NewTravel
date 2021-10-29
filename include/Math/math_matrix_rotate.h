@@ -20,7 +20,7 @@ class RotateMat: public CheckZero
         RotateMat operator+(RotateMat &oRot);
         RotateMat operator*(double &dData);
         RotateMat operator*(RotateMat &dData);
-        Vector3D operator*(Vector3D &oVec3D);
+        Vector3D operator*(const Vector3D &oVec3D);
         void operator/(double dData);
         double Norm2();
 
@@ -29,6 +29,10 @@ class RotateMat: public CheckZero
     private:
         Matrix m_oRateMat;
     };
+
+
+RotateMat GetSkewSymmetric(const Vector3D &oV3dData);
+
 
 
 #endif // NEWTRAVEL_MATH_MATRIX_ROTATE_H

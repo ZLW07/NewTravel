@@ -126,7 +126,7 @@ Se3Matrix Get6DToSe3(Vector6D &oVec6dData)
     {
         oVec3D[ii] = oVec6dData[ii];
     }
-    RotateMat oVec3DMat = oVec3D.GetSkewSymmetric();
+    RotateMat oVec3DMat = GetSkewSymmetric(oVec3D);
 
     for (int jj = 0; jj < 3; jj++)
     {
