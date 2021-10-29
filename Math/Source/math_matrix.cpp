@@ -127,17 +127,28 @@ std::ostream &operator<<(std::ostream &out, Matrix &oMatrix)
             double dValue = oMatrix[ii][jj];
             if (std::abs(dValue) < 1e-3)
             {
-                out << std::setw(5) << 0.0;
+                out << std::setiosflags(std::ios::left) << std::setw(5) << 0.0;
             }
             else
             {
-                out << std::setw(5) << dValue;
+                out << std::setiosflags(std::ios::left) << std::setw(5) << dValue;
             }
 
         }
         out << std::endl;
     }
     return out;
+}
+void Matrix::operator*(double dData)
+{
+    for (int ii = 0; ii < m_iRow; ii++)
+    {
+        for (int jj = 0; jj < m_iCol; jj++)
+        {
+            double dTempValue = m_pVector[ii][jj] * dData;
+            (*this)[ii][jj] = dTempValue;
+        }
+    }
 }
 
 Matrix Matrix::operator*(const Matrix &oMatrix)

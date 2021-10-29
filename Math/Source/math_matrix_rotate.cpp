@@ -96,12 +96,13 @@ RotateMat RotateMat::operator*(RotateMat &dData)
     return oResult;
 }
 
-Vector3D RotateMat::operator*(Vector3D &oVec3D)
+Vector3D RotateMat::operator * (Vector3D &oVec3D)
 {
     Vector3D oResult;
     double dValue = 0.0;
     for (int ii = 0; ii < 3; ii++)
     {
+        dValue = 0.0;
         for (int jj = 0; jj < 3; jj++)
         {
             dValue = (*this)[ii][jj] * oVec3D[jj] + dValue;

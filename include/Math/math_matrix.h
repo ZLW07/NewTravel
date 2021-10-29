@@ -45,6 +45,7 @@ public:
     double* operator[](int iIndex) const;
     Matrix operator* (const Matrix &oMatrix);
     Matrix &operator=(const Matrix &oMatrix);
+    void operator*(double dData);
     double Norm2();
     Matrix SetEyeMatrix(int iSize);
 

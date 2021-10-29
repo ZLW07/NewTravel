@@ -17,7 +17,9 @@ public:
     Vector6D();
     Vector6D(double dData1, double dData2, double dData3, double dData4, double dData5, double dData6);
     double &operator[](unsigned int iIndex) const;
-    Matrix Get6DToSe3(const Vector6D &oVector6D);
+    Vector6D &operator* (double dData);
+    Vector6D &operator=(Vector6D &vec6D);
+
 
 private:
     Matrix m_oV6D;

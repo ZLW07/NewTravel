@@ -8,7 +8,7 @@
 Vector6D::Vector6D() : m_oV6D(6, 1) {}
 
 Vector6D::Vector6D(double dData1, double dData2, double dData3, double dData4, double dData5, double dData6)
-: m_oV6D(6, 1)
+    : m_oV6D(6, 1)
 {
     (*this)[0] = dData1;
     (*this)[1] = dData2;
@@ -28,27 +28,22 @@ double &Vector6D::operator[](unsigned int iIndex) const
     return m_oV6D[iIndex][0];
 }
 
-Matrix Vector6D::Get6DToSe3(const Vector6D &oVector6D)
+Vector6D &Vector6D::operator=(Vector6D &vec6D)
 {
-    Matrix oResultSe3(4,4);
-    Vector3D oVec3D;
-    for (int ii = 0; ii < 3; ii++)
-    {
-        oVec3D[ii] = oVector6D[ii];
-    }
-    RotateMat oVec3DMat = oVec3D.GetSkewSymmetric();
-
-    for (int jj = 0; jj < 3; jj++)
-    {
-        for (int ij = 0; ij < 3; ij++)
+        for (int ii = 0; ii < 6; ii++)
         {
-            oResultSe3[jj][ij] = oVec3DMat[jj][ij];
+            (*this)[ii] = vec6D[ii];
         }
-    }
-    for (int ii = 0; ii < 3; ii++)
-    {
-        oResultSe3[ii][3] = oVector6D[ii + 3];
-        oResultSe3[3][ii] = 0.0;
-    }
-    return oResultSe3;
+        return *this;
 }
+
+Vector6D &Vector6D::operator* (double dData)
+{
+    for (int ii = 0; ii < 6; ii++)
+    {
+        double dTempValue = (*this)[ii] * dData;
+        (*this)[ii] = dTempValue;
+    }
+    return *this;
+}
+
