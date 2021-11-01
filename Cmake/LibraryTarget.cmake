@@ -23,3 +23,6 @@ build_library(Mutex)
 
 set(Math_DIR Math)
 build_library(Math)
+
+set(Robot_DIR Robot)
+build_library(Robot Math Log)

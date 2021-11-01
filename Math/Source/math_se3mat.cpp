@@ -70,9 +70,12 @@ double* Se3Matrix::operator[](const int iIndex) const
     return m_oMat4[iIndex];
 }
 
-void Se3Matrix::operator*(double dData)
+Se3Matrix Se3Matrix::operator*(double dData)
 {
+    Se3Matrix oSe3Result;
     m_oMat4 * dData;
+    oSe3Result = (*this);
+    return oSe3Result;
 }
 
 Se3Matrix Se3Matrix::operator*(const Se3Matrix &oSecData)
@@ -86,12 +89,6 @@ Se3Matrix Se3Matrix::operator*(const Se3Matrix &oSecData)
         }
     }
     return *this;
-}
-
-Vector3D Se3Matrix::GetScrewAxis(Se3Matrix &oMat4)
-{
-    Vector3D oVec3D;
-    return oVec3D;
 }
 
 RotateMat Se3Matrix::GetRotMatrix()
@@ -143,11 +140,32 @@ Se3Matrix Get6DToSe3(Vector6D &oVec6dData)
     return oSe3Mat;
 }
 
-//template <typename T>
-//Se3Matrix &Se3Matrix::GetFKinSpace(Se3Matrix &M, Vector6D vec6D(T),double dTheta(T))
-//{
-//    for (int ii = 0; ii < sizeof(dTheta); ii++)
-//    {
-//        Se3Matrix se3Result = GetMatrixExp6(vec6D(ii).Get6DToSe3() * dTheta(ii));
-//    }
-//}
+Se3Matrix GetMatrixExp6(Se3Matrix &se3Mat)
+{
+    RotateMat oRotate = se3Mat.GetRotMatrix();
+    Vector3D oVecAix = oRotate.GetScrewAxis();
+    double dNormValue = oVecAix.Norm2();
+    Vector3D oPose = se3Mat.GetTranslation();
+    if (CheckZero::NearZero(dNormValue))
+    {
+        RotateMat oEye(1);
+        Se3Matrix oSe3New(oEye, oPose);
+        return oSe3New;
+    }
+    double dTheta = oVecAix.GetAxisAng3();
+    RotateMat oRateW = oRotate;
+    oRotate / dTheta;
+    RotateMat oRotateMat = oRateW.GetMatrixExp3();
+    RotateMat oRotEye(1);
+    oRotEye = oRotEye * dTheta;
+    double dTemp1 = 1 - cos(dTheta);
+    RotateMat oTemp2 = oRotate * dTemp1;
+    double dTemp3 = dTheta - sin(dTheta);
+    RotateMat oTemp4 = oRotate * dTemp3 * oRotate ;
+    RotateMat oTemp5 = oRotEye + oTemp2 + oTemp4;
+    oPose / dTheta;
+    Vector3D oV3D = oTemp5 * oPose;
+    Se3Matrix oSe3Mat(oRotateMat, oV3D);
+    return oSe3Mat;
+}
+

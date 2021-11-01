@@ -2,7 +2,7 @@
 // Created by zw on 2021/10/28.
 //
 
-#include "Math/math_six_axis_screw_array.h"
+#include "Robot//robot_six_axis_screw_array.h"
 
 Axis6ScrewAry::Axis6ScrewAry(): m_iIndex(0){};
 

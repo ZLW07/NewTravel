@@ -5,34 +5,34 @@
 #ifndef NEWTRAVEL_MATH_MATRIX_H
 #define NEWTRAVEL_MATH_MATRIX_H
 
-#include <iostream>
-#include <vector>
-#include <math.h>
 #include <iomanip>
+#include <iostream>
+#include <math.h>
+#include <vector>
 
 #include "Log/log.h"
 
 class CheckZero
+{
+public:
+    static bool NearZero(const double &dData)
     {
-    public:
-        bool NearZero(const double &dData)
+        if (std::abs(dData) < 1e-6)
         {
-            if (std::abs(dData) < 1e-6)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return true;
         }
-    };
-
+        else
+        {
+            return false;
+        }
+    }
+};
 
 class Se3Matrix;
 class Matrix : public CheckZero
 {
     friend std::ostream &operator<<(std::ostream &out, Matrix &oMatrix);
+
 public:
     Matrix(int iRow, int iCol);
     Matrix(int iRow, int iCol, double dInitialValue);
@@ -42,8 +42,8 @@ public:
     int GetCol();
     Matrix(const Matrix &oMatrix);
 
-    double* operator[](int iIndex) const;
-    Matrix operator* (const Matrix &oMatrix);
+    double *operator[](int iIndex) const;
+    Matrix operator*(const Matrix &oMatrix);
     Matrix &operator=(const Matrix &oMatrix);
     void operator*(double dData);
     double Norm2();

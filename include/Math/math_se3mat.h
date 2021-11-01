@@ -17,9 +17,8 @@ class Se3Matrix: public CheckZero
         Se3Matrix(RotateMat oRotateMat, Vector3D oPose);
         Se3Matrix(const Se3Matrix &oSe3Mat);
         double* operator[](const int iIndex) const;
-        void operator*(double dData);
+        Se3Matrix operator*(double dData);
         Se3Matrix operator*(const Se3Matrix &oSecData);
-        Vector3D  GetScrewAxis(Se3Matrix &oMat4);
         RotateMat GetRotMatrix();
         Vector3D GetTranslation();
 
@@ -28,5 +27,7 @@ class Se3Matrix: public CheckZero
     };
 
 Se3Matrix Get6DToSe3(Vector6D &oVec6dData);
+
+Se3Matrix GetMatrixExp6(Se3Matrix &se3Mat);
 
 #endif // NEWTRAVEL_MATH_SE3MAT_H

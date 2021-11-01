@@ -1,9 +1,8 @@
 ////
 //// Created by zw on 2021/10/16.
 ////
-//
+
 #include "Math/math_vector3d.h"
-//
 
 Vector3D::Vector3D() : m_oV3D(3, 1) {}
 
@@ -59,7 +58,7 @@ void Vector3D::operator/(const double &dData)
     {
         return;
     }
-    double  dTemp = 0.0;
+    double dTemp = 0.0;
     for (int ii = 0; ii < 3; ii++)
     {
         dTemp = (*this)[ii] / dData;
@@ -104,7 +103,6 @@ Matrix Vector3D::GetMatrix()
     return m_oV3D;
 }
 
-
 double Vector3D::GetAxisAng3()
 {
     double dTheta = this->Norm2();
@@ -112,9 +110,7 @@ double Vector3D::GetAxisAng3()
     return dTheta;
 }
 VectorD3::VectorD3() : m_oVD3(1, 3) {}
-VectorD3::~VectorD3(){
-
-};
+VectorD3::~VectorD3(){}
 
 VectorD3::VectorD3(double dData1, double dData2, double dData3) : m_oVD3(1, 3)
 {
@@ -122,6 +118,7 @@ VectorD3::VectorD3(double dData1, double dData2, double dData3) : m_oVD3(1, 3)
     (*this)[1] = dData2;
     (*this)[2] = dData3;
 }
+
 VectorD3::VectorD3(const VectorD3 &oVectorD3) : m_oVD3(1, 3)
 {
     for (int ii = 0; ii < 3; ii++)
@@ -149,6 +146,3 @@ double VectorD3::operator*(Vector3D &oVector3D)
     }
     return dResult;
 }
-
-
-

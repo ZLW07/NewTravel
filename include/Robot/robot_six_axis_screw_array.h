@@ -2,8 +2,8 @@
 // Created by zw on 2021/10/28.
 //
 
-#ifndef NEWTRAVEL_MATH_SIX_AXIS_SCREW_ARRAY_H
-#define NEWTRAVEL_MATH_SIX_AXIS_SCREW_ARRAY_H
+#ifndef NEWTRAVEL_ROBOT_SIX_AXIS_SCREW_ARRAY_H
+#define NEWTRAVEL_ROBOT_SIX_AXIS_SCREW_ARRAY_H
 #include "Math/math_vector6d.h"
 
 class Axis6ScrewAry
@@ -21,4 +21,4 @@ private:
     int m_iIndex;
 };
 
-#endif // NEWTRAVEL_MATH_SIX_AXIS_SCREW_ARRAY_H
+#endif // NEWTRAVEL_ROBOT_SIX_AXIS_SCREW_ARRAY_H
