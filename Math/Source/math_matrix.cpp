@@ -3,19 +3,6 @@
 //
 
 #include "Math/math_matrix.h"
-
-template <typename T> void Vector<T>::SetSize(int iSize)
-{
-    if (iSize > 0)
-    {
-        m_iVecSize = iSize;
-        for (int ii = 0; (ii < m_iVecSize) && (m_iVecSize > 0); ii++)
-        {
-            m_vecData.push_back(0.0);
-        }
-    }
-}
-
 template <typename T> Vector<T>::Vector(int iSize)
 {
     m_iVecSize = iSize;
@@ -42,15 +29,6 @@ template <typename T> Vector<T> &Vector<T>::operator=(Vector<T> vecSrc)
     m_iVecSize = vecSrc.m_iVecSize;
     m_vecData = vecSrc.m_vecData;
     return *this;
-}
-
-template <typename T> std::ostream &operator<<(std::ostream &os, const Vector<T> &vData)
-{
-    for (int ii = 0; ii < vData.m_iVecSize; ii++)
-    {
-        os << vData.m_vecData[ii] << " ";
-    }
-    return os;
 }
 
 Matrix::Matrix(int iRow, int iCol)

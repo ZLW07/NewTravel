@@ -23,7 +23,7 @@ class Vector
     {
         for (int ii = 0; ii < vData.m_iVecSize; ii++)
         {
-            os << vData.m_vecData[ii];
+            os << vData.m_vecData[ii] << " ";
         }
         return os;
     }
@@ -32,7 +32,6 @@ public:
     ~Vector();
     T &operator[](int iIndex) ;
     Vector<T> &operator=(Vector<T> vecData);
-    void SetSize(int iSize);
 private:
     std::vector<T> m_vecData;
     int m_iVecSize;
