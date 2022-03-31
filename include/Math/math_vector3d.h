@@ -16,9 +16,8 @@ public:
     Vector3D();
     Vector3D(double dData1, double dData2, double dData3);
     Matrix GetSkewSymmetric();
-
 private:
-    std::vector<double> m_v3d;
+    Vector m_vecV3D;
 };
 
 #endif // NEWTRAVEL_MATH_VECTOR3D_H

@@ -6,25 +6,28 @@
 
 Vector3D::Vector3D()
 {
-    m_v3d = {0.0,0.0,0.0};
+    m_vecV3D = Vector(3);
 }
 
 Vector3D::Vector3D(double dData1, double dData2, double dData3)
 {
-    m_v3d = {dData1,dData2,dData3};
+    m_vecV3D = Vector(3);
+    m_vecV3D[0] = dData1;
+    m_vecV3D[1] = dData2;
+    m_vecV3D[2] = dData3;
 }
 
 Matrix Vector3D::GetSkewSymmetric()
 {
-    Matrix oSkewSymmetric(3);
-    oSkewSymmetric[0][1] = -m_v3d[2];
-    oSkewSymmetric[0][2] = m_v3d[1];
+    Matrix oSkewSymmetric(3,3);
+    oSkewSymmetric[0][1] = -m_vecV3D[2];
+    oSkewSymmetric[0][2] = m_vecV3D[1];
 
-    oSkewSymmetric[1][0] = m_v3d[2];
-    oSkewSymmetric[1][2] = -m_v3d[0];
+    oSkewSymmetric[1][0] = m_vecV3D[2];
+    oSkewSymmetric[1][2] = -m_vecV3D[0];
 
-    oSkewSymmetric[2][0] = -m_v3d[1];
-    oSkewSymmetric[2][1] = m_v3d[0];
+    oSkewSymmetric[2][0] = -m_vecV3D[1];
+    oSkewSymmetric[2][1] = m_vecV3D[0];
     return oSkewSymmetric;
 }
 

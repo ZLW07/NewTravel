@@ -4,71 +4,74 @@
 
 #include "Math/math_matrix.h"
 
-int Vector::m_iVecSize = 1;
-
 void Vector::SetSize(int iSize)
 {
     if (iSize > 0)
     {
         m_iVecSize = iSize;
+        for (int ii = 0; (ii < m_iVecSize) && (m_iVecSize > 0); ii++)
+        {
+            m_vecData.push_back(0.0);
+        }
     }
 }
 
-Vector::Vector()
+Vector::Vector(int iSize)
 {
-    m_pVec = new double[m_iVecSize];
-
-    for (int ii = 0; ii < m_iVecSize; ii++)
+    m_iVecSize = iSize;
+    for (int ii = 0; (ii < m_iVecSize) && (m_iVecSize > 0); ii++)
     {
-        m_pVec[ii] = 0.0;
+        m_vecData.push_back(0.0);
     }
 }
+//
+//Vector::Vector()
+//{
+//    for (int ii = 0; (ii < m_iVecSize) && (m_iVecSize > 0); ii++)
+//    {
+//        m_vecData.push_back(0.0);
+//    }
+//}
 
-Vector::~Vector()
-{
-    if (m_pVec)
-    {
-        delete[] m_pVec;
-        m_pVec = nullptr;
-    }
-}
+Vector::~Vector() = default;
 
 double &Vector::operator[](int iIndex)
 {
-    if (iIndex >= m_iVecSize)
+    if (iIndex > m_iVecSize)
     {
+        ZLOG << " The index is out of range; The limit size is " << m_iVecSize << "; expect index is " << iIndex;
         exit(-1);
     }
-    return m_pVec[iIndex];
+    return m_vecData[iIndex];
+}
+
+Vector & Vector::operator=(Vector vecSrc)
+{
+    m_iVecSize = vecSrc.m_iVecSize;
+    m_vecData = vecSrc.m_vecData;
 }
 
 Matrix::Matrix(int iRow, int iCol)
 {
-    if (iCol > 0)
+    m_iRow = iRow;
+    if (iCol < 1)
     {
-        Vector::SetSize(iCol);
+        ZLOG << " The parament set wrong, it shouble greater than 1";
+        exit(-1);
     }
-    else
-    {
-        Vector::SetSize(iRow);
-    }
-    m_iHeight = iRow;
-    m_pVector = new Vector[m_iHeight];
+    m_iCol = iCol;
+    std::vector<Vector> vData(m_iRow, Vector(m_iCol));
+    m_matData = vData;
 }
 
-Matrix::~Matrix()
-{
-    if (m_pVector)
-    {
-        delete []m_pVector;
-    }
-}
+Matrix::~Matrix() = default;
 
 Vector &Matrix::operator[](int iIndex)
 {
-    if (iIndex > m_iHeight)
+    if (iIndex > m_iRow)
     {
+        ZLOG << " The index is out of range; The limit size is " << m_iRow << "; expect index is " << iIndex;
         exit(-1);
     }
-    return m_pVector[iIndex];
+    return m_matData[iIndex];
 }

@@ -4,30 +4,35 @@
 
 #ifndef NEWTRAVEL_MATH_MATRIX_H
 #define NEWTRAVEL_MATH_MATRIX_H
+
+#include "Log/log.h"
+
 #include <iostream>
 #include <vector>
 
 class Vector
 {
 public:
-    Vector();
+    explicit Vector(int iSize = 1);
     ~Vector();
     double &operator[](int iIndex);
-    static void SetSize(int iSize);
+    Vector &operator=(Vector vecData);
+    void SetSize(int iSize);
 private:
-    double *m_pVec;
-    static int m_iVecSize;
+    std::vector<double> m_vecData;
+    int m_iVecSize;
 };
 
 class Matrix
 {
 public:
-    Matrix(int iRow, int iCol = 0);
+    explicit Matrix(int iRow, int iCol = 1);
     ~Matrix();
     Vector &operator[](int iIndex);
 private:
-    Vector *m_pVector;
-    int m_iHeight;
+    int m_iRow;
+    int m_iCol;
+    std::vector<Vector> m_matData;
 };
 
 #endif // NEWTRAVEL_MATH_MATRIX_H
