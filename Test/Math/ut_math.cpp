@@ -8,11 +8,15 @@
 
 int main()
 {
-    Matrix oMatrix(3);
-    oMatrix[2][0] = 10;
+    Matrix oMatrix(3,3);
+    oMatrix[2][0] = 10.7;
     ZLOG << oMatrix[2][0];
+    Vector<double> vec(3);
     Vector3D oVector3{1,2,3};
     auto aResult = oVector3.GetSkewSymmetricMatrix();
     ZLOG << aResult[0][1];
+    ZLOG << oMatrix;
     ZLOG << aResult;
+    ZLOG << (oMatrix + aResult);
+    ZLOG << vec;
 }

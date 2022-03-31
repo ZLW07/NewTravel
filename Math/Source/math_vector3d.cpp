@@ -6,12 +6,12 @@
 
 Vector3D::Vector3D()
 {
-    m_vecV3D = Vector(3);
+    m_vecV3D = Vector<double>(3);
 }
 
 Vector3D::Vector3D(double dData1, double dData2, double dData3)
 {
-    m_vecV3D = Vector(3);
+    m_vecV3D = Vector<double>(3);
     m_vecV3D[0] = dData1;
     m_vecV3D[1] = dData2;
     m_vecV3D[2] = dData3;
