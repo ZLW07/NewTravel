@@ -23,6 +23,7 @@ public:
 public:
 protected:
     std::stringstream sStream;
+    std::string m_sLogData;
 };
 
 class Logger : public Log
