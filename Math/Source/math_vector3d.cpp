@@ -17,7 +17,7 @@ Vector3D::Vector3D(double dData1, double dData2, double dData3)
     m_vecV3D[2] = dData3;
 }
 
-Matrix Vector3D::GetSkewSymmetric()
+Matrix Vector3D::GetSkewSymmetricMatrix()
 {
     Matrix oSkewSymmetric(3,3);
     oSkewSymmetric[0][1] = -m_vecV3D[2];

@@ -11,8 +11,8 @@ int main()
     Matrix oMatrix(3);
     oMatrix[2][0] = 10;
     ZLOG << oMatrix[2][0];
-
     Vector3D oVector3{1,2,3};
-    auto aResult = oVector3.GetSkewSymmetric();
+    auto aResult = oVector3.GetSkewSymmetricMatrix();
     ZLOG << aResult[0][1];
+    ZLOG << aResult;
 }

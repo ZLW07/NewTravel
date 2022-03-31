@@ -24,18 +24,10 @@ Vector::Vector(int iSize)
         m_vecData.push_back(0.0);
     }
 }
-//
-//Vector::Vector()
-//{
-//    for (int ii = 0; (ii < m_iVecSize) && (m_iVecSize > 0); ii++)
-//    {
-//        m_vecData.push_back(0.0);
-//    }
-//}
 
 Vector::~Vector() = default;
 
-double &Vector::operator[](int iIndex)
+ double &Vector::operator[](int iIndex)
 {
     if (iIndex > m_iVecSize)
     {
@@ -45,11 +37,22 @@ double &Vector::operator[](int iIndex)
     return m_vecData[iIndex];
 }
 
-Vector & Vector::operator=(Vector vecSrc)
+Vector &Vector::operator=(Vector vecSrc)
 {
     m_iVecSize = vecSrc.m_iVecSize;
     m_vecData = vecSrc.m_vecData;
+    return *this;
 }
+
+std::ostream &operator<<(std::ostream &os,const Vector & vData)
+{
+    for (int ii = 0; ii < vData.m_iVecSize; ii++)
+    {
+        os << vData.m_vecData[ii];
+    }
+    return os;
+}
+
 
 Matrix::Matrix(int iRow, int iCol)
 {
@@ -64,9 +67,19 @@ Matrix::Matrix(int iRow, int iCol)
     m_matData = vData;
 }
 
+int Matrix::GetRowSize() const
+{
+    return m_iRow;
+}
+
+int Matrix::GetColSize() const
+{
+    return m_iCol;
+}
+
 Matrix::~Matrix() = default;
 
-Vector &Matrix::operator[](int iIndex)
+ Vector &Matrix::operator[](int iIndex)
 {
     if (iIndex > m_iRow)
     {
@@ -74,4 +87,26 @@ Vector &Matrix::operator[](int iIndex)
         exit(-1);
     }
     return m_matData[iIndex];
+}
+
+std::ostream &operator<<(std::ostream &os, Matrix &matData)
+{
+    int iRow = matData.GetRowSize();
+    int iCol = matData.GetColSize();
+    int iTemp = matData.GetColSize() - 1;
+    for (int ii = 0; ii < iRow; ii++)
+    {
+        os << "{";
+
+        for (int jj = 0; jj < iCol; jj++)
+        {
+            os << matData[ii][jj];
+            if (iTemp != jj)
+            {
+                os << " ";
+            }
+        }
+        os << "} ";
+    }
+    return os;
 }

@@ -12,7 +12,7 @@ class Log
 public:
     Log(std::string sFile,int iLineNumber);
 
-    template <class T> Log &operator<<(T val)
+    template <class T> Log &operator<<(T &val)
     {
         sStream << val;
         return *this;

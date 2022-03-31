@@ -12,10 +12,11 @@
 
 class Vector
 {
+    friend  std::ostream &operator<<(std::ostream &os,const Vector & vData);
 public:
     explicit Vector(int iSize = 1);
     ~Vector();
-    double &operator[](int iIndex);
+    double &operator[](int iIndex) ;
     Vector &operator=(Vector vecData);
     void SetSize(int iSize);
 private:
@@ -25,10 +26,14 @@ private:
 
 class Matrix
 {
+    friend  std::ostream &operator<<(std::ostream &os, Matrix &matData);
 public:
     explicit Matrix(int iRow, int iCol = 1);
     ~Matrix();
     Vector &operator[](int iIndex);
+    int GetRowSize() const;
+    int GetColSize() const;
+
 private:
     int m_iRow;
     int m_iCol;
