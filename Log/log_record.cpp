@@ -20,7 +20,7 @@ static std::string GetLogTime()
     tm *LocalTime = localtime(&nowTime);
     char cTimeBuff[128];
     strftime(cTimeBuff, sizeof(cTimeBuff), "%Y/%m/%d %H:%M:%S", LocalTime);
-    int iMillisecond = time.tv_usec % 1000;
+    long iMillisecond = time.tv_usec % 1000000;
     std::string sTime = cTimeBuff;
     sTime = sTime + "." + std::to_string(iMillisecond);
     return sTime;
