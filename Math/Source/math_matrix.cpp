@@ -31,6 +31,7 @@ template <typename T> Vector<T> &Vector<T>::operator=(Vector<T> vecSrc)
     return *this;
 }
 
+
 Matrix::Matrix(int iRow, int iCol)
 {
     m_iRow = iRow;

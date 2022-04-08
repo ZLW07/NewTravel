@@ -30,8 +30,33 @@ class Vector
 public:
     explicit Vector(int iSize = 1);
     ~Vector();
+public:
     T &operator[](int iIndex) ;
     Vector<T> &operator=(Vector<T> vecData);
+
+    T operator*(Vector<T> vecData)
+    {
+        if (this->m_iVecSize != vecData.m_iVecSize)
+        {
+            ZLOG << "the size is not match";
+            exit(1);
+        }
+        T tTemp;
+        for (int ii = 0; ii < m_iVecSize;ii++)
+        {
+            T dDirData = m_vecData[ii] * vecData[ii];
+            if (0 == ii)
+            {
+                tTemp = dDirData;
+            }
+            else
+            {
+                tTemp = tTemp + dDirData;
+            }
+        }
+        return tTemp;
+    }
+
 private:
     std::vector<T> m_vecData;
     int m_iVecSize;
@@ -44,13 +69,13 @@ class Matrix
 public:
     explicit Matrix(int iRow, int iCol = 1);
     ~Matrix();
+    int GetRowSize() const;
+    int GetColSize() const;
+public:
     Vector<double> &operator[](int iIndex);
     Matrix &operator+(Matrix &matData);
     Matrix &operator-(Matrix &matData);
     Matrix &operator=(const Matrix &matData);
-    int GetRowSize() const;
-    int GetColSize() const;
-
 private:
     int m_iRow;
     int m_iCol;

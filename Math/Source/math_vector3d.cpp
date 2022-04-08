@@ -32,3 +32,24 @@ Matrix Vector3D::GetSkewSymmetricMatrix()
 }
 
 
+double & Vector3D::operator[](int iIndex)
+{
+    if ((iIndex > 3) || (iIndex < 0))
+    {
+        ZLOG << " The index is out of range; the actual index is " << iIndex << "; the limit index is " << 3;
+        exit(1);
+    }
+    return m_vecV3D[iIndex];
+}
+
+std::ostream &operator<<(std::ostream &os, Vector3D &v3dData)
+{
+    for (int ii = 0; ii < 3; ++ii)
+    {
+        os << v3dData[ii] << " ";
+    }
+    return os;
+}
+
+
+
