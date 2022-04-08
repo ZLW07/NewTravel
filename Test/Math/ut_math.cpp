@@ -3,6 +3,7 @@
 //
 #include "Math/math_matrix.h"
 #include "Math/math_vector3d.h"
+#include "Math/math_transfromation_matrix.h"
 #include "Log/log.h"
 #include <iostream>
 
@@ -19,4 +20,19 @@ int main()
     ZLOG << aResult;
     ZLOG << (oMatrix + aResult);
     ZLOG << vec;
+    TransformMatrix tranMat;
+    TransformMatrix tranMat1;
+    tranMat1[3][3] = 2;
+    TransformMatrix tranMat2 = tranMat * tranMat1;
+    ZLOG << tranMat2;
+    Vector<double> v1 = tranMat.GetColVector(3);
+    Vector<double> v2 = tranMat.GetColVector(3);
+    Vector<double> v3 = vec;
+
+    ZLOG << v3;
+    double ddd = v1 * v2;
+    ZLOG << ddd;
+    ZLOG << tranMat[3][3];
+    Vector3D v3dVec;
+    ZLOG << v3dVec;
 }
