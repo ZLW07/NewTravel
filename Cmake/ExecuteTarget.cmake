@@ -28,3 +28,6 @@ build_execute(UT_Mutex  Mutex Log)
 set(UT_Math_DIR Test/Math)
 build_execute(UT_Math  Math Log)
 
+set(UT_Model_DIR Test/Model)
+build_execute(UT_Model Model Math Log )
+

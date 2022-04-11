@@ -6,6 +6,7 @@
 #include "Math/math_transfromation_matrix.h"
 #include "Log/log.h"
 #include <iostream>
+#include "Model/model_data.h"
 
 int main()
 {
@@ -35,4 +36,15 @@ int main()
     ZLOG << tranMat[3][3];
     Vector3D v3dVec;
     ZLOG << v3dVec;
+
+    double dData1 = 10.2;
+    const int &iData = dData1;
+    ZLOG << iData;
+    dData1 = 2.1e02;
+    ZLOG << iData;
+    const int &iData1 = 10;
+    const double &dData2 = dData1 + 120.2;
+    std::string sData = "1.2e+03";
+    double dData3 = std::atof(sData.c_str());
+    ZLOG << dData3;
 }
