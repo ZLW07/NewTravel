@@ -22,17 +22,17 @@ Vector3D::Vector3D(const Vector3D &v3dData)
     m_vecV3D = v3dData.m_vecV3D;
 }
 
-double Vector3D::_X()
+double Vector3D::X()
 {
     return m_vecV3D[0];
 }
 
-double Vector3D::_Y()
+double Vector3D::Y()
 {
     return m_vecV3D[1];
 }
 
-double Vector3D::_Z()
+double Vector3D::Z()
 {
     return m_vecV3D[2];
 }
@@ -80,7 +80,7 @@ Vector3D Vector3D::operator-(Vector3D &v3dData)
     return Vector3D(m_vecV3D[0] - v3dData[0], m_vecV3D[1] - v3dData[1], m_vecV3D[2] - v3dData[2]);
 }
 
-Vector3D Vector3D::Scalar(double dData)
+Vector3D Vector3D::Scale(double dData)
 {
     return Vector3D(m_vecV3D[0] * dData, m_vecV3D[1] * dData, m_vecV3D[2] * dData);
 }
@@ -96,4 +96,24 @@ Vector3D Vector3D::Cross(Vector3D &v3dData)
     double y = m_vecV3D[2] * v3dData[0] - m_vecV3D[0] * v3dData[2];
     double z = m_vecV3D[0] * v3dData[1] - m_vecV3D[1] * v3dData[0];
     return Vector3D(x, y, z);
+}
+
+double Vector3D::Norm()
+{
+    return sqrt(pow(X(),2) + pow(Y(),2) + pow(Z(),2));
+}
+
+double Vector3D::GetVectorAngleRad(Vector3D &v3dData)
+{
+    double dDot = Dot(v3dData);
+    double dNorm1 = Norm();
+    double dNorm2 = v3dData.Norm();
+    double dAngle = dDot/(dNorm1 * dNorm2);
+    return acos(dAngle);
+}
+
+double Vector3D::GetVectorAngleDeg(Vector3D &v3dData)
+{
+    double dAngleRad = GetVectorAngleRad(v3dData);
+    return RadToDeg(dAngleRad);
 }

@@ -10,6 +10,10 @@
 #include <iostream>
 #include <vector>
 
+
+double RadToDeg(double dRad);
+double DegToRad(double dDeg);
+
 template<typename T>
 class Vector;
 
@@ -34,6 +38,7 @@ public:
         this->m_vecData = vecData.m_vecData;
     }
     ~Vector();
+
 public:
     T &operator[](int iIndex) ;
     Vector<T> &operator=(Vector<T> vecData);

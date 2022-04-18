@@ -47,4 +47,9 @@ int main()
     std::string sData = "1.2e+03";
     double dData3 = std::atof(sData.c_str());
     ZLOG << dData3;
+
+    Vector3D v3dData1{1,0,0};
+    Vector3D v3dData2{0,1,0};
+    auto Result = v3dData1.GetVectorAngleDeg(v3dData2);
+    ZLOG << Result;
 }

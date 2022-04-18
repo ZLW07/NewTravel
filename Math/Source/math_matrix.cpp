@@ -32,6 +32,16 @@ template <typename T> Vector<T> &Vector<T>::operator=(Vector<T> vecSrc)
 }
 
 
+double DegToRad(double dDeg)
+{
+        return (3.1415926 * dDeg)/180;
+}
+
+double RadToDeg(double dRad)
+{
+    return (180 * dRad)/3.1415926;
+}
+
 Matrix::Matrix(int iRow, int iCol)
 {
     m_iRow = iRow;

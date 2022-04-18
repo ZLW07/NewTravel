@@ -5,18 +5,22 @@
 
 #include "Model/model_data.h"
 
-ModelData::ModelData() {}
+ModelManager::ModelManager() {}
 
-ModelData::~ModelData() {}
+ModelManager::~ModelManager() {}
 
-bool ModelData::ReadAscllSTlFile(const char *cFileName)
+bool ModelManager::LoadModelData(const char *cFileName, std::vector<ModelDataBase> &ModelData)
+{
+    return ReadAscllSTlFile(cFileName, ModelData);
+}
+
+bool ModelManager::ReadAscllSTlFile(const char *cFileName, std::vector<ModelDataBase> &ModelData)
 {
     Vector3D v3dData;
     ModelDataBase oDataBase;
     int i = 0, j = 0, cnt = 0, pCnt = 4;
     char a[100];
     char str[100];
-    double x = 0, y = 0, z = 0;
     int iIndex = 0;
     std::ifstream in;
     in.open(cFileName, std::ios::in);
@@ -50,7 +54,7 @@ bool ModelData::ReadAscllSTlFile(const char *cFileName)
                 oDataBase.v3dNormalVector = v3dData;
                 iIndex++;
             }
-            else if(1 == iIndex)
+            else if (1 == iIndex)
             {
                 oDataBase.v3dCoordinate_1 = v3dData;
                 iIndex++;
@@ -63,16 +67,11 @@ bool ModelData::ReadAscllSTlFile(const char *cFileName)
             else if (3 == iIndex)
             {
                 oDataBase.v3dCoordinate_3 = v3dData;
-                m_vModelData.push_back(oDataBase);
-                iIndex =0;
+                ModelData.push_back(oDataBase);
+                iIndex = 0;
             }
         }
         pCnt++;
     } while (!in.eof());
     return true;
-}
-
-std::vector<ModelDataBase> ModelData::GetPointCoordinateValue()
-{
-    return m_vModelData;
 }
