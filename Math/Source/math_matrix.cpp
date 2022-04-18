@@ -21,7 +21,7 @@ template <typename T> T &Vector<T>::operator[](int iIndex)
         ZLOG << " The index is out of range; The limit size is " << m_iVecSize << "; expect index is " << iIndex;
         exit(-1);
     }
-    return m_vecData[iIndex];
+    return m_vecData.at(iIndex);
 }
 
 template <typename T> Vector<T> &Vector<T>::operator=(Vector<T> vecSrc)
@@ -31,6 +31,16 @@ template <typename T> Vector<T> &Vector<T>::operator=(Vector<T> vecSrc)
     return *this;
 }
 
+
+double DegToRad(double dDeg)
+{
+        return (3.1415926 * dDeg)/180;
+}
+
+double RadToDeg(double dRad)
+{
+    return (180 * dRad)/3.1415926;
+}
 
 Matrix::Matrix(int iRow, int iCol)
 {

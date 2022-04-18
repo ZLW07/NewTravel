@@ -17,9 +17,29 @@ Vector3D::Vector3D(double dData1, double dData2, double dData3)
     m_vecV3D[2] = dData3;
 }
 
+Vector3D::Vector3D(const Vector3D &v3dData)
+{
+    m_vecV3D = v3dData.m_vecV3D;
+}
+
+double Vector3D::X()
+{
+    return m_vecV3D[0];
+}
+
+double Vector3D::Y()
+{
+    return m_vecV3D[1];
+}
+
+double Vector3D::Z()
+{
+    return m_vecV3D[2];
+}
+
 Matrix Vector3D::GetSkewSymmetricMatrix()
 {
-    Matrix oSkewSymmetric(3,3);
+    Matrix oSkewSymmetric(3, 3);
     oSkewSymmetric[0][1] = -m_vecV3D[2];
     oSkewSymmetric[0][2] = m_vecV3D[1];
 
@@ -31,8 +51,7 @@ Matrix Vector3D::GetSkewSymmetricMatrix()
     return oSkewSymmetric;
 }
 
-
-double & Vector3D::operator[](int iIndex)
+double &Vector3D::operator[](int iIndex)
 {
     if ((iIndex > 3) || (iIndex < 0))
     {
@@ -51,5 +70,50 @@ std::ostream &operator<<(std::ostream &os, Vector3D &v3dData)
     return os;
 }
 
+Vector3D Vector3D::operator+(Vector3D &v3dData)
+{
+    return Vector3D(m_vecV3D[0] + v3dData[0], m_vecV3D[1] + v3dData[1], m_vecV3D[2] + v3dData[2]);
+}
 
+Vector3D Vector3D::operator-(Vector3D &v3dData)
+{
+    return Vector3D(m_vecV3D[0] - v3dData[0], m_vecV3D[1] - v3dData[1], m_vecV3D[2] - v3dData[2]);
+}
 
+Vector3D Vector3D::Scale(double dData)
+{
+    return Vector3D(m_vecV3D[0] * dData, m_vecV3D[1] * dData, m_vecV3D[2] * dData);
+}
+
+double Vector3D::Dot(Vector3D &v3dData)
+{
+    return (m_vecV3D[0] * v3dData[0]) + (m_vecV3D[1] * v3dData[1]) + (m_vecV3D[2] * v3dData[2]);
+}
+
+Vector3D Vector3D::Cross(Vector3D &v3dData)
+{
+    double x = m_vecV3D[1] * v3dData[2] - m_vecV3D[2] * v3dData[1];
+    double y = m_vecV3D[2] * v3dData[0] - m_vecV3D[0] * v3dData[2];
+    double z = m_vecV3D[0] * v3dData[1] - m_vecV3D[1] * v3dData[0];
+    return Vector3D(x, y, z);
+}
+
+double Vector3D::Norm()
+{
+    return sqrt(pow(X(),2) + pow(Y(),2) + pow(Z(),2));
+}
+
+double Vector3D::GetVectorAngleRad(Vector3D &v3dData)
+{
+    double dDot = Dot(v3dData);
+    double dNorm1 = Norm();
+    double dNorm2 = v3dData.Norm();
+    double dAngle = dDot/(dNorm1 * dNorm2);
+    return acos(dAngle);
+}
+
+double Vector3D::GetVectorAngleDeg(Vector3D &v3dData)
+{
+    double dAngleRad = GetVectorAngleRad(v3dData);
+    return RadToDeg(dAngleRad);
+}

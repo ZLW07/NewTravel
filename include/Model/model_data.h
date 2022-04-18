@@ -15,16 +15,16 @@ struct ModelDataBase
     Vector3D v3dCoordinate_2;
     Vector3D v3dCoordinate_3;
 };
-class ModelData
+
+class ModelManager
 {
 public:
-    ModelData();
-    ~ModelData();
-    bool ReadAscllSTlFile(const char* cFileName);
-    std::vector<ModelDataBase> GetPointCoordinateValue();
-
+    ModelManager();
+    ~ModelManager();
+    bool LoadModelData(const char* cFileName, std::vector<ModelDataBase> &ModelData);
 private:
-    std::vector<ModelDataBase> m_vModelData;
+    bool ReadAscllSTlFile(const char* cFileName,std::vector<ModelDataBase> &ModelData);
+private:
 };
 
 #endif // NEWTRAVEL_MODEL_DATA_H

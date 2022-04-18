@@ -16,10 +16,21 @@ class Vector3D
 public:
     Vector3D();
     Vector3D(double dData1, double dData2, double dData3);
+    Vector3D(const Vector3D &v3dData);
     Matrix GetSkewSymmetricMatrix();
-
+    double X();
+    double Y();
+    double Z();
 public:
     double &operator[](int iIndex);
+    Vector3D operator+(Vector3D &v3dData);
+    Vector3D operator-( Vector3D &v3dData);
+    Vector3D Scale(double dData);
+    double Dot(Vector3D &v3dData);
+    Vector3D Cross(Vector3D &v3dData);
+    double Norm();
+    double GetVectorAngleRad(Vector3D &v3dData);
+    double GetVectorAngleDeg(Vector3D &v3dData);
 private:
     Vector<double> m_vecV3D;
 };

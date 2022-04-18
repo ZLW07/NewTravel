@@ -6,12 +6,14 @@
 
 int main()
 {
-    ModelData oMod;
-    bool bRead = oMod.ReadAscllSTlFile("/home/wei/CLionProjects/NewTravel/Test/Model/1.STL");
-    auto Data = oMod.GetPointCoordinateValue();
-    for (int ii = 0; ii <  Data.size();ii++)
+    std::vector<ModelDataBase>  vecJoint1;
+    std::vector<ModelDataBase>  vecJoint2;
+    ModelManager oMod;
+    bool bReadJoint1 = oMod.LoadModelData("../../Data/RobotModel/1.STL",vecJoint1);
+    bool bReadJoint2 = oMod.LoadModelData("../../Data/RobotModel/2.STL",vecJoint2);
+    if (bReadJoint1 && bReadJoint2)
     {
-        ZLOG<< "Data is " << Data[ii].v3dNormalVector;
+        ZLOG << vecJoint1.size();
+        ZLOG << vecJoint2.size();
     }
-    ZLOG << bRead;
 }
