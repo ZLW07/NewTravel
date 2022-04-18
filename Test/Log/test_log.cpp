@@ -10,4 +10,5 @@ int main()
     int b = 30;
     ZLOG << " the message is " << (a + b);
     ZLOG << " the message is " << (a + b);
+    ZLOG << " the message is " << (a + b);
 }
