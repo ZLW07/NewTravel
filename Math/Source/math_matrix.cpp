@@ -21,7 +21,7 @@ template <typename T> T &Vector<T>::operator[](int iIndex)
         ZLOG << " The index is out of range; The limit size is " << m_iVecSize << "; expect index is " << iIndex;
         exit(-1);
     }
-    return m_vecData[iIndex];
+    return m_vecData.at(iIndex);
 }
 
 template <typename T> Vector<T> &Vector<T>::operator=(Vector<T> vecSrc)

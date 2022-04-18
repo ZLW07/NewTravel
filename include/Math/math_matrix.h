@@ -29,6 +29,10 @@ class Vector
     }
 public:
     explicit Vector(int iSize = 1);
+    Vector(const Vector<T> &vecData):m_iVecSize(vecData.m_iVecSize)
+    {
+        this->m_vecData = vecData.m_vecData;
+    }
     ~Vector();
 public:
     T &operator[](int iIndex) ;
