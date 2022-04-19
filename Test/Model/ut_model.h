@@ -26,4 +26,19 @@ TEST_F(TestModel,ReadMode)
     ZLOG << " data size is " << vecJoint1.size();
 }
 
+TEST_F(TestModel, CollisionDetection)
+{
+    ModelDataBase oModelDataBase;
+    oModelDataBase.v3dCoordinate_1 = Vector3D(1,0,0);
+    oModelDataBase.v3dCoordinate_2 = Vector3D(0,0,0);
+    oModelDataBase.v3dCoordinate_3 = Vector3D(0,1,0);
+    oModelDataBase.v3dNormalVector = Vector3D(0,0,1);
+    std::vector<ModelDataBase> oModeData;
+    oModeData.push_back(oModelDataBase);
+    Vector3D v3dPoint(-1,0,-1);
+    ModelManager oModelManager;
+    CollisionDectionData oCollisionData = oModelManager.GetModelDataVector(v3dPoint,oModeData);
+    bool bCheck = oModelManager.IsColliding(oCollisionData);
+    ZLOG << "bCheck: " << bCheck;
+}
 #endif // NEWTRAVEL_UT_MODEL_H

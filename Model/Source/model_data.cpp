@@ -14,6 +14,45 @@ bool ModelManager::LoadModelData(const char *cFileName, std::vector<ModelDataBas
     return ReadAscllSTlFile(cFileName, ModelData);
 }
 
+CollisionDectionData ModelManager::GetModelDataVector( Vector3D &v3dPoint, std::vector<ModelDataBase> &ModelData)
+{
+    Vector3D v3dTemp;
+    int iSize = ModelData.size();
+    CollisionDectionData oCollisionData;
+    std::vector<Vector3D> vecPointVector(iSize);
+    std::vector<Vector3D> vecModelNormalVector(iSize);
+    for(int ii = 0; ii < iSize; ii++)
+    {
+        v3dTemp =  ModelData.at(ii).v3dCoordinate_1 - v3dPoint;
+        vecPointVector.at(ii) = v3dTemp;
+        vecModelNormalVector.at(ii) = ModelData.at(ii).v3dNormalVector;
+    }
+    oCollisionData.vecTargetPoint = vecPointVector;
+    oCollisionData.vecModelNormalVector = vecModelNormalVector;
+    return oCollisionData;
+}
+
+bool ModelManager::IsColliding(const CollisionDectionData &oCollisionData)
+{
+    int iSize = oCollisionData.vecModelNormalVector.size();
+    Vector3D v3dTemp;
+    Vector3D v3dTemp1;
+    double dAngle = 1.5707963;
+    double dRad = 0.0;
+    for (int ii = 0; ii < iSize; ++ii)
+    {
+        v3dTemp = oCollisionData.vecModelNormalVector.at(ii);
+        v3dTemp1= oCollisionData.vecTargetPoint.at(ii);
+        dRad = v3dTemp.GetVectorAngleRad(v3dTemp1);
+        if (fabs((dRad - dAngle)) < 0.0001 )
+        {
+            return true;
+        }
+    }
+    return false;
+
+}
+
 bool ModelManager::ReadAscllSTlFile(const char *cFileName, std::vector<ModelDataBase> &ModelData)
 {
     Vector3D v3dData;

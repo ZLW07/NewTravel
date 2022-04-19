@@ -16,12 +16,20 @@ struct ModelDataBase
     Vector3D v3dCoordinate_3;
 };
 
+struct CollisionDectionData
+{
+    std::vector<Vector3D> vecTargetPoint;
+    std::vector<Vector3D> vecModelNormalVector;
+};
+
 class ModelManager
 {
 public:
     ModelManager();
     ~ModelManager();
     bool LoadModelData(const char* cFileName, std::vector<ModelDataBase> &ModelData);
+    CollisionDectionData GetModelDataVector(Vector3D &V3dPoint,std::vector<ModelDataBase> &ModelData);
+    bool IsColliding(const CollisionDectionData &oCollisionData);
 private:
     bool ReadAscllSTlFile(const char* cFileName,std::vector<ModelDataBase> &ModelData);
 private:
