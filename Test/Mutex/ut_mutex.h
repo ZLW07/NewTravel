@@ -2,8 +2,8 @@
 // Created by wei on 2022/4/19.
 //
 
-#ifndef NEWTRAVEL_TEST_MUTEX_H
-#define NEWTRAVEL_TEST_MUTEX_H
+#ifndef NEWTRAVEL_UT_MUTEX_H
+#define NEWTRAVEL_UT_MUTEX_H
 
 #include "Log/log.h"
 #include "Mutex/base_mutex.h"
@@ -29,4 +29,4 @@ TEST_F(TestUT, Test1)
     ZLOG << ret;
 }
 
-#endif // NEWTRAVEL_TEST_MUTEX_H
+#endif // NEWTRAVEL_UT_MUTEX_H

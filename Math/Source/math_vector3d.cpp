@@ -80,6 +80,16 @@ Vector3D Vector3D::operator-(Vector3D &v3dData)
     return Vector3D(m_vecV3D[0] - v3dData[0], m_vecV3D[1] - v3dData[1], m_vecV3D[2] - v3dData[2]);
 }
 
+bool Vector3D::operator==(Vector3D &v3dData)
+{
+    Vector3D v3dTemp = *this - v3dData;
+    if ((fabs(v3dTemp.X() + fabs(v3dTemp.Y()) + fabs(v3dTemp.Z())) > 0.0001))
+    {
+        return true;
+    }
+    return false;
+}
+
 Vector3D Vector3D::Scale(double dData)
 {
     return Vector3D(m_vecV3D[0] * dData, m_vecV3D[1] * dData, m_vecV3D[2] * dData);
@@ -100,7 +110,7 @@ Vector3D Vector3D::Cross(Vector3D &v3dData)
 
 double Vector3D::Norm()
 {
-    return sqrt(pow(X(),2) + pow(Y(),2) + pow(Z(),2));
+    return sqrt(pow(X(), 2) + pow(Y(), 2) + pow(Z(), 2));
 }
 
 double Vector3D::GetVectorAngleRad(Vector3D &v3dData)
@@ -108,7 +118,7 @@ double Vector3D::GetVectorAngleRad(Vector3D &v3dData)
     double dDot = Dot(v3dData);
     double dNorm1 = Norm();
     double dNorm2 = v3dData.Norm();
-    double dAngle = dDot/(dNorm1 * dNorm2);
+    double dAngle = dDot / (dNorm1 * dNorm2);
     return acos(dAngle);
 }
 
