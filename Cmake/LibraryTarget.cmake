@@ -14,6 +14,8 @@
 #
 #set(Cin_DIR Cin)
 #build_library(Cin)
+#set(GoogleTest_DIR ExternalSource/googletest)
+#build_library(GoogleTest)
 
 set(Log_DIR Log)
 build_library(Log)

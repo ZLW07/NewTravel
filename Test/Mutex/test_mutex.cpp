@@ -2,30 +2,13 @@
 // Created by zw on 2021/9/1.
 //
 
-#include "Log/log.h"
-#include "Mutex/base_mutex.h"
-#include <thread>
 
-BaseMutex oBaseMutex;
+#include "gtest/gtest.h"
+#include "test_mutes.h"
 
-void PrintBlock(int iNumber, char cByte)
+int main(int argc, char **argv)
 {
-
-    for (int i = 0; i < iNumber; i++)
-    {
-        oBaseMutex.Lock();
-        ZLOG << cByte;
-        oBaseMutex.UnLock();
-    }
-
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
 
-int main()
-{
-    std::thread th1(PrintBlock, 50, '!');
-    std::thread th2(PrintBlock, 50, '$');
-
-    th1.join();
-    th2.join();
-    return 0;
-};
