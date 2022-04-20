@@ -35,9 +35,9 @@ TEST_F(TestModel, CollisionDetection)
     oModelDataBase.v3dNormalVector = Vector3D(0,0,1);
     std::vector<ModelDataBase> oModeData;
     oModeData.push_back(oModelDataBase);
-    Vector3D v3dPoint(-1,0,-1);
+    Vector3D v3dPoint1(0,0,0);
     ModelManager oModelManager;
-    CollisionDectionData oCollisionData = oModelManager.GetModelDataVector(v3dPoint,oModeData);
+    CollisionDectionData oCollisionData = oModelManager.GetModelDataVector(v3dPoint1,oModeData);
     bool bCheck = oModelManager.IsColliding(oCollisionData);
     ZLOG << "bCheck: " << bCheck;
 }

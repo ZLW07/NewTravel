@@ -120,7 +120,7 @@ double Vector3D::GetVectorAngleRad(Vector3D &v3dData)
     double dNorm2 = v3dData.Norm();
     if ((fabs(dNorm1) < 0.0001) && (fabs(dNorm2) < 0.0001))
     {
-        return 0.0;
+        return 1.5707963;
     }
     double dAngle = dDot / (dNorm1 * dNorm2);
     return acos(dAngle);

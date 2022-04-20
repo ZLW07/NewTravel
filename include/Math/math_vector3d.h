@@ -25,6 +25,7 @@ public:
     double &operator[](int iIndex);
     Vector3D operator+(Vector3D &v3dData);
     Vector3D operator-( Vector3D &v3dData);
+//    Vector3D operator=(Vector3D v3dData);
     bool operator==(Vector3D &v3dData) ;
     Vector3D Scale(double dData);
     double Dot(Vector3D &v3dData);

@@ -20,15 +20,31 @@ CollisionDectionData ModelManager::GetModelDataVector( Vector3D &v3dPoint, std::
     int iSize = ModelData.size();
     CollisionDectionData oCollisionData;
     std::vector<Vector3D> vecPointVector(iSize);
+    std::vector<Vector3D> vecPoint_1Vector(iSize);
     std::vector<Vector3D> vecModelNormalVector(iSize);
+    std::vector<Vector3D> vecSurfacePoint1Side1Vector(iSize);
+    std::vector<Vector3D> vecSurfacePoint1Side2Vector(iSize);
+    std::vector<Vector3D> vecSurfacePoint2Side1Vector(iSize);
+    std::vector<Vector3D> vecSurfacePoint2Side2Vector(iSize);
     for(int ii = 0; ii < iSize; ii++)
     {
         v3dTemp =  ModelData.at(ii).v3dCoordinate_1 - v3dPoint;
         vecPointVector.at(ii) = v3dTemp;
         vecModelNormalVector.at(ii) = ModelData.at(ii).v3dNormalVector;
+        vecSurfacePoint1Side1Vector.at(ii) = ModelData.at(ii).v3dCoordinate_1 - ModelData.at(ii).v3dCoordinate_2;
+        vecSurfacePoint1Side2Vector.at(ii) = ModelData.at(ii).v3dCoordinate_1 - ModelData.at(ii).v3dCoordinate_3;
+        v3dTemp = ModelData.at(ii).v3dCoordinate_2 - v3dPoint;
+        vecPoint_1Vector.at(ii) = v3dTemp;
+        vecSurfacePoint2Side1Vector.at(ii) = ModelData.at(ii).v3dCoordinate_2 - ModelData.at(ii).v3dCoordinate_1;
+        vecSurfacePoint2Side2Vector.at(ii) = ModelData.at(ii).v3dCoordinate_2 - ModelData.at(ii).v3dCoordinate_3;
     }
-    oCollisionData.vecTargetPoint = vecPointVector;
     oCollisionData.vecModelNormalVector = vecModelNormalVector;
+    oCollisionData.oSurfacePoint_1.vecTargetPoint = vecPointVector;
+    oCollisionData.oSurfacePoint_1.vecSide_1Vector = vecSurfacePoint1Side1Vector;
+    oCollisionData.oSurfacePoint_1.vecSide_2Vector = vecSurfacePoint1Side2Vector;
+    oCollisionData.oSurfacePoint_2.vecTargetPoint = vecPoint_1Vector;
+    oCollisionData.oSurfacePoint_2.vecSide_1Vector = vecSurfacePoint2Side1Vector;
+    oCollisionData.oSurfacePoint_2.vecSide_2Vector = vecSurfacePoint2Side2Vector;
     return oCollisionData;
 }
 
@@ -37,16 +53,58 @@ bool ModelManager::IsColliding(const CollisionDectionData &oCollisionData)
     int iSize = oCollisionData.vecModelNormalVector.size();
     Vector3D v3dTemp;
     Vector3D v3dTemp1;
-    double dAngle = 1.5707963;
+    Vector3D v3dSurfacePoint1Side1Vector;
+    Vector3D v3dSurfacePoint1Side2Vector;
     double dRad = 0.0;
+    double dSurfacePoint1SideRad = 0.0;
+    double dTargetToSurfacePoint1Side1Rag = 0.0;
+    double dTargetToSurfacePoint1Side2Rag = 0.0;
+    double dSurfacePoint2SideRad = 0.0;
+    double dTargetToSurfacePoint2Side1Rag = 0.0;
+    double dTargetToSurfacePoint2Side2Rag = 0.0;
     for (int ii = 0; ii < iSize; ++ii)
     {
         v3dTemp = oCollisionData.vecModelNormalVector.at(ii);
-        v3dTemp1= oCollisionData.vecTargetPoint.at(ii);
-        dRad = v3dTemp.GetVectorAngleRad(v3dTemp1);
-        if (fabs((dRad - dAngle)) < 0.0001 )
+        v3dTemp1= oCollisionData.oSurfacePoint_1.vecTargetPoint.at(ii);
+        if (v3dTemp1.Norm() < g_dMaxCheckLength)
         {
             return true;
+        }
+        dRad = v3dTemp.GetVectorAngleRad(v3dTemp1);
+        v3dSurfacePoint1Side1Vector = oCollisionData.oSurfacePoint_1.vecSide_1Vector.at(ii);
+        v3dSurfacePoint1Side2Vector = oCollisionData.oSurfacePoint_1.vecSide_2Vector.at(ii);
+        double dTargetToSide1Length = 0.0;
+        double dTargetToSide2Length = 0.0;
+        double dPointVectorLength = v3dTemp1.Norm();
+        if ((fabs((dRad - g_dRightAngle)) < g_dNearZero))
+        {
+            dSurfacePoint1SideRad = v3dSurfacePoint1Side1Vector.GetVectorAngleRad(v3dSurfacePoint1Side2Vector);
+            dTargetToSurfacePoint1Side1Rag = v3dTemp1.GetVectorAngleRad(v3dSurfacePoint1Side1Vector);
+            dTargetToSurfacePoint1Side2Rag = v3dTemp1.GetVectorAngleRad(v3dSurfacePoint1Side2Vector);
+            Vector3D v3dSurfacePoint2Side1 = oCollisionData.oSurfacePoint_2.vecSide_1Vector.at(ii);
+            Vector3D v3dSurfacePoint2Side2 = oCollisionData.oSurfacePoint_2.vecSide_2Vector.at(ii);
+            Vector3D v3dPointToSurfacePoint2 = oCollisionData.oSurfacePoint_2.vecTargetPoint.at(ii);
+            dSurfacePoint2SideRad = v3dSurfacePoint2Side1.GetVectorAngleRad(v3dSurfacePoint2Side2);
+            dTargetToSurfacePoint2Side1Rag = v3dPointToSurfacePoint2.GetVectorAngleRad(v3dSurfacePoint2Side1);
+            dTargetToSurfacePoint2Side2Rag = v3dPointToSurfacePoint2.GetVectorAngleRad(v3dSurfacePoint2Side2);
+            if ((dSurfacePoint1SideRad >= dTargetToSurfacePoint1Side1Rag) && (dSurfacePoint1SideRad >= dTargetToSurfacePoint1Side2Rag)
+                 && (dSurfacePoint2SideRad > dTargetToSurfacePoint2Side1Rag) && (dSurfacePoint2SideRad > dTargetToSurfacePoint2Side2Rag))
+            {
+                dTargetToSide1Length = dPointVectorLength * sin(dTargetToSurfacePoint1Side1Rag);
+                dTargetToSide2Length = dPointVectorLength * sin(dTargetToSurfacePoint1Side2Rag);
+                if((dTargetToSide1Length <= g_dMaxCheckLength) && (dTargetToSide2Length <= g_dMaxCheckLength))
+                {
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            double dPointToSurfaceLength = dPointVectorLength *cos(dRad);
+            if (fabs(dPointToSurfaceLength) <= g_dMaxCheckLength)
+            {
+                return  true;
+            }
         }
     }
     return false;
