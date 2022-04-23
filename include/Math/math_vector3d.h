@@ -32,6 +32,7 @@ public:
     double Norm();
     double GetVectorAngleRad(Vector3D &v3dData);
     double GetVectorAngleDeg(Vector3D &v3dData);
+
 private:
     Vector<double> m_vecV3D;
 };
