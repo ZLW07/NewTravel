@@ -4,7 +4,7 @@
 
 #include "Math/math_transfromation_matrix.h"
 
-TransformMatrix::TransformMatrix() :m_matData(4,4)
+TransformMatrix::TransformMatrix() : m_matData(4, 4)
 {
     m_matData[3][0] = 0.0;
     m_matData[3][1] = 0.0;
@@ -12,6 +12,24 @@ TransformMatrix::TransformMatrix() :m_matData(4,4)
     m_matData[3][3] = 1.0;
     m_iRow = (this->m_matData).GetRowSize();
     m_iCol = (this->m_matData).GetColSize();
+}
+
+TransformMatrix::TransformMatrix(Rotation rotData, Vector3D v3dData) : m_matData(4, 4)
+{
+    for (int iRow = 0; iRow < 3; ++iRow)
+    {
+        for (int iCol = 0; iCol < 3; ++iCol)
+        {
+            m_matData[iRow][iCol] = rotData[iRow][iCol];
+        }
+        m_matData[iRow][3] = v3dData[iRow];
+    }
+    m_matData[3][0] = 0.0;
+    m_matData[3][1] = 0.0;
+    m_matData[3][2] = 0.0;
+    m_matData[3][3] = 1.0;
+    m_iRow = 4;
+    m_iCol = 4;
 }
 
 Vector<double> TransformMatrix::GetRowVector(unsigned int iRow)
@@ -44,6 +62,29 @@ Vector<double> TransformMatrix::GetColVector(unsigned int iCol)
     return vecDirData;
 }
 
+Rotation TransformMatrix::GetRotation()
+{
+    Rotation oResult;
+    for (int iRow = 0; iRow < 3; iRow++)
+    {
+        for (int iCol = 0; iCol < 3; iCol++)
+        {
+            oResult[iRow][iCol] = m_matData[iRow][iCol];
+        }
+    }
+    return oResult;
+}
+
+Vector3D TransformMatrix::GetTranslate()
+{
+    Vector3D oResult;
+    for (int iRow = 0; iRow < 3; ++iRow)
+    {
+        oResult[iRow] = m_matData[iRow][3];
+    }
+    return oResult;
+}
+
 std::ostream &operator<<(std::ostream &os, TransformMatrix &transData)
 {
     int iTemp = 3;
@@ -73,10 +114,10 @@ Vector<double> &TransformMatrix::operator[](int iIndex)
     return m_matData[iIndex];
 }
 
-TransformMatrix TransformMatrix::operator*( TransformMatrix &transData)
+TransformMatrix TransformMatrix::operator*(TransformMatrix &transData)
 {
     TransformMatrix transDirData;
-    for (int ii = 0;ii < m_iRow;ii++)
+    for (int ii = 0; ii < m_iRow; ii++)
     {
         Vector<double> vecData1 = this->GetRowVector(ii);
         for (int jj = 0; jj < m_iCol; jj++)
@@ -88,3 +129,10 @@ TransformMatrix TransformMatrix::operator*( TransformMatrix &transData)
     return transDirData;
 }
 
+Vector3D TransformMatrix::operator*(Vector3D &v3dData)
+{
+    Rotation rotTempResult = GetRotation();
+    Vector3D v3dTempResult = GetTranslate();
+    Vector3D v3dResult = rotTempResult * v3dData + v3dTempResult;
+    return v3dResult;
+}

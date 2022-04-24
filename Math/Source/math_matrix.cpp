@@ -69,12 +69,7 @@ Matrix::~Matrix() = default;
 
 Vector<double> &Matrix::operator[](int iIndex)
 {
-    if (iIndex > m_iRow)
-    {
-        ZLOG << " The index is out of range; The limit size is " << m_iRow << "; expect index is " << iIndex;
-        exit(-1);
-    }
-    return m_matData[iIndex];
+    return m_matData.at(iIndex);
 }
 
 Matrix &Matrix::operator=(const Matrix &matData)
