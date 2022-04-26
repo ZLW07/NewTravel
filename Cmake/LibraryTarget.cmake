@@ -28,3 +28,6 @@ build_library(Math)
 
 set(Model_DIR Model)
 build_library(Model)
+
+set(CollisionDetection_DIR CollisionDetection)
+build_library(CollisionDetection)
