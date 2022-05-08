@@ -41,54 +41,54 @@
 #ifndef PQP_H
 #define PQP_H
 
-#include "PQP_Compile.h"   
-#include "PQP_Internal.h"                             
-                        
+#include "PQP_Compile.h"
+#include "PQP_Internal.h"
+
 //----------------------------------------------------------------------------
 //
 //  PQP API Return Values
 //
 //----------------------------------------------------------------------------
 
-const int PQP_OK = 0; 
-  // Used by all API routines upon successful completion except
-  // constructors and destructors
+const int PQP_OK = 0;
+// Used by all API routines upon successful completion except
+// constructors and destructors
 
-const int PQP_ERR_MODEL_OUT_OF_MEMORY = -1; 
-  // Returned when an API function cannot obtain enough memory to
-  // store or process a PQP_Model object.
+const int PQP_ERR_MODEL_OUT_OF_MEMORY = -1;
+// Returned when an API function cannot obtain enough memory to
+// store or process a PQP_Model object.
 
 const int PQP_ERR_OUT_OF_MEMORY = -2;
-  // Returned when a PQP query cannot allocate enough storage to
-  // compute or hold query information.  In this case, the returned
-  // data should not be trusted.
+// Returned when a PQP query cannot allocate enough storage to
+// compute or hold query information.  In this case, the returned
+// data should not be trusted.
 
 const int PQP_ERR_UNPROCESSED_MODEL = -3;
-  // Returned when an unprocessed model is passed to a function which
-  // expects only processed models, such as PQP_Collide() or
-  // PQP_Distance().
+// Returned when an unprocessed model is passed to a function which
+// expects only processed models, such as PQP_Collide() or
+// PQP_Distance().
 
 const int PQP_ERR_BUILD_OUT_OF_SEQUENCE = -4;
-  // Returned when: 
-  //       1. AddTri() is called before BeginModel().  
-  //       2. BeginModel() is called immediately after AddTri().  
-  // This error code is something like a warning: the invoked
-  // operation takes place anyway, and PQP does what makes "most
-  // sense", but the returned error code may tip off the client that
-  // something out of the ordinary is happenning.
+// Returned when:
+//       1. AddTri() is called before BeginModel().
+//       2. BeginModel() is called immediately after AddTri().
+// This error code is something like a warning: the invoked
+// operation takes place anyway, and PQP does what makes "most
+// sense", but the returned error code may tip off the client that
+// something out of the ordinary is happenning.
 
-const int PQP_ERR_BUILD_EMPTY_MODEL = -5; 
-  // Returned when EndModel() is called on a model to which no
-  // triangles have been added.  This is similar in spirit to the
-  // OUT_OF_SEQUENCE return code, except that the requested operation
-  // has FAILED -- the model remains "unprocessed", and the client may
-  // NOT use it in queries.
+const int PQP_ERR_BUILD_EMPTY_MODEL = -5;
+// Returned when EndModel() is called on a model to which no
+// triangles have been added.  This is similar in spirit to the
+// OUT_OF_SEQUENCE return code, except that the requested operation
+// has FAILED -- the model remains "unprocessed", and the client may
+// NOT use it in queries.
 
 //----------------------------------------------------------------------------
 //
-//  PQP_REAL 
+//  PQP_REAL
 //
-//  The floating point type used throughout the package. The type is defined 
+//  The floating point type used throughout the package. The type is defined
 //  in PQP_Compile.h, and by default is "double"
 //
 //----------------------------------------------------------------------------
@@ -98,7 +98,7 @@ const int PQP_ERR_BUILD_EMPTY_MODEL = -5;
 //  PQP_Model
 //
 //  A PQP_Model stores geometry to be used in a proximity query.
-//  The geometry is loaded with a call to BeginModel(), at least one call to 
+//  The geometry is loaded with a call to BeginModel(), at least one call to
 //  AddTri(), and then a call to EndModel().
 //
 //  // create a two triangle model, m
@@ -115,11 +115,11 @@ const int PQP_ERR_BUILD_EMPTY_MODEL = -5;
 //  m.AddTri(q1,q2,q3,1);        // add triangle q
 //  m.EndModel();                // end (build) the model
 //
-//  The last parameter of AddTri() is the number to be associated with the 
+//  The last parameter of AddTri() is the number to be associated with the
 //  triangle. These numbers are used to identify the triangles that overlap.
-// 
-//  AddTri() copies into the PQP_Model the data pointed to by the three vertex 
-//  pointers, so that it is safe to delete vertex data after you have 
+//
+//  AddTri() copies into the PQP_Model the data pointed to by the three vertex
+//  pointers, so that it is safe to delete vertex data after you have
 //  passed it to AddTri().
 //
 //----------------------------------------------------------------------------
@@ -135,7 +135,7 @@ const int PQP_ERR_BUILD_EMPTY_MODEL = -5;
 //                                      // the parameter is optional, since
 //                                      // arrays are reallocated as needed
 //
-//    int AddTri(const PQP_REAL *p1, const PQP_REAL *p2, const PQP_REAL *p3, 
+//    int AddTri(const PQP_REAL *p1, const PQP_REAL *p2, const PQP_REAL *p3,
 //               int id);
 //
 //    int EndModel();
@@ -145,9 +145,9 @@ const int PQP_ERR_BUILD_EMPTY_MODEL = -5;
 
 //----------------------------------------------------------------------------
 //
-//  PQP_CollideResult 
+//  PQP_CollideResult
 //
-//  This saves and reports results from a collision query.  
+//  This saves and reports results from a collision query.
 //
 //----------------------------------------------------------------------------
 //
@@ -162,7 +162,7 @@ const int PQP_ERR_BUILD_EMPTY_MODEL = -5;
 //    // free the list of contact pairs; ordinarily this list is reused
 //    // for each query, and only deleted in the destructor.
 //
-//    void FreePairsList(); 
+//    void FreePairsList();
 //
 //    // query results
 //
@@ -177,7 +177,7 @@ const int PQP_ERR_BUILD_EMPTY_MODEL = -5;
 //  PQP_Collide() - detects collision between two PQP_Models
 //
 //
-//  Declare a PQP_CollideResult struct and pass its pointer to collect 
+//  Declare a PQP_CollideResult struct and pass its pointer to collect
 //  collision data.
 //
 //  [R1, T1] is the placement of model 1 in the world &
@@ -203,39 +203,35 @@ const int PQP_ERR_BUILD_EMPTY_MODEL = -5;
 const int PQP_ALL_CONTACTS = 1;  // find all pairwise intersecting triangles
 const int PQP_FIRST_CONTACT = 2; // report first intersecting tri pair found
 
-int 
-PQP_Collide(PQP_CollideResult *result,
-            PQP_REAL R1[3][3], PQP_REAL T1[3], PQP_Model *o1,
-            PQP_REAL R2[3][3], PQP_REAL T2[3], PQP_Model *o2,
-            int flag = PQP_ALL_CONTACTS);
+int PQP_Collide(PQP_CollideResult *result, PQP_REAL R1[3][3], PQP_REAL T1[3], PQP_Model *o1, PQP_REAL R2[3][3],
+    PQP_REAL T2[3], PQP_Model *o2, int flag = PQP_ALL_CONTACTS);
 
-
-#if PQP_BV_TYPE & RSS_TYPE  // this is true by default,
-                            // and explained in PQP_Compile.h
+#if PQP_BV_TYPE & RSS_TYPE // this is true by default,
+                           // and explained in PQP_Compile.h
 
 //----------------------------------------------------------------------------
 //
 //  PQP_DistanceResult
 //
-//  This saves and reports results from a distance query.  
+//  This saves and reports results from a distance query.
 //
 //----------------------------------------------------------------------------
 //
 //  struct PQP_DistanceResult - declaration contained in PQP_Internal.h
 //  {
 //    // statistics
-//  
+//
 //    int NumBVTests();
 //    int NumTriTests();
 //    PQP_REAL QueryTimeSecs();
-//  
+//
 //    // The following distance and points established the minimum distance
-//    // for the models, within the relative and absolute error bounds 
+//    // for the models, within the relative and absolute error bounds
 //    // specified.
 //
 //    PQP_REAL Distance();
 //    const PQP_REAL *P1();  // pointers to three PQP_REALs
-//    const PQP_REAL *P2();  
+//    const PQP_REAL *P2();
 //  };
 
 //----------------------------------------------------------------------------
@@ -264,39 +260,35 @@ PQP_Collide(PQP_CollideResult *result,
 //
 //----------------------------------------------------------------------------
 
-int 
-PQP_Distance(PQP_DistanceResult *result, 
-             PQP_REAL R1[3][3], PQP_REAL T1[3], PQP_Model *o1,
-             PQP_REAL R2[3][3], PQP_REAL T2[3], PQP_Model *o2,
-             PQP_REAL rel_err, PQP_REAL abs_err,
-             int qsize = 2);
+int PQP_Distance(PQP_DistanceResult *result, PQP_REAL R1[3][3], PQP_REAL T1[3], PQP_Model *o1, PQP_REAL R2[3][3],
+    PQP_REAL T2[3], PQP_Model *o2, PQP_REAL rel_err, PQP_REAL abs_err, int qsize = 2);
 
 //----------------------------------------------------------------------------
 //
 //  PQP_ToleranceResult
 //
-//  This saves and reports results from a tolerance query.  
+//  This saves and reports results from a tolerance query.
 //
 //----------------------------------------------------------------------------
 //
 //  struct PQP_ToleranceResult - declaration contained in PQP_Internal.h
 //  {
 //    // statistics
-//  
-//    int NumBVTests(); 
+//
+//    int NumBVTests();
 //    int NumTriTests();
 //    PQP_REAL QueryTimeSecs();
-//  
-//    // If the models are closer than ( <= ) tolerance, these points 
-//    // and distance were what established this.  Otherwise, 
+//
+//    // If the models are closer than ( <= ) tolerance, these points
+//    // and distance were what established this.  Otherwise,
 //    // distance and point values are not meaningful.
-//  
+//
 //    PQP_REAL Distance();
 //    const PQP_REAL *P1();
 //    const PQP_REAL *P2();
-//  
+//
 //    // boolean says whether models are closer than tolerance distance
-//  
+//
 //    int CloserThanTolerance();
 //  };
 
@@ -314,25 +306,15 @@ PQP_Distance(PQP_DistanceResult *result,
 // farther than the tolerance more trivially.  In most cases this
 // query should run faster than a distance query would on the same
 // models and configurations.
-// 
+//
 // "qsize" again controls the size of a priority queue used for
 // searching.  Not setting qsize is the current recommendation, since
 // increasing it has only slowed down our applications.
 //
 //----------------------------------------------------------------------------
 
-int
-PQP_Tolerance(PQP_ToleranceResult *res, 
-              PQP_REAL R1[3][3], PQP_REAL T1[3], PQP_Model *o1,
-              PQP_REAL R2[3][3], PQP_REAL T2[3], PQP_Model *o2,
-              PQP_REAL tolerance,
-              int qsize = 2);
+int PQP_Tolerance(PQP_ToleranceResult *res, PQP_REAL R1[3][3], PQP_REAL T1[3], PQP_Model *o1, PQP_REAL R2[3][3],
+    PQP_REAL T2[3], PQP_Model *o2, PQP_REAL tolerance, int qsize = 2);
 
-#endif 
 #endif
-
-
-
-
-
-
+#endif
