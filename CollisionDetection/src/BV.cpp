@@ -63,7 +63,7 @@ void BV::FitToTris(PQP_REAL O[3][3], Tri *tris, int num_tris)
 {
     // store orientation
 
-    McM(R, O);
+    McM(R, O); // o to R (o为tris模型与前一个模型的转换关系)
 
     // project points of tris to R coordinates
 
