@@ -39,6 +39,30 @@ Vector3D Rotation::operator*(Vector3D &v3dData)
     return oResult;
 }
 
+Rotation Rotation::operator/(double dData)
+{
+    for (int iRow = 0; iRow < m_iRow; iRow++)
+    {
+        for (int iCol = 0; iCol < m_iCol; iCol++)
+        {
+            m_matData[iRow][iCol] = m_matData[iRow][iCol] /dData;
+        }
+    }
+    return *this;
+}
+
+Rotation Rotation::operator/(int iData)
+{
+    for (int iRow = 0; iRow < m_iRow; iRow++)
+    {
+        for (int iCol = 0; iCol < m_iCol; iCol++)
+        {
+            m_matData[iRow][iCol] = m_matData[iRow][iCol] /iData;
+        }
+    }
+    return *this;
+}
+
 std::ostream &operator<<(std::ostream &os, Rotation &rotData)
 {
     int iTemp = 2;

@@ -17,6 +17,8 @@ public:
     Rotation(const Rotation &rotData);
     ~Rotation()= default;
     Vector3D operator*(Vector3D &v3dData);
+    Rotation operator/(double dData);
+    Rotation operator/(int dData);
     Vector<double> &operator[](int iIndex);
 public:
 private:

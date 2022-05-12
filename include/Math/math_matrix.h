@@ -37,6 +37,11 @@ public:
     {
         this->m_vecData = vecData.m_vecData;
     }
+    void Clear()
+    {
+        m_vecData.clear();
+    }
+
     ~Vector();
 
 public:

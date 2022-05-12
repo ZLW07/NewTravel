@@ -131,3 +131,10 @@ double Vector3D::GetVectorAngleDeg(Vector3D &v3dData)
     double dAngleRad = GetVectorAngleRad(v3dData);
     return RadToDeg(dAngleRad);
 }
+
+void Vector3D::Clear()
+{
+    m_vecV3D.Clear();
+}
+
+

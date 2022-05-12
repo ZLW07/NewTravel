@@ -14,38 +14,9 @@ bool ModelManager::LoadModelData(const char *cFileName, std::vector<ModelDataBas
     return ReadAscllSTlFile(cFileName, ModelData);
 }
 
-CollisionDectionData ModelManager::GetModelDataVector( Vector3D &v3dPoint, std::vector<ModelDataBase> &ModelData)
+CollisionDectionData ModelManager::GetModelDataVector(std::vector<ModelDataBase> &ModelData)
 {
-    Vector3D v3dTemp;
-    int iSize = ModelData.size();
-    CollisionDectionData oCollisionData;
-    std::vector<Vector3D> vecPointVector(iSize);
-    std::vector<Vector3D> vecPoint_1Vector(iSize);
-    std::vector<Vector3D> vecModelNormalVector(iSize);
-    std::vector<Vector3D> vecSurfacePoint1Side1Vector(iSize);
-    std::vector<Vector3D> vecSurfacePoint1Side2Vector(iSize);
-    std::vector<Vector3D> vecSurfacePoint2Side1Vector(iSize);
-    std::vector<Vector3D> vecSurfacePoint2Side2Vector(iSize);
-    for(int ii = 0; ii < iSize; ii++)
-    {
-        v3dTemp =  ModelData.at(ii).v3dCoordinate_1 - v3dPoint;
-        vecPointVector.at(ii) = v3dTemp;
-        vecModelNormalVector.at(ii) = ModelData.at(ii).v3dNormalVector;
-        vecSurfacePoint1Side1Vector.at(ii) = ModelData.at(ii).v3dCoordinate_1 - ModelData.at(ii).v3dCoordinate_2;
-        vecSurfacePoint1Side2Vector.at(ii) = ModelData.at(ii).v3dCoordinate_1 - ModelData.at(ii).v3dCoordinate_3;
-        v3dTemp = ModelData.at(ii).v3dCoordinate_2 - v3dPoint;
-        vecPoint_1Vector.at(ii) = v3dTemp;
-        vecSurfacePoint2Side1Vector.at(ii) = ModelData.at(ii).v3dCoordinate_2 - ModelData.at(ii).v3dCoordinate_1;
-        vecSurfacePoint2Side2Vector.at(ii) = ModelData.at(ii).v3dCoordinate_2 - ModelData.at(ii).v3dCoordinate_3;
-    }
-    oCollisionData.vecModelNormalVector = vecModelNormalVector;
-    oCollisionData.oSurfacePoint_1.vecTargetPoint = vecPointVector;
-    oCollisionData.oSurfacePoint_1.vecSide_1Vector = vecSurfacePoint1Side1Vector;
-    oCollisionData.oSurfacePoint_1.vecSide_2Vector = vecSurfacePoint1Side2Vector;
-    oCollisionData.oSurfacePoint_2.vecTargetPoint = vecPoint_1Vector;
-    oCollisionData.oSurfacePoint_2.vecSide_1Vector = vecSurfacePoint2Side1Vector;
-    oCollisionData.oSurfacePoint_2.vecSide_2Vector = vecSurfacePoint2Side2Vector;
-    return oCollisionData;
+
 }
 
 bool ModelManager::IsColliding(const CollisionDectionData &oCollisionData)

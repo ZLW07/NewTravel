@@ -8,7 +8,9 @@
 #include "Log/log.h"
 #include "Math/math_matrix.h"
 #include "Math/math_transfromation_matrix.h"
+#include "Math/math_rotation.h"
 #include "Math/math_vector3d.h"
+#include "Math/math_linear_algebra.h"
 #include <iostream>
 
 #include "gtest/gtest.h"
