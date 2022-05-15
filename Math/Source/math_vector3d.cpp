@@ -4,6 +4,16 @@
 
 #include "Math/math_vector3d.h"
 
+double DegToRad(double dDeg)
+{
+    return (3.1415926 * dDeg)/180;
+}
+
+double RadToDeg(double dRad)
+{
+    return (180 * dRad)/3.1415926;
+}
+
 Vector3D::Vector3D()
 {
     m_vecV3D = Vector<double>(3);
@@ -136,5 +146,7 @@ void Vector3D::Clear()
 {
     m_vecV3D.Clear();
 }
+
+
 
 

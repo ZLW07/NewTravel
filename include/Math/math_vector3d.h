@@ -10,6 +10,8 @@
 
 #include "Math/math_matrix.h"
 
+class VectorD3;
+
 class Vector3D
 {
     friend std::ostream &operator<<(std::ostream &os, Vector3D &v3dData);
@@ -25,7 +27,6 @@ public:
     double &operator[](int iIndex);
     Vector3D operator+(Vector3D &v3dData);
     Vector3D operator-( Vector3D &v3dData);
-//    Vector3D operator=(Vector3D v3dData);
     bool operator==(Vector3D &v3dData) ;
     Vector3D Scale(double dData);
     double Dot(Vector3D &v3dData);
@@ -37,6 +38,22 @@ public:
 
 private:
     Vector<double> m_vecV3D;
+};
+
+
+class VectorD3
+{
+    friend std::ostream &operator<<(std::ostream &os, VectorD3 &v3dData);
+public:
+    VectorD3();
+    VectorD3(double dData1, double dData2, double dData3);
+    VectorD3(const VectorD3 &v3dData);
+    double &operator[](int iIndex);
+public:
+    void Clear();
+    Vector<double> &GetVectorValue();
+private:
+    Vector<double> m_vecD3;
 };
 
 #endif // NEWTRAVEL_MATH_VECTOR3D_H

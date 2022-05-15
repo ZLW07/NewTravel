@@ -47,6 +47,43 @@ TEST_F(TestMath, TestTransForm)
     ZLOG << oTrans;
     Vector3D v3dResult = oTrans * v3dData4;
     ZLOG << v3dResult;
+
+    Matrix oMat(2,2);
+    oMat[0][1] = 1.0;
+    oMat[1][1] = 1.0;
+    ZLOG << rotData;
+    rotData.CombinationTransformMatrix(oMat);
+    ZLOG << rotData;
+}
+
+TEST_F(TestMath, TestOBB)
+{
+    std::vector<Vector3D> vecSrc;
+    Vector3D v3d(3.7,1.7,3.5);
+    vecSrc.push_back(v3d);
+    v3d.Clear();
+    v3d = {4.1,3.8,5.2};
+    vecSrc.push_back(v3d);
+    v3d.Clear();
+    v3d = { 4.7,2.9,2.1};
+    vecSrc.push_back(v3d);
+    v3d.Clear();
+    v3d = {  5.2,2.8,6.0};
+    vecSrc.push_back(v3d);
+    v3d.Clear();
+    for (int ii = 0; ii < vecSrc.size(); ++ii)
+    {
+        ZLOG << vecSrc.at(ii);
+    }
+    Rotation rot = Cov(vecSrc);
+    ZLOG << rot;
+
+    Vector<double> vData(3);
+    vData[0] = 2;
+    vData[1] = 1;
+    vData[2] = 2;
+    auto Result = Householder(vData);
+    ZLOG << Result;
 }
 
 #endif // NEWTRAVEL_UT_MATH_H

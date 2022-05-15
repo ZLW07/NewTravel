@@ -21,6 +21,12 @@ public:
     Rotation operator/(int dData);
     Vector<double> &operator[](int iIndex);
 public:
+    Rotation CombinationTransformMatrix(Matrix &srcMat);
+    VectorD3 GetColVector(unsigned int iCol);
+    Vector<double> GetColVector(unsigned int uiBeginRow, unsigned int iCol);
+    Rotation Dot(VectorD3 &vd3Data, Vector3D &v3dData);
+    Matrix &GetMatValue();
+public:
 private:
     Matrix m_matData;
     int m_iRow;

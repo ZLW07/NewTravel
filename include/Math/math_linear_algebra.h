@@ -44,4 +44,38 @@ Rotation Cov(std::vector<Vector3D> &vSrc_1)
     return oRation/(iSize - 1);
 }
 
+
+Matrix Householder(Vector<double> &vecData)
+{
+    int iSize = vecData.Size();
+    Vector<double> vec_e(iSize);
+    double dSigma = vecData.Norm2();
+    if (vecData[0] < 0.0)
+    {
+        dSigma = dSigma * (-1);
+    }
+    vec_e[0] = dSigma;
+    Vector<double> vec_nu = vecData + vec_e;
+    Matrix oMatResult(iSize,iSize);
+    oMatResult.SetEye();
+    Matrix oMat(iSize,iSize);
+    oMat.Dot(vec_nu,vec_nu);
+    oMat.Dot(2/pow(vec_nu.Norm2(),2));
+    auto aTemp = oMatResult - oMat;
+    return aTemp;
+}
+
+Rotation GetOBBDirectionVector(Rotation &rotData)
+{
+    VectorD3 ovd3 = rotData.GetColVector(0);
+    Matrix oMat_0 = Householder(ovd3.GetVectorValue());
+    Matrix oMat_1 = oMat_0 *rotData.GetMatValue();
+    Vector<double> vecTemp = oMat_1.GetColVector(1,1);
+    Matrix oMat_2 = Householder(vecTemp);
+    Rotation rotRot;
+    rotRot.CombinationTransformMatrix(oMat_2);
+    return rotData;
+}
+
+
 #endif // NEWTRAVEL_MATH_LINEAR_ALGEBRA_H

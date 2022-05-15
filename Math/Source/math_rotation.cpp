@@ -86,3 +86,57 @@ Vector<double> &Rotation::operator[](int iIndex)
 {
     return m_matData[iIndex];
 }
+
+Rotation Rotation::CombinationTransformMatrix(Matrix &srcMat)
+{
+    if (2 != srcMat.GetColSize() || 2 != srcMat.GetRowSize())
+    {
+        ZLOG << " the src size is wrong, which is required to be 2 * 2 ";
+        exit(1);
+    }
+    m_matData[0][0] = 1.0 ;
+    for ( int ii = 0; ii < 2; ii++)
+    {
+        for (int ij = 0; ij < 2; ++ij)
+        {
+            m_matData[ii +1][ij+1] = srcMat[ii][ij];
+        }
+    }
+    return *this;
+}
+VectorD3 Rotation::GetColVector(unsigned int iCol)
+{
+    VectorD3 v3dResult;
+    for (int ii = 0; ii < m_iRow; ++ii)
+    {
+        v3dResult[ii] = m_matData[ii][iCol];
+    }
+    return v3dResult;
+}
+
+Vector<double> Rotation::GetColVector(unsigned int iCol, unsigned int uiBeginRow)
+{
+    Vector<double> vecResult(m_iRow);
+    for (int ii = uiBeginRow; ii < m_iRow; ++ii)
+    {
+        vecResult.push_back(m_matData[ii][iCol]);
+    }
+    return vecResult;
+}
+
+Rotation Rotation::Dot(VectorD3 &vd3Data, Vector3D &v3dData)
+{
+    for (int ii = 0; ii < m_iRow; ++ii)
+    {
+        for (int ij = 0; ij < m_iCol; ++ij)
+        {
+            m_matData[ii][ij] = vd3Data[ii] * v3dData[ij];
+        }
+    }
+    return *this;
+}
+
+Matrix & Rotation::GetMatValue()
+{
+    return m_matData;
+}
