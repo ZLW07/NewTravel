@@ -150,6 +150,28 @@ Rotation Rotation::Dot(VectorD3 &vd3Data, Vector3D &v3dData)
     return *this;
 }
 
+double Rotation::Dot(Vector3D &vd3Data, VectorD3 &v3dData)
+{
+    double dResult = 0.0;
+    for (int ii = 0; ii < 3; ++ii)
+    {
+        dResult = dResult + vd3Data[ii] * v3dData[ii];
+    }
+    return dResult;
+}
+
+std::vector<Vector3D> Rotation::Dot(std::vector<double> &vecData_1, Rotation &rotData_2)
+{
+    unsigned int iSize = vecData_1.size();
+    std::vector<Vector3D> vecResult;
+    vecResult.resize(iSize);
+    for (int i = 0; i < 3; ++i)
+    {
+
+    }
+    return vecResult;
+}
+
 Matrix & Rotation::GetMatValue()
 {
     return m_matData;

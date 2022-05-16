@@ -36,6 +36,7 @@ public:
     double GetVectorAngleDeg(Vector3D &v3dData);
     void Clear();
     Vector<double> &GetVectorValue();
+    std::pair<Vector3D,Vector3D> GetCoordinateExtremum(std::vector<Vector3D> &vecData);
 
 private:
     Vector<double> m_vecV3D;

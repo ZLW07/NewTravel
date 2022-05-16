@@ -14,10 +14,15 @@ const double g_dMaxCheckLength = 1.5;
 
 struct ModelDataBase
 {
-    Vector3D v3dNormalVector;
-    Vector3D v3dCoordinate_1;
-    Vector3D v3dCoordinate_2;
-    Vector3D v3dCoordinate_3;
+    std::vector<Vector3D> v3dNormalVector;
+    std::vector<Vector3D> vecPoint;
+};
+
+struct OBBData
+{
+    Vector3D v3dCenterPoint;
+    Rotation rotBaseVector;
+    Vector3D v3dOBBLength;
 };
 
 struct DetectionBase
@@ -42,11 +47,11 @@ class ModelManager
 public:
     ModelManager();
     ~ModelManager();
-    bool LoadModelData(const char* cFileName, std::vector<ModelDataBase> &ModelData);
+    bool LoadModelData(const char* cFileName, OBBData &oOBBData);
     CollisionDectionData GetModelDataVector(std::vector<ModelDataBase> &ModelData);
-    bool IsColliding(const CollisionDectionData &oCollisionData);
+    bool IsColliding(const OBBData &OOBB_1, const OBBData &OBB_2);
 private:
-    bool ReadAscllSTlFile(const char* cFileName,std::vector<ModelDataBase> &ModelData);
+    bool ReadAscllSTlFile(const char* cFileName,OBBData &oOBBData);
 private:
 };
 

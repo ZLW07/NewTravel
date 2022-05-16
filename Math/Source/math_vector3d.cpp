@@ -6,12 +6,12 @@
 
 double DegToRad(double dDeg)
 {
-    return (3.1415926 * dDeg)/180;
+    return (3.1415926 * dDeg) / 180;
 }
 
 double RadToDeg(double dRad)
 {
-    return (180 * dRad)/3.1415926;
+    return (180 * dRad) / 3.1415926;
 }
 
 Vector3D::Vector3D()
@@ -147,11 +147,50 @@ void Vector3D::Clear()
     m_vecV3D.Clear();
 }
 
-Vector<double> & Vector3D::GetVectorValue()
+Vector<double> &Vector3D::GetVectorValue()
 {
     return m_vecV3D;
 }
 
+std::pair<Vector3D, Vector3D> Vector3D::GetCoordinateExtremum(std::vector<Vector3D> &vecData)
+{
+    double dMin_X = vecData[0][0];
+    double dMin_Y = vecData[0][1];
+    double dMin_Z = vecData[0][2];
+    double dMax_X = vecData[0][0];
+    double dMax_Y = vecData[0][1];
+    double dMax_Z = vecData[0][2];
 
+    for (int ii = 0; ii < vecData.size(); ++ii)
+    {
+        if (dMin_X > vecData[ii][0])
+        {
+            dMin_X = vecData[ii][0];
+        }
+        if (dMax_X < vecData[ii][0])
+        {
+            dMax_X = vecData[ii][0];
+        }
 
+        if (dMin_Y > vecData[ii][1])
+        {
+            dMin_Y = vecData[ii][1];
+        }
+        if (dMax_Y < vecData[ii][1])
+        {
+            dMax_Y = vecData[ii][1];
+        }
 
+        if (dMin_Z > vecData[ii][2])
+        {
+            dMin_Z = vecData[ii][2];
+        }
+        if (dMax_Z < vecData[ii][2])
+        {
+            dMax_Z = vecData[ii][2];
+        }
+    }
+    Vector3D v3dMin(dMin_X,dMin_Y,dMin_Z);
+    Vector3D v3dMax(dMax_X,dMax_Y,dMax_Z);
+    return std::make_pair(v3dMin,v3dMax);
+}

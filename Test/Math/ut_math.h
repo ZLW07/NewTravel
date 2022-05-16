@@ -56,6 +56,26 @@ TEST_F(TestMath, TestTransForm)
     ZLOG << rotData;
 }
 
+TEST_F(TestMath, TestVector)
+{
+    std::vector<Vector3D> vecSrc;
+    Vector3D v3d(3.7,1.7,3.5);
+    vecSrc.push_back(v3d);
+    v3d.Clear();
+    v3d = {4.1,3.8,5.2};
+    vecSrc.push_back(v3d);
+    v3d.Clear();
+    v3d = { 4.7,2.9,2.1};
+    vecSrc.push_back(v3d);
+    v3d.Clear();
+    v3d = {  5.2,2.8,6.0};
+    vecSrc.push_back(v3d);
+    v3d.Clear();
+    auto aResult = v3d.GetCoordinateExtremum(vecSrc);
+    ZLOG << aResult.first;    //  3.7 1.7 2.1
+    ZLOG << aResult.second;   //  5.2 3.8 6
+}
+
 TEST_F(TestMath, TestOBB)
 {
     std::vector<Vector3D> vecSrc;

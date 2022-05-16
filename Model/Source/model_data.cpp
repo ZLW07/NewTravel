@@ -9,80 +9,19 @@ ModelManager::ModelManager() {}
 
 ModelManager::~ModelManager() {}
 
-bool ModelManager::LoadModelData(const char *cFileName, std::vector<ModelDataBase> &ModelData)
+bool ModelManager::LoadModelData(const char* cFileName, OBBData &oOBBData)
 {
-    return ReadAscllSTlFile(cFileName, ModelData);
+    return ReadAscllSTlFile(cFileName, oOBBData);
 }
 
-CollisionDectionData ModelManager::GetModelDataVector(std::vector<ModelDataBase> &ModelData)
-{
+CollisionDectionData ModelManager::GetModelDataVector(std::vector<ModelDataBase> &ModelData) {}
 
-}
-
-bool ModelManager::IsColliding(const CollisionDectionData &oCollisionData)
+bool ModelManager::IsColliding(const OBBData &OOBB_1, const OBBData &OBB_2)
 {
-    int iSize = oCollisionData.vecModelNormalVector.size();
-    Vector3D v3dTemp;
-    Vector3D v3dTemp1;
-    Vector3D v3dSurfacePoint1Side1Vector;
-    Vector3D v3dSurfacePoint1Side2Vector;
-    double dRad = 0.0;
-    double dSurfacePoint1SideRad = 0.0;
-    double dTargetToSurfacePoint1Side1Rag = 0.0;
-    double dTargetToSurfacePoint1Side2Rag = 0.0;
-    double dSurfacePoint2SideRad = 0.0;
-    double dTargetToSurfacePoint2Side1Rag = 0.0;
-    double dTargetToSurfacePoint2Side2Rag = 0.0;
-    for (int ii = 0; ii < iSize; ++ii)
-    {
-        v3dTemp = oCollisionData.vecModelNormalVector.at(ii);
-        v3dTemp1= oCollisionData.oSurfacePoint_1.vecTargetPoint.at(ii);
-        if (v3dTemp1.Norm() < g_dMaxCheckLength)
-        {
-            return true;
-        }
-        dRad = v3dTemp.GetVectorAngleRad(v3dTemp1);
-        v3dSurfacePoint1Side1Vector = oCollisionData.oSurfacePoint_1.vecSide_1Vector.at(ii);
-        v3dSurfacePoint1Side2Vector = oCollisionData.oSurfacePoint_1.vecSide_2Vector.at(ii);
-        double dTargetToSide1Length = 0.0;
-        double dTargetToSide2Length = 0.0;
-        double dPointVectorLength = v3dTemp1.Norm();
-        if ((fabs((dRad - g_dRightAngle)) < g_dNearZero))
-        {
-            dSurfacePoint1SideRad = v3dSurfacePoint1Side1Vector.GetVectorAngleRad(v3dSurfacePoint1Side2Vector);
-            dTargetToSurfacePoint1Side1Rag = v3dTemp1.GetVectorAngleRad(v3dSurfacePoint1Side1Vector);
-            dTargetToSurfacePoint1Side2Rag = v3dTemp1.GetVectorAngleRad(v3dSurfacePoint1Side2Vector);
-            Vector3D v3dSurfacePoint2Side1 = oCollisionData.oSurfacePoint_2.vecSide_1Vector.at(ii);
-            Vector3D v3dSurfacePoint2Side2 = oCollisionData.oSurfacePoint_2.vecSide_2Vector.at(ii);
-            Vector3D v3dPointToSurfacePoint2 = oCollisionData.oSurfacePoint_2.vecTargetPoint.at(ii);
-            dSurfacePoint2SideRad = v3dSurfacePoint2Side1.GetVectorAngleRad(v3dSurfacePoint2Side2);
-            dTargetToSurfacePoint2Side1Rag = v3dPointToSurfacePoint2.GetVectorAngleRad(v3dSurfacePoint2Side1);
-            dTargetToSurfacePoint2Side2Rag = v3dPointToSurfacePoint2.GetVectorAngleRad(v3dSurfacePoint2Side2);
-            if ((dSurfacePoint1SideRad >= dTargetToSurfacePoint1Side1Rag) && (dSurfacePoint1SideRad >= dTargetToSurfacePoint1Side2Rag)
-                 && (dSurfacePoint2SideRad > dTargetToSurfacePoint2Side1Rag) && (dSurfacePoint2SideRad > dTargetToSurfacePoint2Side2Rag))
-            {
-                dTargetToSide1Length = dPointVectorLength * sin(dTargetToSurfacePoint1Side1Rag);
-                dTargetToSide2Length = dPointVectorLength * sin(dTargetToSurfacePoint1Side2Rag);
-                if((dTargetToSide1Length <= g_dMaxCheckLength) && (dTargetToSide2Length <= g_dMaxCheckLength))
-                {
-                    return true;
-                }
-            }
-        }
-        else
-        {
-            double dPointToSurfaceLength = dPointVectorLength *cos(dRad);
-            if (fabs(dPointToSurfaceLength) <= g_dMaxCheckLength)
-            {
-                return  true;
-            }
-        }
-    }
     return false;
-
 }
 
-bool ModelManager::ReadAscllSTlFile(const char *cFileName, std::vector<ModelDataBase> &ModelData)
+bool ModelManager::ReadAscllSTlFile(const char *cFileName, OBBData &oOBBData)
 {
     Vector3D v3dData;
     ModelDataBase oDataBase;
@@ -119,27 +58,38 @@ bool ModelManager::ReadAscllSTlFile(const char *cFileName, std::vector<ModelData
         {
             if (0 == iIndex)
             {
-                oDataBase.v3dNormalVector = v3dData;
+                oDataBase.v3dNormalVector.push_back(v3dData);
                 iIndex++;
             }
             else if (1 == iIndex)
             {
-                oDataBase.v3dCoordinate_1 = v3dData;
+                oDataBase.vecPoint.push_back(v3dData);
                 iIndex++;
             }
             else if (2 == iIndex)
             {
-                oDataBase.v3dCoordinate_2 = v3dData;
+                oDataBase.vecPoint.push_back(v3dData);
                 iIndex++;
             }
             else if (3 == iIndex)
             {
-                oDataBase.v3dCoordinate_3 = v3dData;
-                ModelData.push_back(oDataBase);
+                oDataBase.vecPoint.push_back(v3dData);
                 iIndex = 0;
             }
         }
         pCnt++;
     } while (!in.eof());
+    Rotation rotRot;
+    rotRot.Cov(oDataBase.vecPoint);
+    oOBBData.rotBaseVector = GetOBBDirectionVector(rotRot);
+    std::vector<Vector3D> vecUVWPoint;
+    vecUVWPoint.resize(oDataBase.vecPoint.size());
+    for (int ij = 0; ij < oDataBase.vecPoint.size(); ++ij)
+    {
+        for (int jj = 0; jj < 3.; ++jj)
+        {
+            vecUVWPoint[ij][jj] = oDataBase.vecPoint[ij].GetVectorValue() * rotRot.GetColVector(jj).GetVectorValue();
+        }
+    }
     return true;
 }

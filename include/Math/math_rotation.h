@@ -25,6 +25,8 @@ public:
     VectorD3 GetColVector(unsigned int iCol);
     Vector<double> GetColVector(unsigned int uiBeginRow, unsigned int iCol);
     Rotation Dot(VectorD3 &vd3Data, Vector3D &v3dData);
+    double Dot(Vector3D &vd3Data, VectorD3 &v3dData);
+    std::vector<Vector3D> Dot(std::vector<double> &vecData_1, Rotation &rotData_2);
     Matrix &GetMatValue();
     Rotation ConversionMatToRot(Matrix &matData);
     Rotation Cov(std::vector<Vector3D> &vSrc_1);
