@@ -160,18 +160,6 @@ double Rotation::Dot(Vector3D &vd3Data, VectorD3 &v3dData)
     return dResult;
 }
 
-std::vector<Vector3D> Rotation::Dot(std::vector<double> &vecData_1, Rotation &rotData_2)
-{
-    unsigned int iSize = vecData_1.size();
-    std::vector<Vector3D> vecResult;
-    vecResult.resize(iSize);
-    for (int i = 0; i < 3; ++i)
-    {
-
-    }
-    return vecResult;
-}
-
 Matrix & Rotation::GetMatValue()
 {
     return m_matData;
@@ -216,4 +204,17 @@ Rotation Rotation::Cov(std::vector<Vector3D> &vSrc_1)
         m_matData[2][2] = MEAN(vSrc_1[ij].Z(), tMean_3, vSrc_1[ij].Z(), tMean_3) + m_matData[2][2];
     }
     return (*this)/(iSize - 1);
+}
+
+Rotation Rotation::Transpose()
+{
+    Rotation oResult;
+    for (int ii = 0; ii < m_iRow; ++ii)
+    {
+        for (int ij = 0; ij < m_iCol; ++ij)
+        {
+            oResult[ij][ii] = m_matData[ii][ij];
+        }
+    }
+    return oResult;
 }

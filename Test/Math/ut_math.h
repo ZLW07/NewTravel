@@ -54,6 +54,7 @@ TEST_F(TestMath, TestTransForm)
     ZLOG << rotData;
     rotData.CombinationTransformMatrix(oMat);
     ZLOG << rotData;
+    ZLOG << rotData.Transpose();
 }
 
 TEST_F(TestMath, TestVector)

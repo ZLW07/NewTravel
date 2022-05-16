@@ -9,19 +9,56 @@ ModelManager::ModelManager() {}
 
 ModelManager::~ModelManager() {}
 
-bool ModelManager::LoadModelData(const char* cFileName, OBBData &oOBBData)
+bool ModelManager::LoadModelData(const char *cFileName, OBBData &oOBBData)
 {
-    return ReadAscllSTlFile(cFileName, oOBBData);
+    ModelDataBase oModelData;
+    if (!ReadAscllSTlFile(cFileName, oModelData))
+    {
+        return false;
+    }
+    oOBBData = GetModelDataVector(oModelData);
+    return true;
 }
 
-CollisionDectionData ModelManager::GetModelDataVector(std::vector<ModelDataBase> &ModelData) {}
+OBBData ModelManager::GetModelDataVector(ModelDataBase &oDataBase)
+{
+    OBBData oOBBData;
+    Rotation rotRot;
+    auto Point = oDataBase.vecPoint;
+    rotRot.Cov(Point);
+    oOBBData.rotBaseVector = GetOBBDirectionVector(rotRot);
+    Rotation oOBBTranspos = oOBBData.rotBaseVector.Transpose();
+    ZLOG << "=============rotBaseVector: " << oOBBData.rotBaseVector;
+    std::vector<Vector3D> vecUVWPoint;
+    vecUVWPoint.resize(Point.size());
+    for (int ij = 0; ij < Point.size(); ++ij)
+    {
+        for (int jj = 0; jj < 3.; ++jj)
+        {
+            vecUVWPoint[ij][jj] = oDataBase.vecPoint[ij].GetVectorValue() * oOBBTranspos.GetColVector(jj).GetVectorValue();
+        }
+    }
+    Vector3D v3dT;
+    auto MaxAndMinPoint = v3dT.GetCoordinateExtremum(vecUVWPoint);
+    ZLOG << MaxAndMinPoint.first;
+    ZLOG << MaxAndMinPoint.second;
+    Vector3D v3dLength(0.5 * (MaxAndMinPoint.second[0] - MaxAndMinPoint.first[0]),
+        0.5 * (MaxAndMinPoint.second[1] - MaxAndMinPoint.first[1]),
+        0.5 * (MaxAndMinPoint.second[2] - MaxAndMinPoint.first[2]));
+    Vector3D v3dCenterPoint_UVW(0.5 * (MaxAndMinPoint.first[0] + MaxAndMinPoint.second[0]),
+        0.5 * (MaxAndMinPoint.first[1] + MaxAndMinPoint.second[1]),
+        0.5 * (MaxAndMinPoint.first[2] + MaxAndMinPoint.second[2]));
+    oOBBData.v3dOBBLength = v3dLength;
+    oOBBData.v3dCenterPoint = oOBBData.rotBaseVector * v3dCenterPoint_UVW;
+    return oOBBData;
+}
 
 bool ModelManager::IsColliding(const OBBData &OOBB_1, const OBBData &OBB_2)
 {
     return false;
 }
 
-bool ModelManager::ReadAscllSTlFile(const char *cFileName, OBBData &oOBBData)
+bool ModelManager::ReadAscllSTlFile(const char *cFileName, ModelDataBase &ModelData)
 {
     Vector3D v3dData;
     ModelDataBase oDataBase;
@@ -79,17 +116,5 @@ bool ModelManager::ReadAscllSTlFile(const char *cFileName, OBBData &oOBBData)
         }
         pCnt++;
     } while (!in.eof());
-    Rotation rotRot;
-    rotRot.Cov(oDataBase.vecPoint);
-    oOBBData.rotBaseVector = GetOBBDirectionVector(rotRot);
-    std::vector<Vector3D> vecUVWPoint;
-    vecUVWPoint.resize(oDataBase.vecPoint.size());
-    for (int ij = 0; ij < oDataBase.vecPoint.size(); ++ij)
-    {
-        for (int jj = 0; jj < 3.; ++jj)
-        {
-            vecUVWPoint[ij][jj] = oDataBase.vecPoint[ij].GetVectorValue() * rotRot.GetColVector(jj).GetVectorValue();
-        }
-    }
     return true;
 }

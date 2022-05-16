@@ -48,10 +48,10 @@ public:
     ModelManager();
     ~ModelManager();
     bool LoadModelData(const char* cFileName, OBBData &oOBBData);
-    CollisionDectionData GetModelDataVector(std::vector<ModelDataBase> &ModelData);
+    OBBData GetModelDataVector(ModelDataBase &ModelData);
     bool IsColliding(const OBBData &OOBB_1, const OBBData &OBB_2);
 private:
-    bool ReadAscllSTlFile(const char* cFileName,OBBData &oOBBData);
+    bool ReadAscllSTlFile(const char *cFileName, ModelDataBase &ModelData);
 private:
 };
 
