@@ -147,6 +147,11 @@ void Vector3D::Clear()
     m_vecV3D.Clear();
 }
 
+Vector<double> & Vector3D::GetVectorValue()
+{
+    return m_vecV3D;
+}
+
 
 
 

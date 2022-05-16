@@ -11,6 +11,8 @@
 #include <vector>
 #include <cmath>
 
+#define MEAN(data_1, mean_1,data_3,mean_2)  (data_1 - mean_1)*(data_3 - mean_2)
+
 template<typename T>
 class Vector
 {

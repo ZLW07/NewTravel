@@ -6,10 +6,7 @@
 template <typename T> Vector<T>::Vector(int iSize)
 {
     m_iVecSize = iSize;
-    for (int ii = 0; (ii < m_iVecSize) && (m_iVecSize > 0); ii++)
-    {
-        m_vecData.push_back(0.0);
-    }
+    m_vecData.resize(m_iVecSize, 0.0);
 }
 
 template <typename T> Vector<T>::~Vector() = default;
@@ -26,7 +23,7 @@ Matrix::Matrix(const Matrix &matData)
 {
     m_iRow = matData.m_iRow;
     m_iCol = matData.m_iCol;
-    m_matData .assign(matData.m_matData.begin(),matData.m_matData.end());
+    m_matData.assign(matData.m_matData.begin(), matData.m_matData.end());
 }
 
 int Matrix::GetRowSize() const
@@ -41,12 +38,11 @@ int Matrix::GetColSize() const
 
 Matrix::~Matrix() = default;
 
-
 void Matrix::SetEye()
 {
     for (int ii = 0; ii < m_iRow; ++ii)
     {
-        m_matData[ii][ii]  = 1.0;
+        m_matData[ii][ii] = 1.0;
     }
 }
 
@@ -59,7 +55,7 @@ Matrix &Matrix::operator=(const Matrix &matData)
 {
     m_iCol = matData.GetColSize();
     m_iRow = matData.GetRowSize();
-    m_matData .assign(matData.m_matData.begin(),matData.m_matData.end());
+    m_matData.assign(matData.m_matData.begin(), matData.m_matData.end());
     return *this;
 }
 
@@ -114,12 +110,12 @@ Matrix Matrix::operator*(Matrix &matData)
         ZLOG << "The size is not match";
         exit(1);
     }
-    Matrix oMat(m_iRow,matData.m_iCol);
+    Matrix oMat(m_iRow, matData.m_iCol);
     for (int ii = 0; ii < m_iRow; ++ii)
     {
         for (int ij = 0; ij < matData.m_iCol; ++ij)
         {
-            oMat[ii][ij] =  this->GetRowVector(ii) * matData.GetRowVector(ij);
+            oMat[ii][ij] = this->GetRowVector(ii) * matData.GetRowVector(ij);
         }
     }
     return oMat;
@@ -173,7 +169,7 @@ Matrix Matrix::Dot(double dData)
     return *this;
 }
 
-Vector<double> Matrix::GetRowVector(int iRow,int iIndexCol)
+Vector<double> Matrix::GetRowVector(int iRow, int iIndexCol)
 {
     Vector<double> vecResult(this->m_iCol - iIndexCol);
     for (int ii = iIndexCol; ii < this->m_iCol; ++ii)
@@ -188,7 +184,7 @@ Vector<double> Matrix::GetColVector(int iCol, int iIndexRow)
     Vector<double> vecResult(this->m_iRow - iIndexRow);
     for (int ii = iIndexRow; ii < this->m_iCol; ++ii)
     {
-        vecResult[ii] = m_matData[ii][iCol];
+        vecResult[ii - iIndexRow] = m_matData[ii][iCol];
     }
     return vecResult;
 }

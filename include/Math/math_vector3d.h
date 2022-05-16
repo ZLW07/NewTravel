@@ -35,6 +35,7 @@ public:
     double GetVectorAngleRad(Vector3D &v3dData);
     double GetVectorAngleDeg(Vector3D &v3dData);
     void Clear();
+    Vector<double> &GetVectorValue();
 
 private:
     Vector<double> m_vecV3D;
