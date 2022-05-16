@@ -31,7 +31,7 @@ Vector3D Rotation::operator*(Vector3D &v3dData)
     {
         for (int iCol = 0; iCol < m_iCol; iCol++)
         {
-            dTempResult = m_matData[iRow][iCol] * v3dData[iCol] + dTempResult;
+            dTempResult = m_matData[iCol][iRow] * v3dData[iCol] + dTempResult;
         }
         oResult[iRow] = dTempResult;
         dTempResult = 0.0;

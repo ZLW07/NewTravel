@@ -27,21 +27,18 @@ OBBData ModelManager::GetModelDataVector(ModelDataBase &oDataBase)
     auto Point = oDataBase.vecPoint;
     rotRot.Cov(Point);
     oOBBData.rotBaseVector = GetOBBDirectionVector(rotRot);
-    Rotation oOBBTranspos = oOBBData.rotBaseVector.Transpose();
-    ZLOG << "=============rotBaseVector: " << oOBBData.rotBaseVector;
+    Rotation oTranspose = oOBBData.rotBaseVector.Transpose();
     std::vector<Vector3D> vecUVWPoint;
     vecUVWPoint.resize(Point.size());
     for (int ij = 0; ij < Point.size(); ++ij)
     {
         for (int jj = 0; jj < 3.; ++jj)
         {
-            vecUVWPoint[ij][jj] = oDataBase.vecPoint[ij].GetVectorValue() * oOBBTranspos.GetColVector(jj).GetVectorValue();
+            vecUVWPoint[ij][jj] = oDataBase.vecPoint[ij].GetVectorValue() * oTranspose.GetColVector(jj).GetVectorValue();
         }
     }
     Vector3D v3dT;
     auto MaxAndMinPoint = v3dT.GetCoordinateExtremum(vecUVWPoint);
-    ZLOG << MaxAndMinPoint.first;
-    ZLOG << MaxAndMinPoint.second;
     Vector3D v3dLength(0.5 * (MaxAndMinPoint.second[0] - MaxAndMinPoint.first[0]),
         0.5 * (MaxAndMinPoint.second[1] - MaxAndMinPoint.first[1]),
         0.5 * (MaxAndMinPoint.second[2] - MaxAndMinPoint.first[2]));

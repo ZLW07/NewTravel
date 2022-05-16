@@ -49,8 +49,8 @@ TEST_F(TestModel, OBB)
     ModelDataBase oModelData;
     oModelData.vecPoint = vecSrc;
     auto aOBB = oMod.GetModelDataVector(oModelData);
-    ZLOG << aOBB.v3dCenterPoint;
-    ZLOG << aOBB.v3dOBBLength;
+    ZLOG << aOBB.v3dCenterPoint;            //    Vector3D: {4.59274, 3.22698, 4.07488}
+    ZLOG << aOBB.v3dOBBLength;      //   Vector3D: {1.45647, 0.97438, 1.44308}
 }
 
 TEST_F(TestModel, CollisionDetection)

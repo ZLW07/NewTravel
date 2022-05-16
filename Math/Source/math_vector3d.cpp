@@ -73,10 +73,13 @@ double &Vector3D::operator[](int iIndex)
 
 std::ostream &operator<<(std::ostream &os, Vector3D &v3dData)
 {
-    for (int ii = 0; ii < 3; ++ii)
+    os << "Vector3D: {";
+    for (int ii = 0; ii < 2; ++ii)
     {
-        os << v3dData[ii] << " ";
+        os << v3dData[ii] << ", ";
     }
+
+    os << v3dData[2] << "}";
     return os;
 }
 
