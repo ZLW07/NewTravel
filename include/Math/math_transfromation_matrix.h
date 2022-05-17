@@ -22,6 +22,9 @@ public:
     Vector3D operator*(Vector3D &v3dData);
     Rotation GetRotation();
     Vector3D GetTranslate();
+    void SwapRow(int iSrcRow, int iDirRow);
+    void SetEye();
+    bool Inv(TransformMatrix &transMat);
 private:
     Matrix m_matData;
     int m_iRow;

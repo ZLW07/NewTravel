@@ -85,6 +85,88 @@ Vector3D TransformMatrix::GetTranslate()
     return oResult;
 }
 
+void TransformMatrix::SwapRow(int iSrcRow, int iDirRow)
+{
+    double dValue = 0.0;
+    for (int ii = 0; ii < m_iCol; ++ii)
+    {
+        dValue = m_matData[iSrcRow][ii];
+        m_matData[iSrcRow][ii] = m_matData[iDirRow][ii];
+        m_matData[iDirRow][ii] = dValue;
+    }
+}
+
+void TransformMatrix::SetEye()
+{
+    m_matData.SetEye();
+}
+
+bool TransformMatrix::Inv(TransformMatrix &transMat)
+{
+    SetEye(); //创建单位矩阵
+    //下来进行自上而下的初等行变换，使得矩阵 a.mat 变成单位上三角矩阵
+    for (int i = 0; i < m_iCol; i++) //注意这里要 i<=m，和之前的上三角矩阵有不同
+    { //因为要判断最后一行化为上三角矩阵的最后一行最后一列元素是否为 0
+        //寻找第 i 列不为零的元素
+        int k;
+        for (k = i; k < m_iRow; k++)
+        {
+            if (fabs(transMat[k][i]) < 1e-10) //满足这个条件时，认为这个元素不为0
+            {
+                ZLOG << "不可逆！";
+                return false;
+            }
+            break;
+        }
+        if (k < m_iRow) //说明第 i 列有不为0的元素
+        {
+            if (k != i) //说明第 i 行 第 i 列元素为零，需要和其他行交换
+            {
+                //交换第 i 行和第 k 行所有元素
+                transMat.SwapRow(k,i);
+                SwapRow(k,i);
+
+            }
+            double b = transMat[i][i]; //倍数
+            //将矩阵 a.mat 的主对角线元素化为 1
+            for (int j = k; j < m_iCol; j++) //从第一个元素开始
+            {
+                transMat[i][j] =  transMat[i][j]/ b;
+                m_matData[i][j] = m_matData[i][j]/ b;
+            }
+            for (int ij = k + 1; ij < m_iRow; ij++)
+            {
+                b = -transMat[ij][i];
+                for (int jj = k; jj < m_iCol; jj++)
+                {
+                    transMat[ij][jj] = b * transMat[k][ij] + ; //第 i 行 b 倍加到第 j 行
+                    m_matData[jj][i] = b * m_matData[i][k];
+                }
+            }
+        }
+        else
+        {
+            ZLOG << "不可逆！";
+            return false;
+        }
+    }
+
+    //下面进行自下而上的行变换，将 a.mat 矩阵化为单位矩阵
+    for (int i = m_iRow; i > 1; i--)
+    {
+        for (int j = i - 1; j >= 1; j--)
+        {
+            double b = -transMat[j][i];
+            transMat[j][i] = 0; //实际上是通过初等行变换将这个元素化为 0,
+            for (int k = 0; k < m_iCol; k++)
+            { //通过相同的初等行变换来变换右边矩阵
+                m_matData[j][k] += b * m_matData[i][k];
+            }
+        }
+    }
+    return true;
+}
+
 std::ostream &operator<<(std::ostream &os, TransformMatrix &transData)
 {
     int iTemp = 3;

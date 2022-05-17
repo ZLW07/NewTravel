@@ -44,6 +44,9 @@ TEST_F(TestMath, TestTransForm)
     Vector3D v3dData5(1, 0, 0);
     Rotation rotData(v3dData1, v3dData2, v3dData3);
     TransformMatrix oTrans(rotData, v3dData5);
+    TransformMatrix oInv;
+    oInv.Inv(oTrans);
+    ZLOG << oInv;
     ZLOG << oTrans;
     Vector3D v3dResult = oTrans * v3dData4;
     ZLOG << v3dResult;

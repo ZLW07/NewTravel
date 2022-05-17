@@ -50,8 +50,10 @@ OBBData ModelManager::GetModelDataVector(ModelDataBase &oDataBase)
     return oOBBData;
 }
 
-bool ModelManager::IsColliding(const OBBData &OOBB_1, const OBBData &OBB_2)
+bool ModelManager::IsColliding(const OBBData &OBB_1, const OBBData &OBB_2,const TransformMatrix &transOBB)
 {
+    TransformMatrix transBB1(OBB_1.rotBaseVector,OBB_1.v3dCenterPoint);
+    TransformMatrix transBB2(OBB_2.rotBaseVector, OBB_2.v3dCenterPoint);
     return false;
 }
 
