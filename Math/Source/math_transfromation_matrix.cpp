@@ -105,49 +105,46 @@ bool TransformMatrix::Inv(TransformMatrix &transMat)
 {
     SetEye(); //创建单位矩阵
     //下来进行自上而下的初等行变换，使得矩阵 a.mat 变成单位上三角矩阵
-    for (int i = 0; i < m_iCol; i++) //注意这里要 i<=m，和之前的上三角矩阵有不同
+    for (int ii = 0; ii < m_iCol; ii++) //注意这里要 i<=m，和之前的上三角矩阵有不同
     { //因为要判断最后一行化为上三角矩阵的最后一行最后一列元素是否为 0
         //寻找第 i 列不为零的元素
-        int k;
-        for (k = i; k < m_iRow; k++)
-        {
-            if (fabs(transMat[k][i]) < 1e-10) //满足这个条件时，认为这个元素不为0
+            int ij = ii;
+            while( ij < m_iRow)
             {
-                ZLOG << "不可逆！";
+                if (fabs(transMat[ij][ii]) > 1e-10) //满足这个条件时，认为这个元素不为0
+                {
+                    break;
+                }
+                ij++;
+            }
+            if(ij >= m_iRow)
+            {
+                ZLOG << " there is no inv";
                 return false;
             }
-            break;
-        }
-        if (k < m_iRow) //说明第 i 列有不为0的元素
-        {
-            if (k != i) //说明第 i 行 第 i 列元素为零，需要和其他行交换
+            if (ij != ii) //说明第 i 行 第 i 列元素为零，需要和其他行交换
             {
                 //交换第 i 行和第 k 行所有元素
-                transMat.SwapRow(k,i);
-                SwapRow(k,i);
-
+                transMat.SwapRow(ij,ii);
+                SwapRow(ij,ii);
             }
-            double b = transMat[i][i]; //倍数
+            double b = transMat[ii][ii]; //倍数
             //将矩阵 a.mat 的主对角线元素化为 1
-            for (int j = k; j < m_iCol; j++) //从第一个元素开始
+            for (int jj = ij; jj < m_iCol; jj++) //从第一个元素开始
             {
-                transMat[i][j] =  transMat[i][j]/ b;
-                m_matData[i][j] = m_matData[i][j]/ b;
+                transMat[ii][jj] =  transMat[ii][jj]/ b;
+                m_matData[ii][jj] = m_matData[ii][jj]/ b;
             }
-            for (int ij = k + 1; ij < m_iRow; ij++)
+
+            for (int a = ii + 1; a < m_iRow; a++)
             {
-                b = -transMat[ij][i];
-                for (int jj = k; jj < m_iCol; jj++)
+                b = -transMat[a][ii];
+                for (int bb = ii; bb < m_iCol; bb++)
                 {
-                    transMat[ij][jj] = b * transMat[k][ij] + ; //第 i 行 b 倍加到第 j 行
-                    m_matData[jj][i] = b * m_matData[i][k];
+                    transMat[a][bb] = b * transMat[ii][bb] +  transMat[a][bb] ; //第 i 行 b 倍加到第 j 行
+                    m_matData[a][bb] = b * m_matData[ii][bb] + m_matData[a][bb];
                 }
             }
-        }
-        else
-        {
-            ZLOG << "不可逆！";
-            return false;
         }
     }
 
