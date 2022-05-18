@@ -37,11 +37,11 @@ TEST_F(TestMath, TestVector3DOperate)
 
 TEST_F(TestMath, TestTransForm)
 {
-    Vector3D v3dData1(1, 0, 0);
-    Vector3D v3dData2(0, 1, 0);
-    Vector3D v3dData3(0, 0, 1);
+    Vector3D v3dData1(2, -1, 0);
+    Vector3D v3dData2(-1, 2, -1);
+    Vector3D v3dData3(0, -1, 2);
     Vector3D v3dData4(1, 3, 1);
-    Vector3D v3dData5(1, 0, 0);
+    Vector3D v3dData5(1, 0, 8);
     Rotation rotData(v3dData1, v3dData2, v3dData3);
     TransformMatrix oTrans(rotData, v3dData5);
     TransformMatrix oInv;
