@@ -75,7 +75,7 @@ Rotation TransformMatrix::GetRotation()
     return oResult;
 }
 
-Vector3D TransformMatrix::GetTranslate()
+Vector3D TransformMatrix::GetPoseTranslate()
 {
     Vector3D oResult;
     for (int iRow = 0; iRow < 3; ++iRow)
@@ -113,7 +113,6 @@ bool TransformMatrix::Inv(TransformMatrix transMat)
         {
             if (fabs(transMat[ij][ii]) > 1e-10) //满足这个条件时，认为这个元素不为0
             {
-                ZLOG << transMat[ij][ii];
                 break;
             }
             ij++;
@@ -205,7 +204,7 @@ TransformMatrix TransformMatrix::operator*(TransformMatrix &transData)
 Vector3D TransformMatrix::operator*(Vector3D &v3dData)
 {
     Rotation rotTempResult = GetRotation();
-    Vector3D v3dTempResult = GetTranslate();
+    Vector3D v3dTempResult = GetPoseTranslate();
     Vector3D v3dResult = rotTempResult * v3dData + v3dTempResult;
     return v3dResult;
 }
