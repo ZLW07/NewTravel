@@ -29,7 +29,12 @@ public:
     Vector3D operator-( Vector3D &v3dData);
     bool operator==(Vector3D &v3dData) ;
     Vector3D Scale(double dData);
-    double Dot(Vector3D &v3dData);
+    double Dot(Vector3D v3dData);
+    Vector3D operator*(Vector3D v3dData)
+    {
+        Vector3D v3d;
+        return v3d;
+    }
     Vector3D Cross(Vector3D &v3dData);
     double Norm();
     double GetVectorAngleRad(Vector3D &v3dData);

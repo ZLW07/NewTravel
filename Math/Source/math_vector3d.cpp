@@ -108,7 +108,7 @@ Vector3D Vector3D::Scale(double dData)
     return Vector3D(m_vecV3D[0] * dData, m_vecV3D[1] * dData, m_vecV3D[2] * dData);
 }
 
-double Vector3D::Dot(Vector3D &v3dData)
+double Vector3D::Dot(Vector3D v3dData)
 {
     return (m_vecV3D[0] * v3dData[0]) + (m_vecV3D[1] * v3dData[1]) + (m_vecV3D[2] * v3dData[2]);
 }

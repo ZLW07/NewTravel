@@ -50,11 +50,42 @@ OBBData ModelManager::GetModelDataVector(ModelDataBase &oDataBase)
     return oOBBData;
 }
 
-bool ModelManager::IsColliding(const OBBData &OBB_1, const OBBData &OBB_2,const TransformMatrix &transOBB)
+bool ModelManager::IsColliding( OBBData &OBB_A,  OBBData &OBB_B,  TransformMatrix &transOBB)
 {
-    TransformMatrix transBB1(OBB_1.rotBaseVector,OBB_1.v3dCenterPoint);
-    TransformMatrix transBB2(OBB_2.rotBaseVector, OBB_2.v3dCenterPoint);
-    return false;
+    TransformMatrix transBB1(OBB_A.rotBaseVector, OBB_A.v3dCenterPoint);
+    TransformMatrix transBB2(OBB_B.rotBaseVector, OBB_B.v3dCenterPoint);
+    TransformMatrix tranInvOBB;
+    tranInvOBB.Inv(transBB1);
+    TransformMatrix tranAToB = tranInvOBB * transOBB * transBB2;
+    TransformMatrix tranBToA;
+    tranBToA.Inv(tranAToB);
+    double dRa = 0.0;
+    double dRb = 0.0;
+    double dT = 0.0;
+    // test axes L = A0 ; A1; A2
+    for (int ii = 0; ii < 3; ++ii)
+    {
+        dRa = OBB_A.v3dOBBLength[ii];
+        dRb = OBB_B.v3dOBBLength.Dot(tranAToB.GetRotation().GetRowVector(ii));
+        if (std::fabs(tranAToB[3][ii]) < (dRa + dRb))
+        {
+            ZLOG << " There is collision";
+            return 1;
+        }
+    }
+
+    // test axes L = B0 ; B1; B2
+    for (int ij = 0; ij < 3; ++ij)
+    {
+        dRa = OBB_A.v3dOBBLength.Dot(tranBToA.GetRotation().GetRowVector(ij));
+        dRb = OBB_B.v3dOBBLength[ij];
+        if (std::fabs(tranBToA[3][ij]) < (dRa + dRb))
+        {
+            ZLOG << " There is collision";
+            return 1;
+        }
+    }
+    return true;
 }
 
 bool ModelManager::ReadAscllSTlFile(const char *cFileName, ModelDataBase &ModelData)
