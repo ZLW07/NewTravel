@@ -143,7 +143,7 @@ Vector3D Rotation::GetRowVector(unsigned int iRow)
     Vector3D v3dResult;
     for (int ii = 0; ii < m_iCol; ++ii)
     {
-        v3dResult[ii] = m_matData[iRow][ii]);
+        v3dResult[ii] = m_matData[iRow][ii];
     }
     return v3dResult;
 }
