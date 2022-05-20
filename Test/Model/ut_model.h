@@ -53,9 +53,59 @@ TEST_F(TestModel, OBB)
     ZLOG << aOBB.v3dOBBLength;      //   Vector3D: {1.45647, 0.97438, 1.44308}
 }
 
+TEST_F(TestModel, OBB_OBB)
+{
+    std::vector<Vector3D> vecSrc;
+    Vector3D v3d(1,0,0);
+    vecSrc.push_back(v3d);
+    v3d.Clear();
+    v3d = {2,0,0};
+    vecSrc.push_back(v3d);
+    v3d.Clear();
+    v3d = { 1,1,0};
+    vecSrc.push_back(v3d);
+    v3d.Clear();
+    v3d = {  2,1,0};
+    vecSrc.push_back(v3d);
+    v3d.Clear();
+    v3d= {1,0,3};
+    vecSrc.push_back(v3d);
+    v3d.Clear();
+    v3d = {2,0,3};
+    vecSrc.push_back(v3d);
+    v3d.Clear();
+    v3d = { 1,1,3};
+    vecSrc.push_back(v3d);
+    v3d.Clear();
+    v3d = {  2,1,3};
+    vecSrc.push_back(v3d);
+    v3d.Clear();
+    ModelManager oMod;
+    ModelDataBase oModelData;
+    oModelData.vecPoint = vecSrc;
+    auto aOBB = oMod.GetModelDataVector(oModelData);
+    ZLOG << aOBB.v3dCenterPoint;            //   Vector3D: {1.5, 0.5, 1.5}
+    ZLOG << aOBB.v3dOBBLength;             //   Vector3D: {0.5, 0.5, 1.5}
+    ZLOG << aOBB.rotBaseVector;           //{-1 0 0} {0 -1 0} {0 0 -1}
+}
+
 TEST_F(TestModel, CollisionDetection)
 {
+    OBBData oOBBA;
+    Rotation rotRot;
+    rotRot.SetEye();
+    Vector3D v3dCenterPoint{1.5,0.5,1.5};
+    Vector3D v3dLength{0.5, 0.5,0.5};
+    oOBBA.rotBaseVector = rotRot;
+    oOBBA.v3dOBBLength = v3dLength;
+    oOBBA.v3dCenterPoint = v3dCenterPoint;
 
-
+    OBBData oBBB;
+    oBBB = oOBBA;
+    ModelManager oMod;
+    Vector3D v3d{0,0,1.01};
+    TransformMatrix transPose(rotRot,v3d);
+    auto bResult  = oMod.IsColliding(oOBBA,oBBB,transPose);
+    ZLOG << "bResult " << bResult;
 }
 #endif // NEWTRAVEL_UT_MODEL_H

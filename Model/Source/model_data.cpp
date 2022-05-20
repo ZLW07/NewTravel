@@ -57,8 +57,6 @@ bool ModelManager::IsColliding( OBBData &OBB_A,  OBBData &OBB_B,  TransformMatri
     TransformMatrix tranInvBB1;
     tranInvBB1.Inv(transBB1);
     TransformMatrix tranBaseBToA = tranInvBB1 * transOBB * transBB2;
-    TransformMatrix transBaseAToB;
-    transBaseAToB.Inv(tranBaseBToA);
     Rotation rotBToA = tranBaseBToA.GetRotation();
     Vector3D v3dBToAPose = tranBaseBToA.GetPoseTranslate();
     double dRa = 0.0;
@@ -68,10 +66,9 @@ bool ModelManager::IsColliding( OBBData &OBB_A,  OBBData &OBB_B,  TransformMatri
     for (int ii = 0; ii < 3; ++ii)
     {
         dRa = OBB_A.v3dOBBLength[ii];
-        dRb = (OBB_B.v3dOBBLength[0] * rotBToA[ii][0] + OBB_B.v3dOBBLength[1] * rotBToA[ii][0] + OBB_B.v3dOBBLength[2] * rotBToA[ii][0]);
-        if (std::fabs(v3dBToAPose[ii]) < (dRa + dRb))
+        dRb = (OBB_B.v3dOBBLength[0] * fabs(rotBToA[ii][0]) + OBB_B.v3dOBBLength[1] * fabs(rotBToA[ii][1]) + OBB_B.v3dOBBLength[2] * fabs(rotBToA[ii][2]));
+        if (std::fabs(v3dBToAPose[ii]) > (dRa + dRb))
         {
-            ZLOG << " There is collision";
             return false;
         }
     }
@@ -81,9 +78,8 @@ bool ModelManager::IsColliding( OBBData &OBB_A,  OBBData &OBB_B,  TransformMatri
     {
         dRa = (OBB_A.v3dOBBLength[0] * fabs(rotBToA[0][ij]) + OBB_A.v3dOBBLength[1] * fabs(rotBToA[1][ij]) + OBB_A.v3dOBBLength[2] * fabs(rotBToA[2][ij]));
         dRb = OBB_B.v3dOBBLength[ij];
-        if (std::fabs(v3dBToAPose[0] * rotBToA[0][ij] + v3dBToAPose[1] * rotBToA[1][ij] + v3dBToAPose[2] * rotBToA[2][ij]) < (dRa + dRb))
+        if (std::fabs(v3dBToAPose[0] * rotBToA[0][ij] + v3dBToAPose[1] * rotBToA[1][ij] + v3dBToAPose[2] * rotBToA[2][ij]) > (dRa + dRb))
         {
-            ZLOG << " There is collision";
             return false;
         }
     }
@@ -92,20 +88,17 @@ bool ModelManager::IsColliding( OBBData &OBB_A,  OBBData &OBB_B,  TransformMatri
     dT = fabs(v3dBToAPose.Z() * rotBToA[1][0] - v3dBToAPose.Y() * rotBToA[2][0]);
     dRa = OBB_A.v3dOBBLength[1] * fabs(rotBToA[2][0]) + OBB_A.v3dOBBLength[2] * fabs(rotBToA[1][0]);
     dRb = OBB_B.v3dOBBLength[1] * fabs(rotBToA[0][2]) + OBB_B.v3dOBBLength[2] * fabs(rotBToA[0][1]);
-    if(dT < (dRa + dRb))
+    if(dT > (dRa + dRb))
     {
-        ZLOG << " There is collision";
         return false;
     }
-
 
     //u0_A X u1_B  2
     dT = fabs(v3dBToAPose.Z() * rotBToA[1][1] - v3dBToAPose.Y() * rotBToA[2][1]);
     dRa = OBB_A.v3dOBBLength[1] * fabs(rotBToA[2][1]) + OBB_A.v3dOBBLength[2] * fabs(rotBToA[1][1]);
     dRb = OBB_B.v3dOBBLength.X() *fabs(rotBToA[0][2]) + OBB_B.v3dOBBLength.Z() * fabs(rotBToA[0][0]);
-    if(dT < (dRa + dRb))
+    if(dT > (dRa + dRb))
     {
-        ZLOG << " There is collision";
         return false;
     }
 
@@ -113,9 +106,8 @@ bool ModelManager::IsColliding( OBBData &OBB_A,  OBBData &OBB_B,  TransformMatri
     dT = fabs(v3dBToAPose.Z() * rotBToA[1][2] - v3dBToAPose.Y() * rotBToA[2][2]);
     dRa = OBB_A.v3dOBBLength.Y() * fabs(rotBToA[2][2]) + OBB_A.v3dOBBLength.Z() * fabs(rotBToA[1][2]) ;
     dRb = OBB_B.v3dOBBLength.X() * fabs(rotBToA[0][1]) + OBB_B.v3dOBBLength.Y() * fabs(rotBToA[0][0]);
-    if(dT < (dRa + dRb))
+    if(dT > (dRa + dRb))
     {
-        ZLOG << " There is collision";
         return false;
     }
 
@@ -123,9 +115,8 @@ bool ModelManager::IsColliding( OBBData &OBB_A,  OBBData &OBB_B,  TransformMatri
     dT = fabs(v3dBToAPose.X() * rotBToA[2][0] - v3dBToAPose.Z() *fabs(rotBToA[0][0]));
     dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[2][0] + OBB_A.v3dOBBLength.Z() * fabs(rotBToA[0][0]));
     dRb = OBB_B.v3dOBBLength.Y() * fabs(rotBToA[1][2]) + OBB_B.v3dOBBLength.Z() * fabs(rotBToA[1][1]);
-    if(dT < (dRa + dRb))
+    if(dT > (dRa + dRb))
     {
-        ZLOG << " There is collision";
         return false;
     }
 
@@ -133,9 +124,8 @@ bool ModelManager::IsColliding( OBBData &OBB_A,  OBBData &OBB_B,  TransformMatri
     dT = fabs(v3dBToAPose.X() * fabs(rotBToA[2][1]) - v3dBToAPose.Z() * fabs(rotBToA[0][1]));
     dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[2][1]) + OBB_A.v3dOBBLength.Z() * fabs(rotBToA[0][1]);
     dRb = OBB_B.v3dOBBLength.X() * fabs(rotBToA[1][2]) + OBB_B.v3dOBBLength.Z() * fabs(rotBToA[1][0]);
-    if(dT < (dRa + dRb))
+    if(dT > (dRa + dRb))
     {
-        ZLOG << " There is collision";
         return false;
     }
 
@@ -143,9 +133,8 @@ bool ModelManager::IsColliding( OBBData &OBB_A,  OBBData &OBB_B,  TransformMatri
     dT = fabs(v3dBToAPose.X() * rotBToA[2][2] - v3dBToAPose.Z() * rotBToA[0][2]);
     dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[2][2] + OBB_A.v3dOBBLength.Z() * fabs(rotBToA[0][2]));
     dRb = OBB_B.v3dOBBLength.X() * fabs(rotBToA[1][1]) + OBB_B.v3dOBBLength.Y() * fabs(rotBToA[1][0]);
-    if(dT < (dRa + dRb))
+    if(dT > (dRa + dRb))
     {
-        ZLOG << " There is collision";
         return false;
     }
 
@@ -153,29 +142,26 @@ bool ModelManager::IsColliding( OBBData &OBB_A,  OBBData &OBB_B,  TransformMatri
     dT = fabs(v3dBToAPose.Y() * rotBToA[0][0] - v3dBToAPose.X() * rotBToA[1][0]);
     dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[1][0]) + OBB_A.v3dOBBLength.Y() * fabs(rotBToA[0][0]);
     dRb = OBB_B.v3dOBBLength.Y() * fabs(rotBToA[2][2]) + OBB_B.v3dOBBLength.Z() * fabs(rotBToA[2][1]);
-    if(dT < (dRa + dRb))
+    if(dT > (dRa + dRb))
     {
-        ZLOG << " There is collision";
         return false;
     }
 
-    //u2_A X u1_B  7
+    //u2_A X u1_B  8
     dT = fabs(v3dBToAPose.Y() * rotBToA[0][2] - v3dBToAPose.X() * rotBToA[1][1]);
     dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[1][1]) + OBB_A.v3dOBBLength.Y() * fabs(rotBToA[0][1]);
     dRb = OBB_B.v3dOBBLength.X() * fabs(rotBToA[2][2]) + OBB_B.v3dOBBLength.Z() * fabs(rotBToA[2][0]);
-    if(dT < (dRa + dRb))
+    if(dT > (dRa + dRb))
     {
-        ZLOG << " There is collision";
         return false;
     }
 
-    //u2_A X u2_B  7
+    //u2_A X u2_B  9
     dT = fabs(v3dBToAPose.Y() * rotBToA[0][2] - v3dBToAPose.X() * rotBToA[1][2]);
     dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[1][2]) + OBB_A.v3dOBBLength.Y() * fabs(rotBToA[0][2]);
     dRb = OBB_B.v3dOBBLength.X() * fabs(rotBToA[2][1]) + OBB_B.v3dOBBLength.Y() * fabs(rotBToA[2][0]);
-    if(dT < (dRa + dRb))
+    if(dT > (dRa + dRb))
     {
-        ZLOG << " There is collision";
         return false;
     }
     return true;

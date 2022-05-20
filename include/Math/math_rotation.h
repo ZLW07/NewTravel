@@ -31,6 +31,7 @@ public:
     Rotation ConversionMatToRot(Matrix &matData);
     Rotation Cov(std::vector<Vector3D> &vSrc_1);
     Rotation Transpose();
+    void SetEye();
 public:
 private:
     Matrix m_matData;
