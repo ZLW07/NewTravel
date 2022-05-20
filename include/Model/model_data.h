@@ -50,7 +50,7 @@ public:
     ~ModelManager();
     bool LoadModelData(const char* cFileName, OBBData &oOBBData);
     OBBData GetModelDataVector(ModelDataBase &ModelData);
-    bool IsColliding(const OBBData &OBB_1, const OBBData &OBB_2,const TransformMatrix &trans2_1);
+    bool IsColliding( OBBData &OBB_A,  OBBData &OBB_B, TransformMatrix &trans2_1);
 private:
     bool ReadAscllSTlFile(const char *cFileName, ModelDataBase &ModelData);
 private:

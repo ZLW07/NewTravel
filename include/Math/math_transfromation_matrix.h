@@ -21,7 +21,7 @@ public:
     TransformMatrix operator*(TransformMatrix &tansData);
     Vector3D operator*(Vector3D &v3dData);
     Rotation GetRotation();
-    Vector3D GetTranslate();
+    Vector3D GetPoseTranslate();
     void SwapRow(int iSrcRow, int iDirRow);
     void SetEye();
     bool Inv(TransformMatrix transMat);

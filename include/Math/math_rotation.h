@@ -23,6 +23,7 @@ public:
 public:
     Rotation CombinationTransformMatrix(Matrix &srcMat);
     VectorD3 GetColVector(unsigned int iCol);
+    Vector3D GetRowVector(unsigned int iRow);
     Vector<double> GetColVector(unsigned int uiBeginRow, unsigned int iCol);
     Rotation Dot(VectorD3 &vd3Data, Vector3D &v3dData);
     double Dot(Vector3D &vd3Data, VectorD3 &v3dData);

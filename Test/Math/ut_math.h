@@ -37,16 +37,13 @@ TEST_F(TestMath, TestVector3DOperate)
 
 TEST_F(TestMath, TestTransForm)
 {
-    Vector3D v3dData1(4, 5, 6);
-    Vector3D v3dData2(3, 4, 5);
-    Vector3D v3dData3(2, 1, 7);
+    Vector3D v3dData1(2, -1, 0);
+    Vector3D v3dData2(-1, 2, -1);
+    Vector3D v3dData3(0, -1, 2);
     Vector3D v3dData4(1, 3, 1);
-    Vector3D v3dData5(1, 5, 4);
+    Vector3D v3dData5(1, 0, 8);
     Rotation rotData(v3dData1, v3dData2, v3dData3);
     TransformMatrix oTrans(rotData, v3dData5);
-    TransformMatrix oInv;
-    oInv.Inv(oTrans);
-    ZLOG << oInv;
     ZLOG << oTrans;
     Vector3D v3dResult = oTrans * v3dData4;
     ZLOG << v3dResult;
@@ -58,6 +55,21 @@ TEST_F(TestMath, TestTransForm)
     rotData.CombinationTransformMatrix(oMat);
     ZLOG << rotData;
     ZLOG << rotData.Transpose();
+}
+
+TEST_F(TestMath, TestInv)
+{
+    Vector3D v3dData1(2, -1, 0);
+    Vector3D v3dData2(-1, 2, -1);
+    Vector3D v3dData3(0, -1, 2);
+    Vector3D v3dData4(1, 3, 1);
+    Vector3D v3dData5(1, 0, 8);
+    Rotation rotData(v3dData1, v3dData2, v3dData3);
+    TransformMatrix oTrans(rotData, v3dData5);
+    TransformMatrix oInv;
+    oInv.Inv(oTrans);
+    // {0.75 0.5 0.25 -2.75} {0.5 1 0.5 -4.5} {0.25 0.5 0.75 -6.25} {0 0 0 1}
+    ZLOG << oInv;
 }
 
 TEST_F(TestMath, TestVector)

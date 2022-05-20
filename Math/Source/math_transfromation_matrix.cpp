@@ -75,7 +75,7 @@ Rotation TransformMatrix::GetRotation()
     return oResult;
 }
 
-Vector3D TransformMatrix::GetTranslate()
+Vector3D TransformMatrix::GetPoseTranslate()
 {
     Vector3D oResult;
     for (int iRow = 0; iRow < 3; ++iRow)
@@ -104,54 +104,57 @@ void TransformMatrix::SetEye()
 bool TransformMatrix::Inv(TransformMatrix transMat)
 {
     SetEye(); //创建单位矩阵
-    ZLOG << *this;
     //下来进行自上而下的初等行变换，使得矩阵 a.mat 变成单位上三角矩阵
     for (int ii = 0; ii < m_iCol; ii++) //注意这里要 i<=m，和之前的上三角矩阵有不同
     { //因为要判断最后一行化为上三角矩阵的最后一行最后一列元素是否为 0
-        //寻找第 i 列不为零的元素
-            int ij = ii;
-            while( ij < m_iRow)
+      //寻找第 i 列不为零的元素
+        int ij = ii;
+        while (ij < m_iRow)
+        {
+            if (fabs(transMat[ij][ii]) > 1e-10) //满足这个条件时，认为这个元素不为0
             {
-                if (fabs(transMat[ij][ii]) > 1e-10) //满足这个条件时，认为这个元素不为0
+                break;
+            }
+            ij++;
+        }
+        if (ij >= m_iRow)
+        {
+            ZLOG << " there is no inv";
+            return false;
+        }
+        if (ij != ii) //说明第 i 行 第 i 列元素为零，需要和其他行交换
+        {
+            //交换第 i 行和第 k 行所有元素
+            transMat.SwapRow(ij, ii);
+            SwapRow(ij, ii);
+        }
+        double b = transMat[ii][ii]; //倍数
+        //将矩阵 a.mat 的主对角线元素化为 1
+        for (int jj = ij; jj < m_iCol; jj++) //从第一个元素开始
+        {
+            transMat[ii][jj] = transMat[ii][jj] / b;
+        }
+        for (int jj = 0; jj < m_iCol; ++jj)
+        {
+            m_matData[ii][jj] = m_matData[ii][jj] / b;
+        }
+        for (int a = 0; a < m_iRow; a++)
+        {
+            if (a != ii)
+            {
+                b = -transMat[a][ii];
+                for (int bb = ii; bb < m_iCol; bb++)
                 {
-                    break;
+                    transMat[a][bb] = b * transMat[ii][bb] + transMat[a][bb]; //第 i 行 b 倍加到第 j 行
                 }
-                ij++;
-            }
-            if(ij >= m_iRow)
-            {
-                ZLOG << " there is no inv";
-                return false;
-            }
-            if (ij != ii) //说明第 i 行 第 i 列元素为零，需要和其他行交换
-            {
-                //交换第 i 行和第 k 行所有元素
-                transMat.SwapRow(ij,ii);
-                SwapRow(ij,ii);
-            }
-            double b = transMat[ii][ii]; //倍数
-            //将矩阵 a.mat 的主对角线元素化为 1
-            for (int jj = ii; jj < m_iCol; jj++)  //从第一个元素开始
-            {
-                transMat[ii][jj] =  transMat[ii][jj]/ b;
-                m_matData[ii][jj] = m_matData[ii][jj]/ b;
-            }
-
-            for (int a = 0; a < m_iRow; a++)
-            {
-                if (a != ii)
+                for (int cc = 0; cc < m_iCol; ++cc)
                 {
-                    b = -transMat[a][ii];
-                    for (int bb = ii; bb < m_iCol; bb++)
-                    {
-                        transMat[a][bb] = b * transMat[ii][bb] +  transMat[a][bb] ; //第 i 行 b 倍加到第 j 行
-                        m_matData[a][bb] = b * m_matData[ii][bb] + m_matData[a][bb];
-                    }
+                    m_matData[a][cc] = b * m_matData[ii][cc] + m_matData[a][cc];
                 }
-                a++;
             }
         }
-        return true;
+    }
+    return true;
 }
 
 std::ostream &operator<<(std::ostream &os, TransformMatrix &transData)
@@ -201,7 +204,7 @@ TransformMatrix TransformMatrix::operator*(TransformMatrix &transData)
 Vector3D TransformMatrix::operator*(Vector3D &v3dData)
 {
     Rotation rotTempResult = GetRotation();
-    Vector3D v3dTempResult = GetTranslate();
+    Vector3D v3dTempResult = GetPoseTranslate();
     Vector3D v3dResult = rotTempResult * v3dData + v3dTempResult;
     return v3dResult;
 }
