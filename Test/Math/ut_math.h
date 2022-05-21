@@ -55,6 +55,14 @@ TEST_F(TestMath, TestTransForm)
     rotData.CombinationTransformMatrix(oMat);
     ZLOG << rotData;
     ZLOG << rotData.Transpose();
+
+    Rotation rotRation;
+    rotRation.SetEye();
+    Vector3D v3dPose(1, 0, 0);
+    TransformMatrix transMat{rotRation,v3dPose};
+    v3dPose[0] = 5;
+    TransformMatrix transMat1{rotRation,v3dPose};
+    ZLOG  << transMat*transMat1;
 }
 
 TEST_F(TestMath, TestInv)

@@ -57,7 +57,7 @@ Vector<double> TransformMatrix::GetColVector(unsigned int iCol)
     Vector<double> vecDirData(4);
     for (int ii = 0; ii < m_iRow; ii++)
     {
-        vecDirData[ii] = (*this)[iCol][ii];
+        vecDirData[ii] = (*this)[ii][iCol];
     }
     return vecDirData;
 }

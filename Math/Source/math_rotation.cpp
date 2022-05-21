@@ -228,3 +228,8 @@ Rotation Rotation::Transpose()
     }
     return oResult;
 }
+
+void Rotation::SetEye()
+{
+    m_matData.SetEye();
+}
