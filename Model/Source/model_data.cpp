@@ -9,9 +9,8 @@ ModelManager::ModelManager() {}
 
 ModelManager::~ModelManager() {}
 
-bool ModelManager::LoadModelData(const char *cFileName, OBBData &oOBBData)
+bool ModelManager::LoadModelData(const char *cFileName,ModelDataBase& oModelData, OBBData &oOBBData)
 {
-    ModelDataBase oModelData;
     if (!ReadAscllSTlFile(cFileName, oModelData))
     {
         return false;
@@ -34,7 +33,8 @@ OBBData ModelManager::GetModelDataVector(ModelDataBase &oDataBase)
     {
         for (int jj = 0; jj < 3.; ++jj)
         {
-            vecUVWPoint[ij][jj] = oDataBase.vecPoint[ij].GetVectorValue() * oTranspose.GetColVector(jj).GetVectorValue();
+            vecUVWPoint[ij][jj] =
+                oDataBase.vecPoint[ij].GetVectorValue() * oTranspose.GetColVector(jj).GetVectorValue();
         }
     }
     Vector3D v3dT;
@@ -50,7 +50,7 @@ OBBData ModelManager::GetModelDataVector(ModelDataBase &oDataBase)
     return oOBBData;
 }
 
-bool ModelManager::IsColliding( OBBData &OBB_A,  OBBData &OBB_B,  TransformMatrix &transOBB)
+bool ModelManager::IsColliding(OBBData &OBB_A, OBBData &OBB_B, TransformMatrix &transOBB)
 {
     TransformMatrix transBB1(OBB_A.rotBaseVector, OBB_A.v3dCenterPoint);
     TransformMatrix transBB2(OBB_B.rotBaseVector, OBB_B.v3dCenterPoint);
@@ -66,7 +66,8 @@ bool ModelManager::IsColliding( OBBData &OBB_A,  OBBData &OBB_B,  TransformMatri
     for (int ii = 0; ii < 3; ++ii)
     {
         dRa = OBB_A.v3dOBBLength[ii];
-        dRb = (OBB_B.v3dOBBLength[0] * fabs(rotBToA[ii][0]) + OBB_B.v3dOBBLength[1] * fabs(rotBToA[ii][1]) + OBB_B.v3dOBBLength[2] * fabs(rotBToA[ii][2]));
+        dRb = (OBB_B.v3dOBBLength[0] * fabs(rotBToA[ii][0]) + OBB_B.v3dOBBLength[1] * fabs(rotBToA[ii][1]) +
+               OBB_B.v3dOBBLength[2] * fabs(rotBToA[ii][2]));
         if (std::fabs(v3dBToAPose[ii]) > (dRa + dRb))
         {
             return false;
@@ -76,9 +77,11 @@ bool ModelManager::IsColliding( OBBData &OBB_A,  OBBData &OBB_B,  TransformMatri
     // test axes L = B0 ; B1; B2
     for (int ij = 0; ij < 3; ++ij)
     {
-        dRa = (OBB_A.v3dOBBLength[0] * fabs(rotBToA[0][ij]) + OBB_A.v3dOBBLength[1] * fabs(rotBToA[1][ij]) + OBB_A.v3dOBBLength[2] * fabs(rotBToA[2][ij]));
+        dRa = (OBB_A.v3dOBBLength[0] * fabs(rotBToA[0][ij]) + OBB_A.v3dOBBLength[1] * fabs(rotBToA[1][ij]) +
+               OBB_A.v3dOBBLength[2] * fabs(rotBToA[2][ij]));
         dRb = OBB_B.v3dOBBLength[ij];
-        if (std::fabs(v3dBToAPose[0] * rotBToA[0][ij] + v3dBToAPose[1] * rotBToA[1][ij] + v3dBToAPose[2] * rotBToA[2][ij]) > (dRa + dRb))
+        if (std::fabs(v3dBToAPose[0] * rotBToA[0][ij] + v3dBToAPose[1] * rotBToA[1][ij] +
+                      v3dBToAPose[2] * rotBToA[2][ij]) > (dRa + dRb))
         {
             return false;
         }
@@ -88,89 +91,88 @@ bool ModelManager::IsColliding( OBBData &OBB_A,  OBBData &OBB_B,  TransformMatri
     dT = fabs(v3dBToAPose.Z() * rotBToA[1][0] - v3dBToAPose.Y() * rotBToA[2][0]);
     dRa = OBB_A.v3dOBBLength[1] * fabs(rotBToA[2][0]) + OBB_A.v3dOBBLength[2] * fabs(rotBToA[1][0]);
     dRb = OBB_B.v3dOBBLength[1] * fabs(rotBToA[0][2]) + OBB_B.v3dOBBLength[2] * fabs(rotBToA[0][1]);
-    if(dT > (dRa + dRb))
+    if (dT > (dRa + dRb))
     {
         return false;
     }
 
-    //u0_A X u1_B  2
+    // u0_A X u1_B  2
     dT = fabs(v3dBToAPose.Z() * rotBToA[1][1] - v3dBToAPose.Y() * rotBToA[2][1]);
     dRa = OBB_A.v3dOBBLength[1] * fabs(rotBToA[2][1]) + OBB_A.v3dOBBLength[2] * fabs(rotBToA[1][1]);
-    dRb = OBB_B.v3dOBBLength.X() *fabs(rotBToA[0][2]) + OBB_B.v3dOBBLength.Z() * fabs(rotBToA[0][0]);
-    if(dT > (dRa + dRb))
+    dRb = OBB_B.v3dOBBLength.X() * fabs(rotBToA[0][2]) + OBB_B.v3dOBBLength.Z() * fabs(rotBToA[0][0]);
+    if (dT > (dRa + dRb))
     {
         return false;
     }
 
-    //u0_A X u2_B  3
+    // u0_A X u2_B  3
     dT = fabs(v3dBToAPose.Z() * rotBToA[1][2] - v3dBToAPose.Y() * rotBToA[2][2]);
-    dRa = OBB_A.v3dOBBLength.Y() * fabs(rotBToA[2][2]) + OBB_A.v3dOBBLength.Z() * fabs(rotBToA[1][2]) ;
+    dRa = OBB_A.v3dOBBLength.Y() * fabs(rotBToA[2][2]) + OBB_A.v3dOBBLength.Z() * fabs(rotBToA[1][2]);
     dRb = OBB_B.v3dOBBLength.X() * fabs(rotBToA[0][1]) + OBB_B.v3dOBBLength.Y() * fabs(rotBToA[0][0]);
-    if(dT > (dRa + dRb))
+    if (dT > (dRa + dRb))
     {
         return false;
     }
 
-    //u1_A X u0_B   4
-    dT = fabs(v3dBToAPose.X() * rotBToA[2][0] - v3dBToAPose.Z() *fabs(rotBToA[0][0]));
+    // u1_A X u0_B   4
+    dT = fabs(v3dBToAPose.X() * rotBToA[2][0] - v3dBToAPose.Z() * fabs(rotBToA[0][0]));
     dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[2][0] + OBB_A.v3dOBBLength.Z() * fabs(rotBToA[0][0]));
     dRb = OBB_B.v3dOBBLength.Y() * fabs(rotBToA[1][2]) + OBB_B.v3dOBBLength.Z() * fabs(rotBToA[1][1]);
-    if(dT > (dRa + dRb))
+    if (dT > (dRa + dRb))
     {
         return false;
     }
 
-    //u1_A X u1_B  5
+    // u1_A X u1_B  5
     dT = fabs(v3dBToAPose.X() * fabs(rotBToA[2][1]) - v3dBToAPose.Z() * fabs(rotBToA[0][1]));
     dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[2][1]) + OBB_A.v3dOBBLength.Z() * fabs(rotBToA[0][1]);
     dRb = OBB_B.v3dOBBLength.X() * fabs(rotBToA[1][2]) + OBB_B.v3dOBBLength.Z() * fabs(rotBToA[1][0]);
-    if(dT > (dRa + dRb))
+    if (dT > (dRa + dRb))
     {
         return false;
     }
 
-    //u1_A X u2_B  6
+    // u1_A X u2_B  6
     dT = fabs(v3dBToAPose.X() * rotBToA[2][2] - v3dBToAPose.Z() * rotBToA[0][2]);
     dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[2][2] + OBB_A.v3dOBBLength.Z() * fabs(rotBToA[0][2]));
     dRb = OBB_B.v3dOBBLength.X() * fabs(rotBToA[1][1]) + OBB_B.v3dOBBLength.Y() * fabs(rotBToA[1][0]);
-    if(dT > (dRa + dRb))
+    if (dT > (dRa + dRb))
     {
         return false;
     }
 
-    //u2_A X u0_B  7
+    // u2_A X u0_B  7
     dT = fabs(v3dBToAPose.Y() * rotBToA[0][0] - v3dBToAPose.X() * rotBToA[1][0]);
     dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[1][0]) + OBB_A.v3dOBBLength.Y() * fabs(rotBToA[0][0]);
     dRb = OBB_B.v3dOBBLength.Y() * fabs(rotBToA[2][2]) + OBB_B.v3dOBBLength.Z() * fabs(rotBToA[2][1]);
-    if(dT > (dRa + dRb))
+    if (dT > (dRa + dRb))
     {
         return false;
     }
 
-    //u2_A X u1_B  8
+    // u2_A X u1_B  8
     dT = fabs(v3dBToAPose.Y() * rotBToA[0][2] - v3dBToAPose.X() * rotBToA[1][1]);
     dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[1][1]) + OBB_A.v3dOBBLength.Y() * fabs(rotBToA[0][1]);
     dRb = OBB_B.v3dOBBLength.X() * fabs(rotBToA[2][2]) + OBB_B.v3dOBBLength.Z() * fabs(rotBToA[2][0]);
-    if(dT > (dRa + dRb))
+    if (dT > (dRa + dRb))
     {
         return false;
     }
 
-    //u2_A X u2_B  9
+    // u2_A X u2_B  9
     dT = fabs(v3dBToAPose.Y() * rotBToA[0][2] - v3dBToAPose.X() * rotBToA[1][2]);
     dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[1][2]) + OBB_A.v3dOBBLength.Y() * fabs(rotBToA[0][2]);
     dRb = OBB_B.v3dOBBLength.X() * fabs(rotBToA[2][1]) + OBB_B.v3dOBBLength.Y() * fabs(rotBToA[2][0]);
-    if(dT > (dRa + dRb))
+    if (dT > (dRa + dRb))
     {
         return false;
     }
     return true;
 }
 
-bool ModelManager::ReadAscllSTlFile(const char *cFileName, ModelDataBase &ModelData)
+bool ModelManager::ReadAscllSTlFile(const char *cFileName, ModelDataBase &oModelData)
 {
     Vector3D v3dData;
-    ModelDataBase oDataBase;
     int i = 0, j = 0, cnt = 0, pCnt = 4;
     char a[100];
     char str[100];
@@ -204,22 +206,22 @@ bool ModelManager::ReadAscllSTlFile(const char *cFileName, ModelDataBase &ModelD
         {
             if (0 == iIndex)
             {
-                oDataBase.v3dNormalVector.push_back(v3dData);
+                oModelData.v3dNormalVector.push_back(v3dData);
                 iIndex++;
             }
             else if (1 == iIndex)
             {
-                oDataBase.vecPoint.push_back(v3dData);
+                oModelData.vecPoint.push_back(v3dData);
                 iIndex++;
             }
             else if (2 == iIndex)
             {
-                oDataBase.vecPoint.push_back(v3dData);
+                oModelData.vecPoint.push_back(v3dData);
                 iIndex++;
             }
             else if (3 == iIndex)
             {
-                oDataBase.vecPoint.push_back(v3dData);
+                oModelData.vecPoint.push_back(v3dData);
                 iIndex = 0;
             }
         }
