@@ -32,7 +32,10 @@ public:
     Rotation Cov(std::vector<Vector3D> &vSrc_1);
     Rotation Transpose();
     void SetEye();
+    Rotation GetOBBDirectionVector(Rotation &rotData);
 public:
+private:
+    Matrix Householder(Vector<double> &vecData);
 private:
     Matrix m_matData;
     int m_iRow;

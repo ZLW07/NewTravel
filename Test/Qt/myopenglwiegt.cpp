@@ -14,11 +14,15 @@ MyopenGLWiegt::MyopenGLWiegt(QWidget *parent) : QOpenGLWidget(parent)
     fullscreen = false;
     m_rtri = 0.0f;
     m_rquad = 0.0f;
+    OBBData oOBBData;
+    ModelManager oMod;
+    bool bReadJoint1 = oMod.LoadModelData("../../Data/RobotModel/TX2-60L FOREARM.STL", m_oModelData, oOBBData);
+    ZLOG << " Result is "  <<  bReadJoint1;
 
-    //    QTimer *timer = new QTimer(this);                   //创建一个定时器
-    //    //将定时器的计时信号与updateGL()绑定
-    //    connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-    //    timer->start(10);
+        QTimer *timer = new QTimer(this);                   //创建一个定时器
+        //将定时器的计时信号与updateGL()绑定
+        connect(timer, SIGNAL(timeout()), this, SLOT(update()));
+        timer->start(10);
 }
 
 /*
@@ -32,13 +36,61 @@ MyopenGLWiegt::MyopenGLWiegt(QWidget *parent) : QOpenGLWidget(parent)
 void MyopenGLWiegt::initializeGL()
 {
 
-    glClearColor(0.0, 0.0, 0.0, 0.0); //黑色背景
+    m_Core = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>();
+    GLfloat vertices[12] ;
+    ZLOG << "size is " << m_oModelData.vecPoint.size();
+    GLuint  ij = 0;
+    for (int ii = 0; ii < 4; ++ii)
+    {
+        vertices[ij] = m_oModelData.vecPoint[ii].X();
+        ij++;
+        vertices[ij] = m_oModelData.vecPoint[ii].Y();
+        ij++;
+        vertices[ij]  = m_oModelData.vecPoint[ii].Z();
+    }
+
+//    GLfloat vertices[] = {
+//        0.5f, 0.5, 0.0f,
+//        0.5f, -0.5f, 0.0f,
+//    -0.5f, -0.5, 0.0,
+//    -0.5f, 0.5f, 0.0f};
+    GLuint indices[] ={ 0 , 1, 2, 1, 3, 2};
+
+
+   m_Core->glGenVertexArrays(1, &m_VAO);
+   m_Core->glGenBuffers(1,&m_glVBO);
+   m_Core->glGenBuffers(1, &m_EBO);
+
+    m_Core->glBindVertexArray(m_VAO);
+   m_Core->glBindBuffer(GL_ARRAY_BUFFER, m_glVBO);
+   m_Core->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+   m_Core->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+   m_Core->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+   m_Core->glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,3 * sizeof (GL_FLOAT),(void*)0);
+   m_Core->glEnableVertexAttribArray(0);
+
+//    m_Core->glPolygonMode(GL_BACK,GL_LINE);
+
+   m_Core->glBindVertexArray(0);
+   m_Core->glBindBuffer(GL_ARRAY_BUFFER, 0);
+   m_Core->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+   QOpenGLShaderProgram shaderProgram;
+   QOpenGLShader vertexShader(QOpenGLShader::Vertex);
+   vertexShader.compileSourceFile("/home/wei/Documents/NewTravel/Test/Qt/triangle.vert");
+   QOpenGLShader fragmentShader(QOpenGLShader::Fragment);
+   fragmentShader.compileSourceFile("/home/wei/Documents/NewTravel/Test/Qt/triangle.frag");
+   m_oShaderProgram.addShader(&vertexShader);
+   m_oShaderProgram.addShader(&fragmentShader);
+   m_oShaderProgram.link();
+
+/*   glClearColor(1.0, 1.0, 1.0, 1.0); //黑色背景
     glShadeModel(GL_SMOOTH);          //启用阴影平滑
 
     glClearDepth(1.0);                                 //设置深度缓存
     glEnable(GL_DEPTH_TEST);                           //启用深度测试
     glDepthFunc(GL_LEQUAL);                            //所作深度测试的类型
-    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); //告诉系统对透视进行修正
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); //告诉系统对透视进行修正*/
 }
 
 /*
@@ -50,24 +102,20 @@ void MyopenGLWiegt::initializeGL()
  */
 void MyopenGLWiegt::paintGL()
 {
+    m_Core->glClearColor(0.6f, 0.8f, 0.6f, 1.0f);
+    m_Core ->glClear(GL_COLOR_BUFFER_BIT);
+    m_oShaderProgram.bind();
+    m_Core->glBindVertexArray(m_VAO);
+//    m_Core->glDrawArrays(GL_TRIANGLES, 0, 3);
+    m_Core->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+//    m_Core->glPolygonMode(GL_BACK,GL_LINE);
+//    update();
+
+    /*
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //清除屏幕和深度缓存
     glLoadIdentity();                                   //重置当前的模型观察矩阵
-
-    std::vector<float> vecData;
-    vecData.push_back(-0.0);
-    vecData.push_back(1.0);
-    vecData.push_back(0.0);
-
-    vecData.push_back(-1.0);
-    vecData.push_back(-1.0);
-    vecData.push_back(1.0);
-
-    vecData.push_back(1.0);
-    vecData.push_back(-1.0);
-    vecData.push_back(1.0);
-
-    glTranslatef(-1.5f, 0.0f, -6.0f);    //左移1.5单位，并移入屏幕6.0单位
-    glRotatef(m_rtri, 0.0f, 1.0f, 0.0f); //绕y轴旋转三角形
+    glTranslatef(0.0f, 0.0f, -2.0f);    //左移1.5单位，并移入屏幕6.0单位
+//    glRotatef(m_rtri, 0.0f, 1.0f, -2.0f); //绕y轴旋转三角形
     glBegin(GL_TRIANGLES);               //开始绘制金字塔
     glColor3f(1.0f, 0.0f, 0.0f);         //红色
                                          //    glVertex3f(0.0f, 1.0f, 0.0f);                   //上顶点(前侧面)
@@ -75,33 +123,34 @@ void MyopenGLWiegt::paintGL()
                                          //    glVertex3f(-1.0f, -1.0f, 1.0f);                 //左下(前侧面)
                                          //    // glColor3f(0.0f, 0.0f, 1.0f);                    //蓝色
                                          //    glVertex3f(1.0f, -1.0f, 1.0f);                  //右下(前侧面)
-    for (int ii = 0; ii < vecData.size(); ++ii)
+    ZLOG << "size is " << m_oModelData.vecPoint.size();
+    for (int ii = 0; ii <m_oModelData.vecPoint.size(); ++ii)
     {
-        glVertex3f(vecData.at(ii), vecData.at(ii + 1), vecData.at(ii + 2));
-        ii = ii + 2;
-    }
+        m_oModelData.vecPoint[ii].X();
+        glVertex3f( m_oModelData.vecPoint[ii].X()/2,m_oModelData.vecPoint[ii].Y()/2,m_oModelData.vecPoint[ii].Z()/2);
+    }*/
 
-    //   glColor3f(1.0f, 0.0f, 0.0f);                    //红色
-    glVertex3f(0.0f, 1.0f, 0.0f); //上顶点(右侧面)
-    //  glColor3f(0.0f, 0.0f, 1.0f);                    //蓝色
-    glVertex3f(1.0f, -1.0f, 1.0f);  //左下(右侧面)
-                                    //    glColor3f(0.0f, 1.0f, 0.0f);                    //绿色
-    glVertex3f(1.0f, -1.0f, -1.0f); //右下(右侧面)
-
-    //   glColor3f(1.0f, 0.0f, 0.0f);                    //红色
-    glVertex3f(0.0f, 1.0f, 0.0f);    //上顶点(后侧面)
-                                     //    glColor3f(0.0f, 1.0f, 0.0f);                    //绿色
-    glVertex3f(1.0f, -1.0f, -1.0f);  //左下(后侧面)
-                                     //    glColor3f(0.0f, 0.0f, 1.0f);                    //蓝色
-    glVertex3f(-1.0f, -1.0f, -1.0f); //右下(后侧面)
-
-    //    glColor3f(1.0f, 0.0f, 0.0f);                    //红色
-    glVertex3f(0.0f, 1.0f, 0.0f); //上顶点(左侧面)
-    //   glColor3f(0.0f, 0.0f, 1.0f);                    //蓝色
-    glVertex3f(-1.0f, -1.0f, -1.0f); //左下(左侧面)
-    // glColor3f(0.0f, 1.0f, 0.0f);                    //绿色
-    glVertex3f(-1.0f, -1.0f, 1.0f); //右下(左侧面)
-    glEnd();                        //金字塔绘制结束
+//    //   glColor3f(1.0f, 0.0f, 0.0f);                    //红色
+//    glVertex3f(0.0f, 1.0f, 0.0f); //上顶点(右侧面)
+//    //  glColor3f(0.0f, 0.0f, 1.0f);                    //蓝色
+//    glVertex3f(1.0f, -1.0f, 1.0f);  //左下(右侧面)
+//                                    //    glColor3f(0.0f, 1.0f, 0.0f);                    //绿色
+//    glVertex3f(1.0f, -1.0f, -1.0f); //右下(右侧面)
+//
+//    //   glColor3f(1.0f, 0.0f, 0.0f);                    //红色
+//    glVertex3f(0.0f, 1.0f, 0.0f);    //上顶点(后侧面)
+//                                     //    glColor3f(0.0f, 1.0f, 0.0f);                    //绿色
+//    glVertex3f(1.0f, -1.0f, -1.0f);  //左下(后侧面)
+//                                     //    glColor3f(0.0f, 0.0f, 1.0f);                    //蓝色
+//    glVertex3f(-1.0f, -1.0f, -1.0f); //右下(后侧面)
+//
+//    //    glColor3f(1.0f, 0.0f, 0.0f);                    //红色
+//    glVertex3f(0.0f, 1.0f, 0.0f); //上顶点(左侧面)
+//    //   glColor3f(0.0f, 0.0f, 1.0f);                    //蓝色
+//    glVertex3f(-1.0f, -1.0f, -1.0f); //左下(左侧面)
+//    // glColor3f(0.0f, 1.0f, 0.0f);                    //绿色
+//    glVertex3f(-1.0f, -1.0f, 1.0f); //右下(左侧面)
+   // glEnd();                        //金字塔绘制结束
 
     //    glLoadIdentity();                                   //重置模型观察矩阵
     //    glTranslatef(1.5f, 0.0f, -6.0f);                    //右移1.5单位，并移入屏幕6.0单位
@@ -143,20 +192,20 @@ void MyopenGLWiegt::paintGL()
     //    glVertex3f(1.0f, -1.0f, 1.0f);                  //左下(右面)
     //    glVertex3f(1.0f, -1.0f, -1.0f);                 //右下(右面)
     //    glEnd();                                            //立方体绘制结束
-
+/*
     m_rtri += 0.5f;  //增加金字体的旋转变量
-    m_rquad -= 0.5f; //减少立方体的旋转变量
+    m_rquad -= 0.5f; //减少立方体的旋转变量*/
 }
 
 void MyopenGLWiegt::resizeGL(int width, int height)
 {
-    glViewport(0, 0, (GLint)width, (GLint)height); //重置当前的视口
+/*    glViewport(0, 0, (GLint)width, (GLint)height); //重置当前的视口
     glMatrixMode(GL_PROJECTION);                   //选择投影矩阵
     glLoadIdentity();                              //重置投影矩阵
     //设置视口的大小
     gluPerspective(45.0, (GLfloat)width / (GLfloat)height, 0.1, 100.0);
     glMatrixMode(GL_MODELVIEW); //选择模型观察矩阵
-    glLoadIdentity();
+    glLoadIdentity();*/
 }
 
 void MyopenGLWiegt::keyPressEvent(QKeyEvent *event)

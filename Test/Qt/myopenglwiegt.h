@@ -5,10 +5,11 @@
 #ifndef NEWTRAVEL_MYOPENGLWIEGT_H
 #define NEWTRAVEL_MYOPENGLWIEGT_H
 
-#include<QOpenGLWidget>
-#include<QOpenGLFunctions>
+#include "Model/model_data.h"
 
-class QOpenGLShaderProgram;
+#include<QOpenGLWidget>
+#include <QOpenGLFunctions_3_3_Core>
+#include  <QOpenGLShaderProgram>
 
 //多继承，自定义的MyopenGLWiegt类同时继承自QOpenGLWidget和QOpenGLFunctions
 //这样就可以在类中直接使用QOpenGLFunctions中的OpenGL函数，而不需要创建QOpenGLFuctions对象
@@ -26,10 +27,16 @@ protected:
     void keyPressEvent(QKeyEvent *event);           //处理键盘按下事件
 
 private:
+    GLuint m_glVBO;
+    GLuint m_VAO;
+    GLuint  m_EBO;
+    QOpenGLFunctions_3_3_Core *m_Core;
+    QOpenGLShaderProgram  m_oShaderProgram;
 
     bool fullscreen;
     GLfloat m_rtri;                                 //控制三角形的角度
     GLfloat m_rquad;                                //控制四边形的角度
+    ModelDataBase m_oModelData;
 };
 
 #endif // NEWTRAVEL_MYOPENGLWIEGT_H

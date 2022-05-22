@@ -23,6 +23,7 @@ TEST_F(TestModel, ReadMode)
     OBBData oOBBData;
     ModelManager oMod;
     bool bReadJoint1 = oMod.LoadModelData("../../Data/RobotModel/TX2-60L FOREARM.STL", oModelData, oOBBData);
+    ZLOG << " The size is  " << oModelData.vecPoint.size();
     EXPECT_TRUE(bReadJoint1);
 }
 

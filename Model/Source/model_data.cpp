@@ -25,7 +25,7 @@ OBBData ModelManager::GetModelDataVector(ModelDataBase &oDataBase)
     Rotation rotRot;
     auto Point = oDataBase.vecPoint;
     rotRot.Cov(Point);
-    oOBBData.rotBaseVector = GetOBBDirectionVector(rotRot);
+    oOBBData.rotBaseVector = oOBBData.rotBaseVector.GetOBBDirectionVector(rotRot);
     Rotation oTranspose = oOBBData.rotBaseVector.Transpose();
     std::vector<Vector3D> vecUVWPoint;
     vecUVWPoint.resize(Point.size());
