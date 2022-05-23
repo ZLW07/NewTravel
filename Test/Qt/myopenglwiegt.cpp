@@ -3,231 +3,179 @@
 //
 
 #include "myopenglwiegt.h"
-#include <GL/glut.h>
-#include <QKeyEvent>
-#include <QOpenGLWidget>
-#include <QTimer>
-#include <QWidget>
+#include <QDebug>
+#include <QFile>
+#include <QMouseEvent>
+#include <QOpenGLShaderProgram>
+#include <QStringList>
+#include <QWheelEvent>
+#include <QtMath>
 
-MyopenGLWiegt::MyopenGLWiegt(QWidget *parent) : QOpenGLWidget(parent)
+Widget::Widget(QWidget *parent)
+    : QOpenGLWidget(parent), VBO(QOpenGLBuffer::VertexBuffer), xtrans(0), ytrans(0), ztrans(0.0)
 {
-    fullscreen = false;
-    m_rtri = 0.0f;
-    m_rquad = 0.0f;
-    OBBData oOBBData;
-    ModelManager oMod;
-    bool bReadJoint1 = oMod.LoadModelData("../../Data/RobotModel/TX2-60L FOREARM.STL", m_oModelData, oOBBData);
-    ZLOG << " Result is "  <<  bReadJoint1;
+    QSurfaceFormat format;
+    format.setAlphaBufferSize(24); //设置alpha缓冲大小
+    format.setVersion(3, 3);       //设置版本号
+    format.setSamples(10);         //设置重采样次数，用于反走样
 
-        QTimer *timer = new QTimer(this);                   //创建一个定时器
-        //将定时器的计时信号与updateGL()绑定
-        connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-        timer->start(10);
+    this->setFormat(format);
+
+    vertices = loadAscllStl("../../Data/RobotModel/TX2-60L FOREARM.STL", 1);
 }
 
-/*
- * 这里首先调用QOpenGLFunctions::initializeOpenGLFunctions()对OpenGL函数进行初始化，这样QOpenGLFunctions中的函数只能在当前环境中使用
- * 然后进行了着色器的i相关设置，使用QOpenGLShader创建了一个顶点着色器和一个片段着色器，并使用compileSourceCode()函数为着色器设置了源码并进行了编译
- * 下面创建了着色器程序QOpenGLShaderProgram对象，使用addShapder()将前面已经编译好的着色器添加进来，然后调用link()函数将所有加入到程序中的着色器链接到一起
- * 最后调用bind()函数将该着色器程序绑定到当前OpenGLhuanjingzhong1
- * (为了使程序尽量简单，这里直接在程序中编写了着色器源码，对于较复杂的着色器源码，一般是写在文件中的，可以使用compileSourceFile()进行加载编译。
- *  这个程序只是绘制一个白色的点，所以只需要指定一个顶点vec4和渲染颜色vec4，这里的vec4类型是GLSL的4位浮点数向量）
- */
-void MyopenGLWiegt::initializeGL()
+Widget::~Widget()
 {
+    makeCurrent();
+}
 
-    m_Core = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>();
-    GLfloat vertices[12] ;
-    ZLOG << "size is " << m_oModelData.vecPoint.size();
-    GLuint  ij = 0;
-    for (int ii = 0; ii < 4; ++ii)
+QVector<float> Widget::loadAscllStl(QString filename, int ratio)
+{
+    QVector<float> vertices_temp;
+    ZLOG << "load text file ";
+
+    QFile file(filename);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        vertices[ij] = m_oModelData.vecPoint[ii].X();
-        ij++;
-        vertices[ij] = m_oModelData.vecPoint[ii].Y();
-        ij++;
-        vertices[ij]  = m_oModelData.vecPoint[ii].Z();
+        ZLOG << "Open stl_file failed.";
     }
-
-//    GLfloat vertices[] = {
-//        0.5f, 0.5, 0.0f,
-//        0.5f, -0.5f, 0.0f,
-//    -0.5f, -0.5, 0.0,
-//    -0.5f, 0.5f, 0.0f};
-    GLuint indices[] ={ 0 , 1, 2, 1, 3, 2};
-
-
-   m_Core->glGenVertexArrays(1, &m_VAO);
-   m_Core->glGenBuffers(1,&m_glVBO);
-   m_Core->glGenBuffers(1, &m_EBO);
-
-    m_Core->glBindVertexArray(m_VAO);
-   m_Core->glBindBuffer(GL_ARRAY_BUFFER, m_glVBO);
-   m_Core->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-   m_Core->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-   m_Core->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-   m_Core->glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,3 * sizeof (GL_FLOAT),(void*)0);
-   m_Core->glEnableVertexAttribArray(0);
-
-//    m_Core->glPolygonMode(GL_BACK,GL_LINE);
-
-   m_Core->glBindVertexArray(0);
-   m_Core->glBindBuffer(GL_ARRAY_BUFFER, 0);
-   m_Core->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-   QOpenGLShaderProgram shaderProgram;
-   QOpenGLShader vertexShader(QOpenGLShader::Vertex);
-   vertexShader.compileSourceFile("/home/wei/Documents/NewTravel/Test/Qt/triangle.vert");
-   QOpenGLShader fragmentShader(QOpenGLShader::Fragment);
-   fragmentShader.compileSourceFile("/home/wei/Documents/NewTravel/Test/Qt/triangle.frag");
-   m_oShaderProgram.addShader(&vertexShader);
-   m_oShaderProgram.addShader(&fragmentShader);
-   m_oShaderProgram.link();
-
-/*   glClearColor(1.0, 1.0, 1.0, 1.0); //黑色背景
-    glShadeModel(GL_SMOOTH);          //启用阴影平滑
-
-    glClearDepth(1.0);                                 //设置深度缓存
-    glEnable(GL_DEPTH_TEST);                           //启用深度测试
-    glDepthFunc(GL_LEQUAL);                            //所作深度测试的类型
-    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); //告诉系统对透视进行修正*/
-}
-
-/*
- * 作为简单示例，这里直接调用glDrawArrays()函数来进行OpenGL图形绘制
- * void glDrawArrays(GLenum mode,GLint first,GLsizei count)该函数使用当前绑定的顶点数组来建立几何图形
- * 第一个参数mode设置了构建图形的类型，GL_POINTS(点)、GL_LINES(线)、GL_LINE_STRIP(条带线)、GL_LINE_LOOP(循环线)、GL_TRIANGLES(独立三角形)、GL_TRIANGLE_STRIP(三角形条带)、GL_TRIANGLE_FAN(三角形扇面)
- * 第2个参数first指定元素起始位置，第3个参数count为元素位置
- * 就是用顶点数组中索引为first-first+count-1的元素为顶点来绘制mode指定的图形
- */
-void MyopenGLWiegt::paintGL()
-{
-    m_Core->glClearColor(0.6f, 0.8f, 0.6f, 1.0f);
-    m_Core ->glClear(GL_COLOR_BUFFER_BIT);
-    m_oShaderProgram.bind();
-    m_Core->glBindVertexArray(m_VAO);
-//    m_Core->glDrawArrays(GL_TRIANGLES, 0, 3);
-    m_Core->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-//    m_Core->glPolygonMode(GL_BACK,GL_LINE);
-//    update();
-
-    /*
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //清除屏幕和深度缓存
-    glLoadIdentity();                                   //重置当前的模型观察矩阵
-    glTranslatef(0.0f, 0.0f, -2.0f);    //左移1.5单位，并移入屏幕6.0单位
-//    glRotatef(m_rtri, 0.0f, 1.0f, -2.0f); //绕y轴旋转三角形
-    glBegin(GL_TRIANGLES);               //开始绘制金字塔
-    glColor3f(1.0f, 0.0f, 0.0f);         //红色
-                                         //    glVertex3f(0.0f, 1.0f, 0.0f);                   //上顶点(前侧面)
-                                         //    //   glColor3f(0.0f, 1.0f, 0.0f);                    //绿色
-                                         //    glVertex3f(-1.0f, -1.0f, 1.0f);                 //左下(前侧面)
-                                         //    // glColor3f(0.0f, 0.0f, 1.0f);                    //蓝色
-                                         //    glVertex3f(1.0f, -1.0f, 1.0f);                  //右下(前侧面)
-    ZLOG << "size is " << m_oModelData.vecPoint.size();
-    for (int ii = 0; ii <m_oModelData.vecPoint.size(); ++ii)
+    while (!file.atEnd())
     {
-        m_oModelData.vecPoint[ii].X();
-        glVertex3f( m_oModelData.vecPoint[ii].X()/2,m_oModelData.vecPoint[ii].Y()/2,m_oModelData.vecPoint[ii].Z()/2);
-    }*/
+        QString line = file.readLine().trimmed(); // trimmed去除了开头和结尾的空白字符串
+        QStringList words = line.split(' ', QString::SkipEmptyParts);
 
-//    //   glColor3f(1.0f, 0.0f, 0.0f);                    //红色
-//    glVertex3f(0.0f, 1.0f, 0.0f); //上顶点(右侧面)
-//    //  glColor3f(0.0f, 0.0f, 1.0f);                    //蓝色
-//    glVertex3f(1.0f, -1.0f, 1.0f);  //左下(右侧面)
-//                                    //    glColor3f(0.0f, 1.0f, 0.0f);                    //绿色
-//    glVertex3f(1.0f, -1.0f, -1.0f); //右下(右侧面)
-//
-//    //   glColor3f(1.0f, 0.0f, 0.0f);                    //红色
-//    glVertex3f(0.0f, 1.0f, 0.0f);    //上顶点(后侧面)
-//                                     //    glColor3f(0.0f, 1.0f, 0.0f);                    //绿色
-//    glVertex3f(1.0f, -1.0f, -1.0f);  //左下(后侧面)
-//                                     //    glColor3f(0.0f, 0.0f, 1.0f);                    //蓝色
-//    glVertex3f(-1.0f, -1.0f, -1.0f); //右下(后侧面)
-//
-//    //    glColor3f(1.0f, 0.0f, 0.0f);                    //红色
-//    glVertex3f(0.0f, 1.0f, 0.0f); //上顶点(左侧面)
-//    //   glColor3f(0.0f, 0.0f, 1.0f);                    //蓝色
-//    glVertex3f(-1.0f, -1.0f, -1.0f); //左下(左侧面)
-//    // glColor3f(0.0f, 1.0f, 0.0f);                    //绿色
-//    glVertex3f(-1.0f, -1.0f, 1.0f); //右下(左侧面)
-   // glEnd();                        //金字塔绘制结束
-
-    //    glLoadIdentity();                                   //重置模型观察矩阵
-    //    glTranslatef(1.5f, 0.0f, -6.0f);                    //右移1.5单位，并移入屏幕6.0单位
-    //    glRotatef(m_rquad, 1.0f, 0.0f, 0.0f);               //绕x轴旋转四边形
-    //    glBegin(GL_QUADS);                                  //开始绘制立方体
-    //    glColor3f(0.0f, 1.0f, 0.0f);                    //绿色
-    //    glVertex3f(1.0f, 1.0f, -1.0f);                  //右上(顶面)
-    //    glVertex3f(-1.0f, 1.0f, -1.0f);                 //左上(顶面)
-    //    glVertex3f(-1.0f, 1.0f, 1.0f);                  //左下(顶面)
-    //    glVertex3f(1.0f, 1.0f, 1.0f);                   //右下(顶面)
-    //
-    //    glColor3f(1.0f, 0.5f, 0.0f);                    //橙色
-    //    glVertex3f(1.0f, -1.0f, 1.0f);                  //右上(底面)
-    //    glVertex3f(-1.0f, -1.0f, 1.0f);                 //左上(底面)
-    //    glVertex3f(-1.0f, -1.0f, -1.0f);                //左下(底面)
-    //    glVertex3f(1.0f, -1.0f, -1.0f);                 //右下(底面)
-    //
-    //    glColor3f(1.0f, 0.0f, 0.0f);                    //红色
-    //    glVertex3f(1.0f, 1.0f, 1.0f);                   //右上(前面)
-    //    glVertex3f(-1.0f, 1.0f, 1.0f);                  //左上(前面)
-    //    glVertex3f(-1.0f, -1.0f, 1.0f);                 //左下(前面)
-    //    glVertex3f(1.0f, -1.0f, 1.0f);                  //右下(前面)
-    //
-    //    glColor3f(1.0f, 1.0f, 0.0f);                    //黄色
-    //    glVertex3f(1.0f, -1.0f, -1.0f);                 //右上(后面)
-    //    glVertex3f(-1.0f, -1.0f, -1.0f);                //左上(后面)
-    //    glVertex3f(-1.0f, 1.0f, -1.0f);                 //左下(后面)
-    //    glVertex3f(1.0f, 1.0f, -1.0f);                  //右下(后面)
-    //
-    //    glColor3f(0.0f, 0.0f, 1.0f);                    //蓝色
-    //    glVertex3f(-1.0f, 1.0f, 1.0f);                  //右上(左面)
-    //    glVertex3f(-1.0f, 1.0f, -1.0f);                 //左上(左面)
-    //    glVertex3f(-1.0f, -1.0f, -1.0f);                //左下(左面)
-    //    glVertex3f(-1.0f, -1.0f, 1.0f);                 //右下(左面)
-    //
-    //    glColor3f(1.0f, 0.0f, 1.0f);                    //紫色
-    //    glVertex3f(1.0f, 1.0f, -1.0f);                  //右上(右面)
-    //    glVertex3f(1.0f, 1.0f, 1.0f);                   //左上(右面)
-    //    glVertex3f(1.0f, -1.0f, 1.0f);                  //左下(右面)
-    //    glVertex3f(1.0f, -1.0f, -1.0f);                 //右下(右面)
-    //    glEnd();                                            //立方体绘制结束
-/*
-    m_rtri += 0.5f;  //增加金字体的旋转变量
-    m_rquad -= 0.5f; //减少立方体的旋转变量*/
-}
-
-void MyopenGLWiegt::resizeGL(int width, int height)
-{
-/*    glViewport(0, 0, (GLint)width, (GLint)height); //重置当前的视口
-    glMatrixMode(GL_PROJECTION);                   //选择投影矩阵
-    glLoadIdentity();                              //重置投影矩阵
-    //设置视口的大小
-    gluPerspective(45.0, (GLfloat)width / (GLfloat)height, 0.1, 100.0);
-    glMatrixMode(GL_MODELVIEW); //选择模型观察矩阵
-    glLoadIdentity();*/
-}
-
-void MyopenGLWiegt::keyPressEvent(QKeyEvent *event)
-{
-    switch (event->key())
-    {
-        // F1为全屏和普通屏的切换键
-    case Qt::Key_F1:
-        fullscreen = !fullscreen;
-        if (fullscreen)
+        if (words[0] == "facet")
         {
-            showFullScreen();
+            Normal = {ratio * words[2].toFloat(), ratio * words[3].toFloat(), ratio * words[4].toFloat()};
+        }
+        else if (words[0] == "vertex")
+        {
+            Position = {ratio * words[1].toFloat(), ratio * words[2].toFloat(), ratio * words[3].toFloat()};
+            vertices_temp.append(Position);
+            vertices_temp.append(Normal);
         }
         else
         {
-            showNormal();
+            continue;
         }
-        update();
-        //        updateGL();
-        break;
-        // ESC为退出键
-    case Qt::Key_Escape:
-        close();
     }
+
+    ZLOG << "write vertice_temp success!";
+    file.close();
+    return vertices_temp;
+}
+
+void Widget::initializeGL()
+{
+    this->initializeOpenGLFunctions(); //初始化opengl函数
+    shaderprogram.create();            //生成着色器程序
+    if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Vertex, "../../Test/Qt/stl.vert"))
+    {
+        ZLOG << "failed load ../../Test/Qt/stl.vert"; //如果编译出错,打印报错信息
+    }
+    if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Fragment, "../../Test/Qt/stl.frag"))
+    {
+        ZLOG << "failed load ../../Test/Qt/stl.frag"; //如果编译出错,打印报错信息
+    }
+    //将添加到此程序的着色器与addshader链接在一起
+    if (!shaderprogram.link())
+    {
+        ZLOG << "ERROR: link error"; //如果链接出错,打印报错信息
+    }
+    //    QOpenGLVertexArrayObject::Binder{&VAO};
+
+    VAO.create(); // 创建一个VAO对象，OpenGL会给它（顶点数组缓存对象）分配一个id
+    VAO.bind();   //将RC中的当前顶点数组缓存对象Id设置为VAO的id
+    VBO.create();
+    VBO.bind();
+    VBO.allocate(vertices.data(),
+        sizeof(float) * vertices.size()); //将顶点数据分配到VBO中，第一个参数为数据指针，第二个参数为数据的字节长度
+
+    shaderprogram.setAttributeBuffer("aPos", GL_FLOAT, 0, 3, sizeof(GLfloat) * 6);
+    shaderprogram.enableAttributeArray("aPos");
+    shaderprogram.setAttributeBuffer("aNormal", GL_FLOAT, sizeof(GLfloat) * 3, 3, sizeof(GLfloat) * 6);
+    shaderprogram.enableAttributeArray("aNormal");
+    this->glEnable(GL_DEPTH_TEST);
+    VAO.release(); //释放
+    VBO.release();
+
+    view.setToIdentity();
+    view.lookAt(QVector3D(0.0f, 0.0f, 3.0f), QVector3D(0.0f, 0.0f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f));
+    // shaderprogram.setUniformValue("view", view);
+}
+void Widget::resizeGL(int w, int h)
+{
+    this->glViewport(0, 0, w, h);
+    projection.setToIdentity();
+    projection.perspective(60.0f, (GLfloat)w / (GLfloat)h, 0.001f, 100.0f);
+    // shaderprogram.setUniformValue("projection", projection);
+}
+
+void Widget::paintGL()
+{
+    this->glClearColor(0.9f, 0.94f, 1.0f, 1.0f);               //设置清屏颜色
+    this->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //清空颜色缓冲区
+
+    shaderprogram.bind();
+    //将此着色器程序绑定到活动的qopenglcontext，并使其成为当前着色器程序。任何先前绑定的着色器程序都将被释放
+    //成功绑定返回ture,反之，返回false.
+    {
+        QVector3D lightColor(1.0f, 1.0f, 1.0f);
+        QVector3D objectColor(1.0f, 0.5f, 0.31f);
+        QVector3D lightPos(0.0f, 0.0f, 50.0f);
+
+        shaderprogram.setUniformValue("objectColor", objectColor);
+        shaderprogram.setUniformValue("lightColor", lightColor);
+        shaderprogram.setUniformValue("lightPos", lightPos);
+
+        model.setToIdentity();
+        model.translate(xtrans, ytrans, ztrans);
+        model.rotate(rotation);
+        shaderprogram.setUniformValue("view", view);
+        shaderprogram.setUniformValue("projection", projection);
+        shaderprogram.setUniformValue("model", model);
+
+        int n = vertices.capacity() / sizeof(float);
+        QOpenGLVertexArrayObject::Binder bind(&VAO); //绑定VAO
+        this->glDrawArrays(GL_TRIANGLES, 0, n);
+    }
+}
+
+void Widget::mousePressEvent(QMouseEvent *event)
+{
+    mousePos = QVector2D(event->pos());
+    event->accept();
+}
+
+void Widget::mouseMoveEvent(QMouseEvent *event)
+{
+    if (event->buttons() == Qt::LeftButton)
+    {
+        QVector2D newPos = (QVector2D)event->pos();
+        QVector2D diff = newPos - mousePos;
+        qreal angle = (diff.length()) / 3.6;
+        // Rotation axis is perpendicular to the mouse position difference
+        // vector
+        QVector3D rotationAxis = QVector3D(diff.y(), diff.x(), 0.0).normalized();
+        rotation = QQuaternion::fromAxisAndAngle(rotationAxis, angle) * rotation;
+        mousePos = newPos;
+        this->update();
+    }
+    event->accept();
+}
+
+void Widget::wheelEvent(QWheelEvent *event)
+{
+    QPoint numDegrees = event->angleDelta() / 8;
+
+    if (numDegrees.y() > 0)
+    {
+        ztrans += 0.25f;
+    }
+    else if (numDegrees.y() < 0)
+    {
+        ztrans -= 0.25f;
+    }
+    this->update();
+    event->accept();
 }

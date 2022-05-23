@@ -5,38 +5,54 @@
 #ifndef NEWTRAVEL_MYOPENGLWIEGT_H
 #define NEWTRAVEL_MYOPENGLWIEGT_H
 
-#include "Model/model_data.h"
+#include <QOpenGLWidget>
+#include <QOpenGLExtraFunctions>
+#include <QVector>
+#include <QStringList>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLVertexArrayObject>
+#include <QOpenGLBuffer>
+#include <QTimer>
+#include <QTime>
+#include <QMatrix4x4>
+#include <QMatrix3x3>
+#include <QQuaternion>
+#include <QVector2D>
 
-#include<QOpenGLWidget>
-#include <QOpenGLFunctions_3_3_Core>
-#include  <QOpenGLShaderProgram>
+#include "Log/log.h"
 
-//多继承，自定义的MyopenGLWiegt类同时继承自QOpenGLWidget和QOpenGLFunctions
-//这样就可以在类中直接使用QOpenGLFunctions中的OpenGL函数，而不需要创建QOpenGLFuctions对象
-//这里声明了一个QOpenGLShaderProgram对象指针，作为着色器程序
-class MyopenGLWiegt:public QOpenGLWidget
+class Widget : public QOpenGLWidget,public QOpenGLExtraFunctions
 {
-    Q_OBJECT
-public:
-    explicit MyopenGLWiegt(QWidget *parent = 0);
-protected:
-    void initializeGL() override;
-    void paintGL() override;
-    void resizeGL(int width,int height) override;
+Q_OBJECT
 
-    void keyPressEvent(QKeyEvent *event);           //处理键盘按下事件
+public:
+    Widget(QWidget *parent = nullptr);
+    ~Widget();
+
+protected:
+    virtual void initializeGL() override;
+    virtual void paintGL() override;
+    virtual void resizeGL(int w,int h) override;
+    QVector<float> loadAscllStl(QString filename,int ratio);//文件名和放大系数
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent *event);
+
 
 private:
-    GLuint m_glVBO;
-    GLuint m_VAO;
-    GLuint  m_EBO;
-    QOpenGLFunctions_3_3_Core *m_Core;
-    QOpenGLShaderProgram  m_oShaderProgram;
+    QVector<float> vertices;
+    QVector<float> Position;
+    QVector<float> Normal;//读文件时的俩个临时变量顶点位置，法向量
+    QOpenGLShaderProgram shaderprogram;
+    QOpenGLVertexArrayObject VAO;//声明VAO顶点数组对象
+    QOpenGLBuffer VBO;//声明VBO数组缓冲对象
 
-    bool fullscreen;
-    GLfloat m_rtri;                                 //控制三角形的角度
-    GLfloat m_rquad;                                //控制四边形的角度
-    ModelDataBase m_oModelData;
+    QMatrix4x4 model;
+    QMatrix4x4 view;
+    QMatrix4x4 projection;
+
+    GLfloat xtrans, ytrans, ztrans; // translation on x,y,z-axis
+    QVector2D mousePos;
+    QQuaternion rotation;
 };
-
 #endif // NEWTRAVEL_MYOPENGLWIEGT_H

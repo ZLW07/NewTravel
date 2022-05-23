@@ -119,7 +119,7 @@ TEST_F(TestMath, TestOBB)
     rot.Cov(vecSrc);
 //    {0.435833 0.166667 0.333333} {0.166667 0.74 0.52} {0.333333 0.52 3.04667}
     ZLOG << rot;
-    auto result = GetOBBDirectionVector(rot);
+    auto result = rot.GetOBBDirectionVector(rot);
 //    {-0.760026 -0.290641 -0.581282} {0.491677 -0.842044 -0.221846} {0.424987 0.454412 -0.782877}
     ZLOG << result;
 }
