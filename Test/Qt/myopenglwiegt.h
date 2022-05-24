@@ -18,6 +18,7 @@
 #include <QMatrix3x3>
 #include <QQuaternion>
 #include <QVector2D>
+#include <QKeyEvent>
 
 #include "Log/log.h"
 
@@ -37,7 +38,8 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);
-
+    void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
 
 private:
     QVector<float> vertices;
@@ -50,9 +52,11 @@ private:
     QMatrix4x4 model;
     QMatrix4x4 view;
     QMatrix4x4 projection;
+    QVector2D v2dMoveLength;
 
     GLfloat xtrans, ytrans, ztrans; // translation on x,y,z-axis
     QVector2D mousePos;
     QQuaternion rotation;
+    bool m_bContrlFlag;
 };
 #endif // NEWTRAVEL_MYOPENGLWIEGT_H
