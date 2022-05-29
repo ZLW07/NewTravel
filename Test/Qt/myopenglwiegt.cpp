@@ -3,7 +3,6 @@
 //
 
 #include "myopenglwiegt.h"
-#include <QDebug>
 #include <QFile>
 #include <QMouseEvent>
 #include <QOpenGLShaderProgram>
@@ -12,7 +11,7 @@
 #include <QtMath>
 
 Widget::Widget(QWidget *parent)
-    : QOpenGLWidget(parent), VBO(QOpenGLBuffer::VertexBuffer), xtrans(0), ytrans(0), ztrans(0.0)
+    : QOpenGLWidget(parent),  xtrans(0), ytrans(0), ztrans(0.0)
 {
     QSurfaceFormat format;
     format.setAlphaBufferSize(24); //设置alpha缓冲大小
@@ -108,10 +107,6 @@ void Widget::initializeGL()
     {
         SetDrawParameters(m_aJointModel[ii]);
     }
-//    SetDrawParameters(m_aJointModel[0]);
-//    SetDrawParameters(m_aJointModel[1]);
-//    SetDrawParameters(m_aJointModel[2]);
-//    SetDrawParameters(m_aJointModel[3]);
 
     view.setToIdentity();
     view.lookAt(QVector3D(0.0f, 0.0f, 3.0f), QVector3D(0.0f, 0.0f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f));
@@ -155,14 +150,6 @@ void Widget::paintGL()
             this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[ii].iNumberOfTriangle);
         }
 
-//        m_aJointModel[0].vaoJoint.bind();
-//        this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[0].iNumberOfTriangle);
-//        m_aJointModel[1].vaoJoint.bind();
-//        this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[1].iNumberOfTriangle);
-//        m_aJointModel[2].vaoJoint.bind();
-//        this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[2].iNumberOfTriangle);
-//        m_aJointModel[3].vaoJoint.bind();
-//        this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[3].iNumberOfTriangle);
     }
 }
 

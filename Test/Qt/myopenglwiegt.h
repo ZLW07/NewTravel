@@ -38,22 +38,19 @@ public:
     ~Widget();
 
 protected:
-    virtual void initializeGL() override;
-    virtual void paintGL() override;
-    virtual void resizeGL(int w, int h) override;
+    void initializeGL() override;
+    void paintGL() override;
+    void resizeGL(int w, int h) override;
 
 public:
     void loadAscllStl(QString filename, int ratio, JointParameters &oJointPara); //文件名和放大系数
     void SetDrawParameters(JointParameters &oJointPara);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void wheelEvent(QWheelEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
 
 private:
     JointParameters m_aJointModel[6];
-    QVector<float> vecJoint_0;
-    QVector<float> vertices;
-    QVector<float> vertices1;
 
     QVector<float> Position;
     QVector<float> Normal; //读文件时的俩个临时变量顶点位置，法向量
