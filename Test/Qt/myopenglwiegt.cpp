@@ -35,7 +35,7 @@ Widget::~Widget()
     makeCurrent();
 }
 
-void Widget:: loadAscllStl(QString filename,int ratio,JointParameters &oJointPara)
+void Widget:: loadAscllStl(const QString& filename,int ratio,JointParameters &oJointPara)
 {
     ZLOG << "load text file ";
 
@@ -92,7 +92,7 @@ void Widget::initializeGL()
     shaderprogram.create();            //生成着色器程序
     if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Vertex, "../../Test/Qt/stl.vert"))
     {
-        ZLOG << "failed load ../../Test/Qt/stl.vert"; //如果编译出错,打印报错信息
+        ZLOG << "failed load ../../Test/Qt/stl.vert";         //如果编译出错,打印报错信息
     }
     if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Fragment, "../../Test/Qt/stl.frag"))
     {
@@ -103,9 +103,9 @@ void Widget::initializeGL()
     {
         ZLOG << "ERROR: link error"; //如果链接出错,打印报错信息
     }
-    for (int ii = 0; ii < sizeof(m_aJointModel)/ sizeof(JointParameters); ++ii)
+    for (auto & ii : m_aJointModel)
     {
-        SetDrawParameters(m_aJointModel[ii]);
+        SetDrawParameters(ii);
     }
 
     view.setToIdentity();
@@ -144,10 +144,10 @@ void Widget::paintGL()
         shaderprogram.setUniformValue("projection", projection);
         shaderprogram.setUniformValue("model", model);
 
-        for (int ii = 0; ii < sizeof(m_aJointModel)/ sizeof(JointParameters); ++ii)
+        for (auto & ii : m_aJointModel)
         {
-            m_aJointModel[ii].vaoJoint.bind();
-            this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[ii].iNumberOfTriangle);
+            ii.vaoJoint.bind();
+            this->glDrawArrays(GL_TRIANGLES, 0, ii.iNumberOfTriangle);
         }
 
     }

@@ -43,7 +43,7 @@ protected:
     void resizeGL(int w, int h) override;
 
 public:
-    void loadAscllStl(QString filename, int ratio, JointParameters &oJointPara); //文件名和放大系数
+    void loadAscllStl(const QString& filename, int ratio, JointParameters &oJointPara); //文件名和放大系数
     void SetDrawParameters(JointParameters &oJointPara);
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
