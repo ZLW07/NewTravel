@@ -22,11 +22,17 @@ Widget::Widget(QWidget *parent)
     loadAscllStl("../../Data/RobotModel/TX2-60L HORIZONTAL BASE.STL", 1, m_aJointModel[0]);
     loadAscllStl("../../Data/RobotModel/TX2-60L SHOULDER.STL", 1,m_aJointModel[1]);
     loadAscllStl("../../Data/RobotModel/TX2-60L ARM.STL", 1,m_aJointModel[2]);
-//    loadAscllStl("../../Data/RobotModel/TX2-60L_Joint_2.STL", 1,m_aJointModel[2]);
-
     loadAscllStl("../../Data/RobotModel/TX2-60L ELBOW.STL", 1,m_aJointModel[3]);
     loadAscllStl("../../Data/RobotModel/TX2-60L FOREARM.STL", 1,m_aJointModel[4]);
     loadAscllStl("../../Data/RobotModel/TX2-60L WRIST.STL", 1,m_aJointModel[5]);
+
+//    loadAscllStl("../../Data/RobotModel/TX2-60L_Joint_0.STL", 1,m_aJointModel[0]);
+//    loadAscllStl("../../Data/RobotModel/TX2-60L_Joint_1.STL", 1,m_aJointModel[1]);
+//    loadAscllStl("../../Data/RobotModel/TX2-60L_Joint_2.STL", 1,m_aJointModel[2]);
+//    loadAscllStl("../../Data/RobotModel/TX2-60L_Joint_3.STL", 1,m_aJointModel[3]);
+//    loadAscllStl("../../Data/RobotModel/TX2-60L_Joint_4.STL", 1,m_aJointModel[4]);
+//    loadAscllStl("../../Data/RobotModel/TX2-60L_Joint_5.STL", 1,m_aJointModel[5]);
+
     std::cout << sizeof(m_aJointModel)/ sizeof(JointParameters) << std::endl;
 }
 
