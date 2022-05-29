@@ -20,8 +20,15 @@ Widget::Widget(QWidget *parent)
     format.setSamples(10);         //设置重采样次数，用于反走样
 
     this->setFormat(format);
+    loadAscllStl("../../Data/RobotModel/TX2-60L HORIZONTAL BASE.STL", 1, m_aJointModel[0]);
+    loadAscllStl("../../Data/RobotModel/TX2-60L SHOULDER.STL", 1,m_aJointModel[1]);
+    loadAscllStl("../../Data/RobotModel/TX2-60L ARM.STL", 1,m_aJointModel[2]);
+//    loadAscllStl("../../Data/RobotModel/TX2-60L_Joint_2.STL", 1,m_aJointModel[2]);
 
-    vertices = loadAscllStl("../../Data/RobotModel/TX2-60L FOREARM.STL", 1);
+    loadAscllStl("../../Data/RobotModel/TX2-60L ELBOW.STL", 1,m_aJointModel[3]);
+    loadAscllStl("../../Data/RobotModel/TX2-60L FOREARM.STL", 1,m_aJointModel[4]);
+    loadAscllStl("../../Data/RobotModel/TX2-60L WRIST.STL", 1,m_aJointModel[5]);
+    std::cout << sizeof(m_aJointModel)/ sizeof(JointParameters) << std::endl;
 }
 
 Widget::~Widget()
@@ -29,9 +36,8 @@ Widget::~Widget()
     makeCurrent();
 }
 
-QVector<float> Widget::loadAscllStl(QString filename, int ratio)
+void Widget:: loadAscllStl(QString filename,int ratio,JointParameters &oJointPara)
 {
-    QVector<float> vertices_temp;
     ZLOG << "load text file ";
 
     QFile file(filename);
@@ -41,7 +47,7 @@ QVector<float> Widget::loadAscllStl(QString filename, int ratio)
     }
     while (!file.atEnd())
     {
-        QString line = file.readLine().trimmed(); // trimmed去除了开头和结尾的空白字符串
+        QString line = file.readLine().trimmed();                                                 // trimmed去除了开头和结尾的空白字符串
         QStringList words = line.split(' ', QString::SkipEmptyParts);
 
         if (words[0] == "facet")
@@ -51,18 +57,34 @@ QVector<float> Widget::loadAscllStl(QString filename, int ratio)
         else if (words[0] == "vertex")
         {
             Position = {ratio * words[1].toFloat(), ratio * words[2].toFloat(), ratio * words[3].toFloat()};
-            vertices_temp.append(Position);
-            vertices_temp.append(Normal);
+            oJointPara.vecJoint.append(Position);
+            oJointPara.vecJoint.append(Normal);
         }
         else
         {
             continue;
         }
     }
-
     ZLOG << "write vertice_temp success!";
     file.close();
-    return vertices_temp;
+    oJointPara.iNumberOfTriangle = oJointPara.vecJoint.capacity() / sizeof(float);
+}
+
+void Widget::SetDrawParameters(JointParameters &oJointPara)
+{
+    oJointPara.vaoJoint.create();                     // 创建一个VAO对象，OpenGL会给它（顶点数组缓存对象）分配一个id
+    oJointPara.vaoJoint.bind();                         //将RC中的当前顶点数组缓存对象Id设置为VAO的id
+    oJointPara.vboJoint.create();
+    oJointPara.vboJoint.bind();
+    oJointPara.vboJoint.allocate(oJointPara.vecJoint.data(),
+                 sizeof(float) * oJointPara.vecJoint.size());                                         //将顶点数据分配到VBO中，第一个参数为数据指针，第二个参数为数据的字节长度
+    shaderprogram.setAttributeBuffer("aPos", GL_FLOAT, 0, 3, sizeof(GLfloat) * 6);
+    shaderprogram.enableAttributeArray("aPos");
+    shaderprogram.setAttributeBuffer("aNormal", GL_FLOAT, sizeof(GLfloat) * 3, 3, sizeof(GLfloat) * 6);
+    shaderprogram.enableAttributeArray("aNormal");
+    this->glEnable(GL_DEPTH_TEST);
+    oJointPara.vaoJoint.release(); //释放
+    oJointPara.vboJoint.release();
 }
 
 void Widget::initializeGL()
@@ -82,22 +104,14 @@ void Widget::initializeGL()
     {
         ZLOG << "ERROR: link error"; //如果链接出错,打印报错信息
     }
-    //    QOpenGLVertexArrayObject::Binder{&VAO};
-
-    VAO.create(); // 创建一个VAO对象，OpenGL会给它（顶点数组缓存对象）分配一个id
-    VAO.bind();   //将RC中的当前顶点数组缓存对象Id设置为VAO的id
-    VBO.create();
-    VBO.bind();
-    VBO.allocate(vertices.data(),
-        sizeof(float) * vertices.size()); //将顶点数据分配到VBO中，第一个参数为数据指针，第二个参数为数据的字节长度
-
-    shaderprogram.setAttributeBuffer("aPos", GL_FLOAT, 0, 3, sizeof(GLfloat) * 6);
-    shaderprogram.enableAttributeArray("aPos");
-    shaderprogram.setAttributeBuffer("aNormal", GL_FLOAT, sizeof(GLfloat) * 3, 3, sizeof(GLfloat) * 6);
-    shaderprogram.enableAttributeArray("aNormal");
-    this->glEnable(GL_DEPTH_TEST);
-    VAO.release(); //释放
-    VBO.release();
+    for (int ii = 0; ii < sizeof(m_aJointModel)/ sizeof(JointParameters); ++ii)
+    {
+        SetDrawParameters(m_aJointModel[ii]);
+    }
+//    SetDrawParameters(m_aJointModel[0]);
+//    SetDrawParameters(m_aJointModel[1]);
+//    SetDrawParameters(m_aJointModel[2]);
+//    SetDrawParameters(m_aJointModel[3]);
 
     view.setToIdentity();
     view.lookAt(QVector3D(0.0f, 0.0f, 3.0f), QVector3D(0.0f, 0.0f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f));
@@ -135,9 +149,20 @@ void Widget::paintGL()
         shaderprogram.setUniformValue("projection", projection);
         shaderprogram.setUniformValue("model", model);
 
-        int n = vertices.capacity() / sizeof(float);
-        QOpenGLVertexArrayObject::Binder bind(&VAO); //绑定VAO
-        this->glDrawArrays(GL_TRIANGLES, 0, n);
+        for (int ii = 0; ii < sizeof(m_aJointModel)/ sizeof(JointParameters); ++ii)
+        {
+            m_aJointModel[ii].vaoJoint.bind();
+            this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[ii].iNumberOfTriangle);
+        }
+
+//        m_aJointModel[0].vaoJoint.bind();
+//        this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[0].iNumberOfTriangle);
+//        m_aJointModel[1].vaoJoint.bind();
+//        this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[1].iNumberOfTriangle);
+//        m_aJointModel[2].vaoJoint.bind();
+//        this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[2].iNumberOfTriangle);
+//        m_aJointModel[3].vaoJoint.bind();
+//        this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[3].iNumberOfTriangle);
     }
 }
 
