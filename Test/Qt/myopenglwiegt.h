@@ -63,5 +63,11 @@ private:
     GLfloat xtrans, ytrans, ztrans; // translation on x,y,z-axis
     QVector2D mousePos;
     QQuaternion rotation;
+
+    QMatrix4x4 m_matJointTrans[6];
+    QMatrix4x4 m_matJointRot[6];
+    float m_fRotDegree[6];
+    std::map<int, QVector3D> m_mapRotVector;
+    QVector<float> vecTest;
 };
 #endif // NEWTRAVEL_MYOPENGLWIEGT_H

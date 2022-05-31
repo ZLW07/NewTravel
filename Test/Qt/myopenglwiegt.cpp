@@ -19,19 +19,37 @@ Widget::Widget(QWidget *parent)
     format.setSamples(10);         //设置重采样次数，用于反走样
 
     this->setFormat(format);
-    loadAscllStl("../../Data/RobotModel/TX2-60L HORIZONTAL BASE.STL", 1, m_aJointModel[0]);
-    loadAscllStl("../../Data/RobotModel/TX2-60L SHOULDER.STL", 1,m_aJointModel[1]);
-    loadAscllStl("../../Data/RobotModel/TX2-60L ARM.STL", 1,m_aJointModel[2]);
-    loadAscllStl("../../Data/RobotModel/TX2-60L ELBOW.STL", 1,m_aJointModel[3]);
-    loadAscllStl("../../Data/RobotModel/TX2-60L FOREARM.STL", 1,m_aJointModel[4]);
-    loadAscllStl("../../Data/RobotModel/TX2-60L WRIST.STL", 1,m_aJointModel[5]);
+//    loadAscllStl("../../Data/RobotModel/TX2-60L HORIZONTAL BASE.STL", 1, m_aJointModel[0]);
+//    loadAscllStl("../../Data/RobotModel/TX2-60L SHOULDER.STL", 1,m_aJointModel[1]);
+//    loadAscllStl("../../Data/RobotModel/TX2-60L ARM.STL", 1,m_aJointModel[2]);
+//    loadAscllStl("../../Data/RobotModel/TX2-60L ELBOW.STL", 1,m_aJointModel[3]);
+//    loadAscllStl("../../Data/RobotModel/TX2-60L FOREARM.STL", 1,m_aJointModel[4]);
+//    loadAscllStl("../../Data/RobotModel/TX2-60L WRIST.STL", 1,m_aJointModel[5]);
 
-//    loadAscllStl("../../Data/RobotModel/TX2-60L_Joint_0.STL", 1,m_aJointModel[0]);
-//    loadAscllStl("../../Data/RobotModel/TX2-60L_Joint_1.STL", 1,m_aJointModel[1]);
-//    loadAscllStl("../../Data/RobotModel/TX2-60L_Joint_2.STL", 1,m_aJointModel[2]);
-//    loadAscllStl("../../Data/RobotModel/TX2-60L_Joint_3.STL", 1,m_aJointModel[3]);
-//    loadAscllStl("../../Data/RobotModel/TX2-60L_Joint_4.STL", 1,m_aJointModel[4]);
-//    loadAscllStl("../../Data/RobotModel/TX2-60L_Joint_5.STL", 1,m_aJointModel[5]);
+    loadAscllStl("../../Data/RobotModel/1.STL", 1, m_aJointModel[0]);
+    loadAscllStl("../../Data/RobotModel/2.STL", 1, m_aJointModel[1]);
+    loadAscllStl("../../Data/RobotModel/3.STL", 1, m_aJointModel[2]);
+    loadAscllStl("../../Data/RobotModel/4.STL", 1, m_aJointModel[3]);
+    loadAscllStl("../../Data/RobotModel/5.STL", 1, m_aJointModel[4]);
+    loadAscllStl("../../Data/RobotModel/6.STL", 1, m_aJointModel[5]);
+
+    QVector3D qRotVector(0,1,0);
+    m_mapRotVector[1] = qRotVector;
+    qRotVector={0,0,1};
+    m_mapRotVector[2] = qRotVector;
+    qRotVector={0,0,1};
+    m_mapRotVector[3] = qRotVector;
+    qRotVector={0,0,1};
+    m_mapRotVector[4] = qRotVector;
+    qRotVector={0,0,1};
+    m_mapRotVector[5] = qRotVector;
+
+
+    for (int ii = 0; ii < 6; ii++)
+    {
+        m_fRotDegree[ii] = 0.0;
+    }
+
 
     std::cout << sizeof(m_aJointModel)/ sizeof(JointParameters) << std::endl;
 }
@@ -109,10 +127,17 @@ void Widget::initializeGL()
     {
         ZLOG << "ERROR: link error"; //如果链接出错,打印报错信息
     }
+
     for (auto & ii : m_aJointModel)
     {
         SetDrawParameters(ii);
     }
+
+
+//    for (int ii = 0; ii < 4; ii++)
+//    {
+//        SetDrawParameters(m_aJointModel[ii]);
+//    }
 
     view.setToIdentity();
     view.lookAt(QVector3D(0.0f, 0.0f, 3.0f), QVector3D(0.0f, 0.0f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f));
@@ -142,7 +167,6 @@ void Widget::paintGL()
         shaderprogram.setUniformValue("objectColor", objectColor);
         shaderprogram.setUniformValue("lightColor", lightColor);
         shaderprogram.setUniformValue("lightPos", lightPos);
-
         model.setToIdentity();
         model.translate(xtrans, ytrans, ztrans);
         model.rotate(rotation);
@@ -150,12 +174,34 @@ void Widget::paintGL()
         shaderprogram.setUniformValue("projection", projection);
         shaderprogram.setUniformValue("model", model);
 
-        for (auto & ii : m_aJointModel)
-        {
-            ii.vaoJoint.bind();
-            this->glDrawArrays(GL_TRIANGLES, 0, ii.iNumberOfTriangle);
-        }
+        m_matJointTrans[0].setToIdentity();
+        m_matJointTrans[1].setToIdentity();
+        m_matJointTrans[1].translate(0,0,0.375);
+        m_matJointTrans[1].rotate(-90, 1, 0, 0);
+        m_matJointTrans[2].setToIdentity();
+        m_matJointTrans[3].setToIdentity();
+        m_matJointTrans[3].translate(0, -0.4, 0.02);
+        m_matJointTrans[4].setToIdentity();
+        m_matJointTrans[4].rotate(90,1,0,0);
+        m_matJointTrans[5].setToIdentity();
+        m_matJointTrans[5].translate(0, 0, 0.45);
+        m_matJointTrans[5].rotate(-90,1,0,0);
+        m_fRotDegree[4] = 0.0;
 
+        for (int ii = 0; ii < 6; ii++)
+        {
+            m_matJointRot[ii].setToIdentity();
+            if (ii >= 1)
+            {
+
+                m_matJointRot[ii].rotate(m_fRotDegree[ii],m_mapRotVector[ii]);
+                m_matJointTrans[ii] = m_matJointTrans[ii -1]  * m_matJointTrans[ii] * m_matJointRot[ii];
+            }
+            shaderprogram.setUniformValue("Rot", m_matJointRot[ii]);
+            shaderprogram.setUniformValue("baseTrans", m_matJointTrans[ii]);
+            m_aJointModel[ii].vaoJoint.bind();
+            this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[ii].iNumberOfTriangle);
+        }
     }
 }
 
