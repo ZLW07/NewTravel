@@ -70,10 +70,12 @@ private:
     QMatrix4x4 view;
     QMatrix4x4 projection;
 
+
+
     GLfloat xtrans, ytrans, ztrans; // translation on x,y,z-axis
     QVector2D mousePos;
     QQuaternion rotation;
-
+    QMatrix4x4 Rot;
     QMatrix4x4 m_matJointTrans[7];
     QMatrix4x4 m_matJointRot[7];
     float m_fRotDegree[6];

@@ -164,7 +164,7 @@ void Widget::paintGL()
     {
         QVector3D lightColor(1.0f, 1.0f, 1.0f);
         QVector3D objectColor(1.0f, 0.5f, 0.31f);
-        QVector3D lightPos(0.0f, 0.0f, 50.0f);
+        QVector3D lightPos(-20.0f, 0.0f, 20.0f);
 
         shaderprogram.setUniformValue("objectColor", objectColor);
         shaderprogram.setUniformValue("lightColor", lightColor);
@@ -172,6 +172,10 @@ void Widget::paintGL()
         model.setToIdentity();
         model.translate(xtrans, ytrans, ztrans);
         model.rotate(rotation);
+        Rot.setToIdentity();
+        Rot.rotate(-90, 1, 0,0);
+        Rot.rotate(45, 0, 0,1);
+        shaderprogram.setUniformValue("Rot",Rot);
         shaderprogram.setUniformValue("view", view);
         shaderprogram.setUniformValue("projection", projection);
         shaderprogram.setUniformValue("model", model);
@@ -179,7 +183,6 @@ void Widget::paintGL()
         for (int ii = 0; ii < 7; ii++)
         {
             SetRobotRotation(ii);
-            shaderprogram.setUniformValue("Rot", m_matJointRot[ii]);
             shaderprogram.setUniformValue("baseTrans", m_matJointTrans[ii]);
             m_aJointModel[ii].vaoJoint.bind();
             this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[ii].iNumberOfTriangle);
