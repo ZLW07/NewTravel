@@ -25,15 +25,18 @@ Widget::Widget(QWidget *parent)
 //    loadAscllStl("../../Data/RobotModel/TX2-60L ELBOW.STL", 1,m_aJointModel[3]);
 //    loadAscllStl("../../Data/RobotModel/TX2-60L FOREARM.STL", 1,m_aJointModel[4]);
 //    loadAscllStl("../../Data/RobotModel/TX2-60L WRIST.STL", 1,m_aJointModel[5]);
-
+//
     loadAscllStl("../../Data/RobotModel/1.STL", 1, m_aJointModel[0]);
     loadAscllStl("../../Data/RobotModel/2.STL", 1, m_aJointModel[1]);
     loadAscllStl("../../Data/RobotModel/3.STL", 1, m_aJointModel[2]);
     loadAscllStl("../../Data/RobotModel/4.STL", 1, m_aJointModel[3]);
     loadAscllStl("../../Data/RobotModel/5.STL", 1, m_aJointModel[4]);
     loadAscllStl("../../Data/RobotModel/6.STL", 1, m_aJointModel[5]);
+    loadAscllStl("../../Data/RobotModel/7.STL", 1, m_aJointModel[6]);
 
     QVector3D qRotVector(0,1,0);
+    m_mapRotVector[0] = qRotVector;
+    qRotVector={0,0,1};
     m_mapRotVector[1] = qRotVector;
     qRotVector={0,0,1};
     m_mapRotVector[2] = qRotVector;
@@ -41,9 +44,8 @@ Widget::Widget(QWidget *parent)
     m_mapRotVector[3] = qRotVector;
     qRotVector={0,0,1};
     m_mapRotVector[4] = qRotVector;
-    qRotVector={0,0,1};
+    qRotVector = {0, 0, 1};
     m_mapRotVector[5] = qRotVector;
-
 
     for (int ii = 0; ii < 6; ii++)
     {
@@ -173,35 +175,44 @@ void Widget::paintGL()
         shaderprogram.setUniformValue("view", view);
         shaderprogram.setUniformValue("projection", projection);
         shaderprogram.setUniformValue("model", model);
-
-        m_matJointTrans[0].setToIdentity();
-        m_matJointTrans[1].setToIdentity();
-        m_matJointTrans[1].translate(0,0,0.375);
-        m_matJointTrans[1].rotate(-90, 1, 0, 0);
-        m_matJointTrans[2].setToIdentity();
-        m_matJointTrans[3].setToIdentity();
-        m_matJointTrans[3].translate(0, -0.4, 0.02);
-        m_matJointTrans[4].setToIdentity();
-        m_matJointTrans[4].rotate(90,1,0,0);
-        m_matJointTrans[5].setToIdentity();
-        m_matJointTrans[5].translate(0, 0, 0.45);
-        m_matJointTrans[5].rotate(-90,1,0,0);
-        m_fRotDegree[4] = 0.0;
-
-        for (int ii = 0; ii < 6; ii++)
+        InitialTranslate();
+        for (int ii = 0; ii < 7; ii++)
         {
-            m_matJointRot[ii].setToIdentity();
-            if (ii >= 1)
-            {
-
-                m_matJointRot[ii].rotate(m_fRotDegree[ii],m_mapRotVector[ii]);
-                m_matJointTrans[ii] = m_matJointTrans[ii -1]  * m_matJointTrans[ii] * m_matJointRot[ii];
-            }
+            SetRobotRotation(ii);
             shaderprogram.setUniformValue("Rot", m_matJointRot[ii]);
             shaderprogram.setUniformValue("baseTrans", m_matJointTrans[ii]);
             m_aJointModel[ii].vaoJoint.bind();
             this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[ii].iNumberOfTriangle);
         }
+    }
+}
+
+void Widget::InitialTranslate()
+{
+    m_matJointTrans[0].setToIdentity();
+    m_matJointTrans[1].setToIdentity();
+    m_matJointTrans[1].translate(0,0,0.375);
+    m_matJointTrans[1].rotate(-90, 1, 0, 0);
+    m_matJointTrans[2].setToIdentity();
+    m_matJointTrans[3].setToIdentity();
+    m_matJointTrans[3].translate(0, -0.4, 0.02);
+    m_matJointTrans[4].setToIdentity();
+    m_matJointTrans[4].rotate(90,1,0,0);
+    m_matJointTrans[5].setToIdentity();
+    m_matJointTrans[5].translate(0, 0, 0.45);
+    m_matJointTrans[5].rotate(-90,1,0,0);
+    m_matJointTrans[6].setToIdentity();
+    m_matJointTrans[6].translate(0, -0.07, 0.0);
+    m_matJointTrans[6].rotate(90,1,0,0);
+}
+
+void Widget::SetRobotRotation(int iJointIndex)
+{
+    m_matJointRot[iJointIndex].setToIdentity();
+    if (iJointIndex >= 1)
+    {
+        m_matJointRot[iJointIndex].rotate(m_fRotDegree[iJointIndex - 1],m_mapRotVector[iJointIndex - 1]);
+        m_matJointTrans[iJointIndex] = m_matJointTrans[iJointIndex -1]  * m_matJointTrans[iJointIndex] * m_matJointRot[iJointIndex];
     }
 }
 
@@ -243,3 +254,52 @@ void Widget::wheelEvent(QWheelEvent *event)
     this->update();
     event->accept();
 }
+
+void Widget::SetRotationAngleOfJoint_0(int value)
+{
+    InitialTranslate();
+    m_fRotDegree[0] = (float)value ;
+    SetRobotRotation(0);
+    update();
+}
+
+void Widget::SetRotationAngleOfJoint_1(int value)
+{
+    InitialTranslate();
+    m_fRotDegree[1] = (float)value ;
+    SetRobotRotation(1);
+    update();
+}
+
+void Widget::SetRotationAngleOfJoint_2(int value)
+{
+    InitialTranslate();
+    m_fRotDegree[2] = (float)value ;
+    SetRobotRotation(2);
+    update();
+}
+
+void Widget::SetRotationAngleOfJoint_3(int value)
+{
+    InitialTranslate();
+    m_fRotDegree[3] = (float)value ;
+    SetRobotRotation(3);
+    update();
+}
+
+void Widget::SetRotationAngleOfJoint_4(int value)
+{
+    InitialTranslate();
+    m_fRotDegree[4] = (float)value ;
+    SetRobotRotation(4);
+    update();
+}
+
+void Widget::SetRotationAngleOfJoint_5(int value)
+{
+    InitialTranslate();
+    m_fRotDegree[5] = (float)value ;
+    SetRobotRotation(5);
+    update();
+}
+

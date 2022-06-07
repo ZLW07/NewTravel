@@ -48,9 +48,19 @@ public:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
+    void InitialTranslate();
+    void SetRobotRotation(int iJointIndex);
+
+public  Q_SLOTS:
+    void SetRotationAngleOfJoint_0(int value);
+    void SetRotationAngleOfJoint_1(int value);
+    void SetRotationAngleOfJoint_2(int value);
+    void SetRotationAngleOfJoint_3(int value);
+    void SetRotationAngleOfJoint_4(int value);
+    void SetRotationAngleOfJoint_5(int value);
 
 private:
-    JointParameters m_aJointModel[6];
+    JointParameters m_aJointModel[7];
 
     QVector<float> Position;
     QVector<float> Normal; //读文件时的俩个临时变量顶点位置，法向量
@@ -64,8 +74,8 @@ private:
     QVector2D mousePos;
     QQuaternion rotation;
 
-    QMatrix4x4 m_matJointTrans[6];
-    QMatrix4x4 m_matJointRot[6];
+    QMatrix4x4 m_matJointTrans[7];
+    QMatrix4x4 m_matJointRot[7];
     float m_fRotDegree[6];
     std::map<int, QVector3D> m_mapRotVector;
     QVector<float> vecTest;
