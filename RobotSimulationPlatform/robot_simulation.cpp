@@ -4,21 +4,23 @@
 
 // You may need to build the project (run Qt uic code generator) to get "ui_my_robot.h" resolved
 
-#include "my_robot.h"
-#include "ui_my_robot.h"
+#include "robot_simulation.h"
+#include "robot_simulation_main_platform.h"
 
-my_robot::my_robot(QWidget *parent) : QWidget(parent), ui(new Ui::my_robot)
+RobotSimulationPlatform::RobotSimulationPlatform(QWidget *parent) : QWidget(parent), ui(new Ui::RobotSimulation)
 {
     ui->setupUi(this);
-    m_pWidget = new Widget(this);
+    m_pWidget = new RobotBody(this);
     m_pWidget->resize(800,600);
     m_pWidget->show();
     for (int ii = 0; ii < 6; ++ii)
     {
-        m_pSpinBox[ii] = new my_SpinBox(this);
+        m_pRobotJointLabel[ii] = new RobotJointLabel(this);
+        m_pRobotJointLabel[ii]->Initial(ii);
+        m_pSpinBox[ii] = new RobotJointSpinBox(this);
         m_pSpinBox[ii]->Initial(ii);
 
-        m_pMySlider[ii] = new my_slider(this);
+        m_pMySlider[ii] = new RobotJointDegreeControlSlider(this);
         m_pMySlider[ii]->Initial(ii);
         connect(m_pMySlider[ii], SIGNAL(valueChanged(int)),m_pSpinBox[ii], SLOT(setValue(int)));
     }
@@ -31,7 +33,7 @@ my_robot::my_robot(QWidget *parent) : QWidget(parent), ui(new Ui::my_robot)
 
 }
 
-my_robot::~my_robot()
+RobotSimulationPlatform::~RobotSimulationPlatform()
 {
     delete ui;
 }

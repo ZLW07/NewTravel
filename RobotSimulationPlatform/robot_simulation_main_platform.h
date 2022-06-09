@@ -15,7 +15,7 @@
 
 QT_BEGIN_NAMESPACE
 
-class Ui_my_robot
+class UiWindowOfRobot
 {
 public:
 
@@ -38,7 +38,8 @@ public:
 };
 
 namespace Ui {
-    class my_robot: public Ui_my_robot {};
+    class RobotSimulation : public UiWindowOfRobot
+{};
 } // namespace Ui
 
 QT_END_NAMESPACE

@@ -2,8 +2,8 @@
 // Created by wei on 2022/5/21.
 //
 
-#ifndef NEWTRAVEL_MYOPENGLWIEGT_H
-#define NEWTRAVEL_MYOPENGLWIEGT_H
+#ifndef NEWTRAVEL_ROBOT_BODY_LOAD_H
+#define NEWTRAVEL_ROBOT_BODY_LOAD_H
 
 #include <QMatrix3x3>
 #include <QMatrix4x4>
@@ -29,13 +29,13 @@ struct JointParameters
     GLsizei iNumberOfTriangle;
 };
 
-class Widget : public QOpenGLWidget, public QOpenGLExtraFunctions
+class RobotBody : public QOpenGLWidget, public QOpenGLExtraFunctions
 {
     Q_OBJECT
 
 public:
-    Widget(QWidget *parent = nullptr);
-    ~Widget();
+    RobotBody(QWidget *parent = nullptr);
+    ~RobotBody();
 
 protected:
     void initializeGL() override;
@@ -82,4 +82,4 @@ private:
     std::map<int, QVector3D> m_mapRotVector;
     QVector<float> vecTest;
 };
-#endif // NEWTRAVEL_MYOPENGLWIEGT_H
+#endif // NEWTRAVEL_ROBOT_BODY_LOAD_H

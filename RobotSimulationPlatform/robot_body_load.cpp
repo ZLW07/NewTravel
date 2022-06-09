@@ -2,7 +2,7 @@
 // Created by wei on 2022/5/21.
 //
 
-#include "myopenglwiegt.h"
+#include "robot_body_load.h"
 #include <QFile>
 #include <QMouseEvent>
 #include <QOpenGLShaderProgram>
@@ -10,7 +10,7 @@
 #include <QWheelEvent>
 #include <QtMath>
 
-Widget::Widget(QWidget *parent)
+RobotBody::RobotBody(QWidget *parent)
     : QOpenGLWidget(parent),  xtrans(0), ytrans(0), ztrans(0.0)
 {
     QSurfaceFormat format;
@@ -56,12 +56,12 @@ Widget::Widget(QWidget *parent)
     std::cout << sizeof(m_aJointModel)/ sizeof(JointParameters) << std::endl;
 }
 
-Widget::~Widget()
+RobotBody::~RobotBody()
 {
     makeCurrent();
 }
 
-void Widget:: loadAscllStl(const QString& filename,int ratio,JointParameters &oJointPara)
+void RobotBody:: loadAscllStl(const QString& filename,int ratio,JointParameters &oJointPara)
 {
     ZLOG << "load text file ";
 
@@ -95,7 +95,7 @@ void Widget:: loadAscllStl(const QString& filename,int ratio,JointParameters &oJ
     oJointPara.iNumberOfTriangle = oJointPara.vecJoint.capacity() / sizeof(float);
 }
 
-void Widget::SetDrawParameters(JointParameters &oJointPara)
+void RobotBody::SetDrawParameters(JointParameters &oJointPara)
 {
     oJointPara.vaoJoint.create();                     // 创建一个VAO对象，OpenGL会给它（顶点数组缓存对象）分配一个id
     oJointPara.vaoJoint.bind();                         //将RC中的当前顶点数组缓存对象Id设置为VAO的id
@@ -112,7 +112,7 @@ void Widget::SetDrawParameters(JointParameters &oJointPara)
     oJointPara.vboJoint.release();
 }
 
-void Widget::initializeGL()
+void RobotBody::initializeGL()
 {
     this->initializeOpenGLFunctions(); //初始化opengl函数
     shaderprogram.create();            //生成着色器程序
@@ -145,7 +145,7 @@ void Widget::initializeGL()
     view.lookAt(QVector3D(0.0f, 0.0f, 3.0f), QVector3D(0.0f, 0.0f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f));
     // shaderprogram.setUniformValue("view", view);
 }
-void Widget::resizeGL(int w, int h)
+void RobotBody::resizeGL(int w, int h)
 {
     this->glViewport(0, 0, w, h);
     projection.setToIdentity();
@@ -153,7 +153,7 @@ void Widget::resizeGL(int w, int h)
     // shaderprogram.setUniformValue("projection", projection);
 }
 
-void Widget::paintGL()
+void RobotBody::paintGL()
 {
     this->glClearColor(0.9f, 0.94f, 1.0f, 1.0f);               //设置清屏颜色
     this->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //清空颜色缓冲区
@@ -190,7 +190,7 @@ void Widget::paintGL()
     }
 }
 
-void Widget::InitialTranslate()
+void RobotBody::InitialTranslate()
 {
     m_matJointTrans[0].setToIdentity();
     m_matJointTrans[1].setToIdentity();
@@ -209,7 +209,7 @@ void Widget::InitialTranslate()
     m_matJointTrans[6].rotate(90,1,0,0);
 }
 
-void Widget::SetRobotRotation(int iJointIndex)
+void RobotBody::SetRobotRotation(int iJointIndex)
 {
     m_matJointRot[iJointIndex].setToIdentity();
     if (iJointIndex >= 1)
@@ -219,13 +219,13 @@ void Widget::SetRobotRotation(int iJointIndex)
     }
 }
 
-void Widget::mousePressEvent(QMouseEvent *event)
+void RobotBody::mousePressEvent(QMouseEvent *event)
 {
     mousePos = QVector2D(event->pos());
     event->accept();
 }
 
-void Widget::mouseMoveEvent(QMouseEvent *event)
+void RobotBody::mouseMoveEvent(QMouseEvent *event)
 {
     if (event->buttons() == Qt::LeftButton)
     {
@@ -242,7 +242,7 @@ void Widget::mouseMoveEvent(QMouseEvent *event)
     event->accept();
 }
 
-void Widget::wheelEvent(QWheelEvent *event)
+void RobotBody::wheelEvent(QWheelEvent *event)
 {
     QPoint numDegrees = event->angleDelta() / 8;
 
@@ -258,7 +258,7 @@ void Widget::wheelEvent(QWheelEvent *event)
     event->accept();
 }
 
-void Widget::SetRotationAngleOfJoint_0(int value)
+void RobotBody::SetRotationAngleOfJoint_0(int value)
 {
     InitialTranslate();
     m_fRotDegree[0] = (float)value ;
@@ -266,7 +266,7 @@ void Widget::SetRotationAngleOfJoint_0(int value)
     update();
 }
 
-void Widget::SetRotationAngleOfJoint_1(int value)
+void RobotBody::SetRotationAngleOfJoint_1(int value)
 {
     InitialTranslate();
     m_fRotDegree[1] = (float)value ;
@@ -274,7 +274,7 @@ void Widget::SetRotationAngleOfJoint_1(int value)
     update();
 }
 
-void Widget::SetRotationAngleOfJoint_2(int value)
+void RobotBody::SetRotationAngleOfJoint_2(int value)
 {
     InitialTranslate();
     m_fRotDegree[2] = (float)value ;
@@ -282,7 +282,7 @@ void Widget::SetRotationAngleOfJoint_2(int value)
     update();
 }
 
-void Widget::SetRotationAngleOfJoint_3(int value)
+void RobotBody::SetRotationAngleOfJoint_3(int value)
 {
     InitialTranslate();
     m_fRotDegree[3] = (float)value ;
@@ -290,7 +290,7 @@ void Widget::SetRotationAngleOfJoint_3(int value)
     update();
 }
 
-void Widget::SetRotationAngleOfJoint_4(int value)
+void RobotBody::SetRotationAngleOfJoint_4(int value)
 {
     InitialTranslate();
     m_fRotDegree[4] = (float)value ;
@@ -298,7 +298,7 @@ void Widget::SetRotationAngleOfJoint_4(int value)
     update();
 }
 
-void Widget::SetRotationAngleOfJoint_5(int value)
+void RobotBody::SetRotationAngleOfJoint_5(int value)
 {
     InitialTranslate();
     m_fRotDegree[5] = (float)value ;
