@@ -15,11 +15,11 @@ bool ModelManager::LoadModelData(const char *cFileName,ModelDataBase& oModelData
     {
         return false;
     }
-    oOBBData = GetModelDataVector(oModelData);
+    oOBBData = GetModelOBBDataVector(oModelData);
     return true;
 }
 
-OBBData ModelManager::GetModelDataVector(ModelDataBase &oDataBase)
+OBBData ModelManager::GetModelOBBDataVector(ModelDataBase &oDataBase)
 {
     OBBData oOBBData;
     Rotation rotRot;

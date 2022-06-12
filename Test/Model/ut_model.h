@@ -5,6 +5,8 @@
 #ifndef NEWTRAVEL_UT_MODEL_H
 #define NEWTRAVEL_UT_MODEL_H
 
+#include <fstream>
+
 #include "Model/model_data.h"
 #include "gtest/gtest.h"
 
@@ -27,6 +29,25 @@ TEST_F(TestModel, ReadMode)
     EXPECT_TRUE(bReadJoint1);
 }
 
+TEST_F(TestModel, RobotModelOBB)
+{
+    ModelDataBase oModelData;
+    OBBData oOBBData;
+    ModelManager oMod;
+    bool bReadJoint1 = oMod.LoadModelData("../../Data/RobotModel/1.STL", oModelData, oOBBData);
+    ZLOG << " The size is  " << oModelData.vecPoint.size();
+    EXPECT_TRUE(bReadJoint1);
+//    std::ofstream  oFile;
+//    oFile.open("Joint_1.txt", std::ios::out);
+//    for (int ii = 0; ii < oModelData.vecPoint.size(); ++ii)
+//    {
+//        oFile << oModelData.vecPoint[ii].X() << " " <<  oModelData.vecPoint[ii].Y() << " " << oModelData.vecPoint[ii].Z()<< std::endl;
+//    }
+//    oFile.close();
+    ZLOG << oOBBData.rotBaseVector;
+
+}
+
 TEST_F(TestModel, OBB)
 {
     std::vector<Vector3D> vecSrc;
@@ -45,7 +66,7 @@ TEST_F(TestModel, OBB)
     ModelManager oMod;
     ModelDataBase oModelData;
     oModelData.vecPoint = vecSrc;
-    auto aOBB = oMod.GetModelDataVector(oModelData);
+    auto aOBB = oMod.GetModelOBBDataVector(oModelData);
     ZLOG << aOBB.v3dCenterPoint; //    Vector3D: {4.59274, 3.22698, 4.07488}
     ZLOG << aOBB.v3dOBBLength;   //   Vector3D: {1.45647, 0.97438, 1.44308}
 }
@@ -80,7 +101,7 @@ TEST_F(TestModel, OBB_OBB)
     ModelManager oMod;
     ModelDataBase oModelData;
     oModelData.vecPoint = vecSrc;
-    auto aOBB = oMod.GetModelDataVector(oModelData);
+    auto aOBB = oMod.GetModelOBBDataVector(oModelData);
     ZLOG << aOBB.v3dCenterPoint; //   Vector3D: {1.5, 0.5, 1.5}
     ZLOG << aOBB.v3dOBBLength;   //   Vector3D: {0.5, 0.5, 1.5}
     ZLOG << aOBB.rotBaseVector;  //{-1 0 0} {0 -1 0} {0 0 -1}
