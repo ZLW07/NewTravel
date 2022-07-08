@@ -14,7 +14,7 @@
 
 static std::string GetLogTime()
 {
-    timeval tv;
+    timeval tv{};
     gettimeofday(&tv, 0);
     time_t nowtime = tv.tv_sec;
     struct tm *nowtm;
