@@ -14,15 +14,17 @@
 
 static std::string GetLogTime()
 {
-    struct timeval time;
-    gettimeofday(&time, NULL);
-    time_t nowTime = time.tv_sec;
-    tm *LocalTime = localtime(&nowTime);
-    char cTimeBuff[128];
-    strftime(cTimeBuff, sizeof(cTimeBuff), "%Y/%m/%d %H:%M:%S", LocalTime);
-    long iMillisecond = time.tv_usec % 1000000;
-    std::string sTime = cTimeBuff;
-    sTime = sTime + "." + std::to_string(iMillisecond);
+    timeval tv;
+    gettimeofday(&tv, 0);
+    time_t nowtime = tv.tv_sec;
+    struct tm *nowtm;
+    nowtm = localtime(&nowtime);
+    char tmbuf[128];
+    strftime(tmbuf, sizeof(tmbuf), "%Y-%m-%d %H:%M:%S", nowtm);
+    long iMillisecond = tv.tv_usec / 1000;
+    long iMicroseconds = tv.tv_usec % 1000;
+    std::string sTime = tmbuf;
+    sTime = sTime + ":" + std::to_string(iMillisecond) +":" + std::to_string(iMicroseconds);
     return sTime;
 }
 
