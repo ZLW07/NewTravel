@@ -116,11 +116,11 @@ void RobotBody::initializeGL()
 {
     this->initializeOpenGLFunctions(); //初始化opengl函数
     shaderprogram.create();            //生成着色器程序
-    if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Vertex, "../../Test/Qt/stl.vert"))
+    if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Vertex, "../../RobotSimulationPlatform/stl.vert"))
     {
         ZLOG << "failed load ../../Test/Qt/stl.vert";         //如果编译出错,打印报错信息
     }
-    if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Fragment, "../../Test/Qt/stl.frag"))
+    if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Fragment, "../../RobotSimulationPlatform/stl.frag"))
     {
         ZLOG << "failed load ../../Test/Qt/stl.frag"; //如果编译出错,打印报错信息
     }
