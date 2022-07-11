@@ -73,6 +73,9 @@ private:
 
 
     GLfloat xtrans, ytrans, ztrans; // translation on x,y,z-axis
+    GLfloat xtrans1, ytrans1, ztrans1; // translation on x,y,z-axis
+    qreal angle;
+    qreal alpha;
     QVector2D mousePos;
     QQuaternion rotation;
     QMatrix4x4 Rot;
