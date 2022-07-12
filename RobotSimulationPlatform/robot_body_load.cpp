@@ -11,7 +11,7 @@
 #include <QtMath>
 
 RobotBody::RobotBody(QWidget *parent)
-    : QOpenGLWidget(parent),  xtrans(0), ytrans(0), ztrans(3.0), xtrans1(-30), ytrans1(0), ztrans1(30.0),angle(0.0),alpha(0.0)
+    : QOpenGLWidget(parent)
 {
     QSurfaceFormat format;
     format.setAlphaBufferSize(24); //设置alpha缓冲大小
@@ -136,21 +136,12 @@ void RobotBody::initializeGL()
     }
 
 
-//    for (int ii = 0; ii < 4; ii++)
-//    {
-//        SetDrawParameters(m_aJointModel[ii]);
-//    }
-
-    view.setToIdentity();
-    view.lookAt(QVector3D(0, 0, 3), QVector3D(0.0f, 0.0f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f));
-    // shaderprogram.setUniformValue("view", view);
 }
 void RobotBody::resizeGL(int w, int h)
 {
     this->glViewport(0, 0, w, h);
     projection.setToIdentity();
     projection.perspective(60.0f, (GLfloat)w / (GLfloat)h, 0.001f, 100.0f);
-    // shaderprogram.setUniformValue("projection", projection);
 }
 
 void RobotBody::paintGL()
@@ -164,20 +155,17 @@ void RobotBody::paintGL()
     {
         QVector3D lightColor(1.0f, 1.0f, 1.0f);
         QVector3D objectColor(1.0f, 0.5f, 0.31f);
-        QVector3D lightPos(-xtrans1 , ytrans1, ztrans1);
+        QVector3D lightPos(30 , 0, 0);
 
         view.setToIdentity();
-        view.lookAt(QVector3D(xtrans, ytrans, ztrans), QVector3D(0.0f, 0.0f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f));
+        view.lookAt(QVector3D(3, 0, 0), QVector3D(0.0f, 0.0f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f));
 
         shaderprogram.setUniformValue("objectColor", objectColor);
         shaderprogram.setUniformValue("lightColor", lightColor);
         shaderprogram.setUniformValue("lightPos", lightPos);
         model.setToIdentity();
-//        model.translate(xtrans, ytrans, ztrans);
-//        model.rotate(rotation);
         Rot.setToIdentity();
         Rot.rotate(-90, 1, 0,0);
-        Rot.rotate(45, 0, 0,1);
         shaderprogram.setUniformValue("Rot",Rot);
         shaderprogram.setUniformValue("view", view);
         shaderprogram.setUniformValue("projection", projection);
@@ -234,20 +222,6 @@ void RobotBody::mouseMoveEvent(QMouseEvent *event)
     {
         QVector2D newPos = (QVector2D)event->pos();
         QVector2D diff = newPos - mousePos;
-        angle = (diff[0]) / 20  + angle;
-        alpha = (diff[1]) / 20  + alpha;
-        xtrans = 3* cos(alpha)*sin(angle);
-        ytrans = 3* sin(alpha);
-        ztrans = 3* cos(alpha)* cos(angle);
-
-        xtrans1 = 42.42* cos(alpha)*sin(-45);
-        ZLOG << sin(1.5707);
-        ytrans1 = 42.42* sin(alpha);
-        ztrans1 = 42.42* cos(alpha)* cos( 45);
-//        // Rotation axis is perpendicular to the mouse position difference
-//        // vector
-//        QVector3D rotationAxis = QVector3D(diff.y(), diff.x(), 0.0).normalized();
-//        rotation = QQuaternion::fromAxisAndAngle(rotationAxis, angle) * rotation;
         mousePos = newPos;
         this->update();
     }

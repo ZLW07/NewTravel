@@ -63,19 +63,13 @@ private:
     JointParameters m_aJointModel[7];
 
     QVector<float> Position;
-    QVector<float> Normal; //读文件时的俩个临时变量顶点位置，法向量
+    QVector<float> Normal;                //读文件时的俩个临时变量顶点位置，法向量
     QOpenGLShaderProgram shaderprogram;
 
     QMatrix4x4 model;
     QMatrix4x4 view;
     QMatrix4x4 projection;
 
-
-
-    GLfloat xtrans, ytrans, ztrans; // translation on x,y,z-axis
-    GLfloat xtrans1, ytrans1, ztrans1; // translation on x,y,z-axis
-    qreal angle;
-    qreal alpha;
     QVector2D mousePos;
     QQuaternion rotation;
     QMatrix4x4 Rot;
@@ -83,6 +77,6 @@ private:
     QMatrix4x4 m_matJointRot[7];
     float m_fRotDegree[6];
     std::map<int, QVector3D> m_mapRotVector;
-    QVector<float> vecTest;
+
 };
 #endif // NEWTRAVEL_ROBOT_BODY_LOAD_H
