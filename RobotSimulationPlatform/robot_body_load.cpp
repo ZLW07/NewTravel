@@ -11,7 +11,7 @@
 #include <QtMath>
 
 RobotBody::RobotBody(QWidget *parent)
-    : QOpenGLWidget(parent)
+    : QOpenGLWidget(parent),alpha(0.0),theta(0.0)
 {
     QSurfaceFormat format;
     format.setAlphaBufferSize(24); //设置alpha缓冲大小
@@ -51,8 +51,10 @@ RobotBody::RobotBody(QWidget *parent)
     {
         m_fRotDegree[ii] = 0.0;
     }
-
-
+    Rot.setToIdentity();
+    Rot.translate(0,-0.5,0);
+    Rot.rotate(-90, 1, 0,0);
+    m_v3dCamera = QVector3D(3,0,0);
     std::cout << sizeof(m_aJointModel)/ sizeof(JointParameters) << std::endl;
 }
 
@@ -155,21 +157,18 @@ void RobotBody::paintGL()
     {
         QVector3D lightColor(1.0f, 1.0f, 1.0f);
         QVector3D objectColor(1.0f, 0.5f, 0.31f);
-        QVector3D lightPos(30 , 0, 0);
+        QVector3D lightPos(m_v3dCamera);
 
         view.setToIdentity();
-        view.lookAt(QVector3D(3, 0, 0), QVector3D(0.0f, 0.0f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f));
+        view.lookAt(m_v3dCamera, QVector3D(0.0f, 0.0f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f));
 
         shaderprogram.setUniformValue("objectColor", objectColor);
         shaderprogram.setUniformValue("lightColor", lightColor);
         shaderprogram.setUniformValue("lightPos", lightPos);
-        model.setToIdentity();
-        Rot.setToIdentity();
-        Rot.rotate(-90, 1, 0,0);
+
         shaderprogram.setUniformValue("Rot",Rot);
         shaderprogram.setUniformValue("view", view);
         shaderprogram.setUniformValue("projection", projection);
-        shaderprogram.setUniformValue("model", model);
         InitialTranslate();
         for (int ii = 0; ii < 7; ii++)
         {
@@ -222,6 +221,11 @@ void RobotBody::mouseMoveEvent(QMouseEvent *event)
     {
         QVector2D newPos = (QVector2D)event->pos();
         QVector2D diff = newPos - mousePos;
+        alpha = diff[0]/15 + alpha;
+        theta = diff[1]/15 + theta;
+        m_v3dCamera[0] = 3 *cos(theta)* cos(alpha) ;
+        m_v3dCamera[2] = 3 *cos(theta) * sin(alpha);
+        m_v3dCamera[1] = 3 *sin(theta);
         mousePos = newPos;
         this->update();
     }

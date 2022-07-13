@@ -66,7 +66,6 @@ private:
     QVector<float> Normal;                //读文件时的俩个临时变量顶点位置，法向量
     QOpenGLShaderProgram shaderprogram;
 
-    QMatrix4x4 model;
     QMatrix4x4 view;
     QMatrix4x4 projection;
 
@@ -77,6 +76,9 @@ private:
     QMatrix4x4 m_matJointRot[7];
     float m_fRotDegree[6];
     std::map<int, QVector3D> m_mapRotVector;
+    QVector3D m_v3dCamera;
+    qreal  alpha;
+    qreal  theta;
 
 };
 #endif // NEWTRAVEL_ROBOT_BODY_LOAD_H
