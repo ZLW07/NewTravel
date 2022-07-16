@@ -8,6 +8,7 @@
 #include <fstream>
 
 #include "Model/model_data.h"
+#include "Model/model_data_eigen.h"
 #include "gtest/gtest.h"
 
 class TestModel : public ::testing::Test
@@ -123,6 +124,54 @@ TEST_F(TestModel, CollisionDetection)
     ModelManager oMod;
     Vector3D v3d{0, 0, 1.01};
     Matrix4D transPose(rotRot, v3d);
+    auto bResult = oMod.IsColliding(oOBBA, oBBB, transPose);
+    ZLOG << "bResult " << bResult;
+}
+
+TEST_F(TestModel, OBB_OBBE)
+{
+    std::vector<Eigen::Vector3d> vecSrc;
+    Eigen::Vector3d v3d(1, 0, 0);
+    vecSrc.push_back(v3d);
+    v3d = {2, 0, 0};
+    vecSrc.push_back(v3d);
+    v3d = {1, 1, 0};
+    vecSrc.push_back(v3d);
+    v3d = {2, 1, 0};
+    vecSrc.push_back(v3d);
+    v3d = {1, 0, 3};
+    vecSrc.push_back(v3d);
+    v3d = {2, 0, 3};
+    vecSrc.push_back(v3d);
+    v3d = {1, 1, 3};
+    vecSrc.push_back(v3d);
+    v3d = {2, 1, 3};
+    vecSrc.push_back(v3d);
+    ModelManagerE oMod;
+    ModelDataElement oModelData;
+    oModelData.vecPoint = vecSrc;
+    auto aOBB = oMod.GetModelOBBDataVector(oModelData);
+    ZLOG << aOBB.v3dCenterPoint; //   Vector3D: {1.5, 0.5, 1.5}
+    ZLOG << aOBB.v3dOBBLength;   //   Vector3D: {0.5, 0.5, 1.5}
+    ZLOG << aOBB.rotBaseVector;  //{-1 0 0} {0 -1 0} {0 0 -1}
+}
+
+TEST_F(TestModel, CollisionDetectionE)
+{
+    OBBElement oOBBA;
+    RotationE rotRot;
+    rotRot.IdentityMatrix();
+    Vector3DE v3dCenterPoint{1.5, 0.5, 1.5};
+    Vector3DE v3dLength{0.5, 0.5, 0.5};
+    oOBBA.rotBaseVector = rotRot;
+    oOBBA.v3dOBBLength = v3dLength;
+    oOBBA.v3dCenterPoint = v3dCenterPoint;
+
+    OBBElement oBBB;
+    oBBB = oOBBA;
+    ModelManagerE oMod;
+    Vector3DE v3d{0, 0, 1.01};
+    Matrix4E transPose(rotRot, v3d);
     auto bResult = oMod.IsColliding(oOBBA, oBBB, transPose);
     ZLOG << "bResult " << bResult;
 }

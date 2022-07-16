@@ -23,7 +23,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Package/bin)
 include_directories(include)
 include_directories(ExternalSource/googletest/include)
 include_directories(ExternalSource/googletest)
-include_directories(ExternalSource/Eigen)
+include_directories(ExternalSource)
 set(BUILD_SHARED_LIBS ON)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/Cmake)
