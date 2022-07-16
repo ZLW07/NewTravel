@@ -4,6 +4,7 @@
 
 #include "Model/model_data_eigen.h"
 #include "Math/math_matrix4_eigen.h"
+#include "Log/log.h"
 
 bool ModelManagerE::ReadAscllSTlFileE(const char *cFileName, ModelDataElement &oModelData)
 {
@@ -115,6 +116,7 @@ bool ModelManagerE::IsColliding(OBBElement &OBB_A, OBBElement &OBB_B, Matrix4E &
     double dRa = 0.0;
     double dRb = 0.0;
     double dT = 0.0;
+    ZLOG << rotBToA[0][0];
     // test axes L = A0 ; A1; A2
     for (int ii = 0; ii < 3; ++ii)
     {

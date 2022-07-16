@@ -20,7 +20,7 @@ public:
     Vector3DE GetPose();
 
 public:
-    Matrix4E Inv();
+    void Inv();
     Matrix4E operator*(Matrix4E &oMat4);
 private:
     Eigen::Matrix4d m_mat;

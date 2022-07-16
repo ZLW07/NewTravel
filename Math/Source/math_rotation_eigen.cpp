@@ -16,6 +16,7 @@ std::ostream &operator<<(std::ostream &os, RotationE &rotData)
 RotationE::RotationE()
 {
     m_mat3Rotation = Eigen::Matrix3d::Zero();
+    m_vecD3 = Eigen::RowVector3d::Zero();
 }
 RotationE::~RotationE() {}
 
@@ -97,6 +98,6 @@ double &RotationE::operator()(int iRow,int iCol)
 
 Eigen::RowVector3d &RotationE::operator[](int iIndex)
 {
-    Eigen::RowVector3d vc = m_mat3Rotation.row(iIndex);
-    return vc;
+    m_vecD3 = m_mat3Rotation.row(iIndex);
+    return m_vecD3;
 }

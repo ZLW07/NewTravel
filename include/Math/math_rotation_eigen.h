@@ -27,8 +27,8 @@ public:
     Eigen::RowVector3d &operator[](int iIndex);
 
 private:
-
     Eigen::Matrix3d  m_mat3Rotation;
+    Eigen::RowVector3d m_vecD3;
 };
 
 #endif // NEWTRAVEL_MATH_ROTATION_EIGEN_H

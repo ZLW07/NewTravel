@@ -52,10 +52,9 @@ Vector3DE Matrix4E::GetPose()
 
 
 
-Matrix4E Matrix4E::Inv()
+void Matrix4E::Inv()
 {
-    m_mat =  m_mat.inverse();
-    return *this;
+    m_mat.inverse();
 }
 
 Matrix4E Matrix4E::operator*(Matrix4E &oMat4)
