@@ -5,9 +5,9 @@
 #ifndef NEWTRAVEL_MODEL_DATA_H
 #define NEWTRAVEL_MODEL_DATA_H
 
-#include "Math/math_vector3d.h"
-#include "Math/math_transfromation_matrix.h"
 #include "Math/math_linear_algebra.h"
+#include "Math/math_matrix4d.h"
+#include "Math/math_vector3d.h"
 
 const double g_dRightAngle = 1.5707963;
 const double g_dNearZero = 0.0001;
@@ -50,7 +50,7 @@ public:
     ~ModelManager();
     bool LoadModelData(const char* cFileName, ModelDataBase& oModelData, OBBData &oOBBData);
     OBBData GetModelOBBDataVector(ModelDataBase &oDataBase);
-    bool IsColliding( OBBData &OBB_A,  OBBData &OBB_B, TransformMatrix &trans2_1);
+    bool IsColliding( OBBData &OBB_A,  OBBData &OBB_B, Matrix4D &trans2_1);
 private:
     bool ReadAscllSTlFile(const char *cFileName, ModelDataBase &oModelData);
 private:

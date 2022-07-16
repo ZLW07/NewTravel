@@ -144,7 +144,7 @@ public:
     ~Matrix();
     int GetRowSize() const;
     int GetColSize() const;
-    void SetEye();
+    void SetIdentityMatrix();
 public:
     Vector<double> &operator[](int iIndex);
     Matrix &operator+(Matrix &matData);

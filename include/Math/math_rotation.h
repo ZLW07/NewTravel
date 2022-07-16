@@ -26,13 +26,14 @@ public:
     Vector3D GetRowVector(unsigned int iRow);
     Vector<double> GetColVector(unsigned int uiBeginRow, unsigned int iCol);
     Rotation Dot(VectorD3 &vd3Data, Vector3D &v3dData);
-    double Dot(Vector3D &vd3Data, VectorD3 &v3dData);
+    double  Dot(Vector3D &vd3Data, VectorD3 &v3dData);
     Matrix &GetMatValue();
     Rotation ConversionMatToRot(Matrix &matData);
     Rotation Cov(std::vector<Vector3D> &vSrc_1);
     Rotation Transpose();
     void SetEye();
     Rotation GetOBBDirectionVector(Rotation &rotData);
+    Rotation RotateEular(double dGamma, double dBeta, double dAlpha,int iXAxis,int iYAxis, int ZAxis);
 public:
 private:
     Matrix Householder(Vector<double> &vecData);

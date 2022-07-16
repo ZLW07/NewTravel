@@ -2,9 +2,9 @@
 // Created by wei on 2022/4/2.
 //
 
-#include "Math/math_transfromation_matrix.h"
+#include "Math/math_matrix4d.h"
 
-TransformMatrix::TransformMatrix() : m_matData(4, 4)
+Matrix4D::Matrix4D() : m_matData(4, 4)
 {
     m_matData[3][0] = 0.0;
     m_matData[3][1] = 0.0;
@@ -14,7 +14,7 @@ TransformMatrix::TransformMatrix() : m_matData(4, 4)
     m_iCol = (this->m_matData).GetColSize();
 }
 
-TransformMatrix::TransformMatrix(Rotation rotData, Vector3D v3dData) : m_matData(4, 4)
+Matrix4D::Matrix4D(Rotation rotData, Vector3D v3dData) : m_matData(4, 4)
 {
     for (int iRow = 0; iRow < 3; ++iRow)
     {
@@ -32,7 +32,7 @@ TransformMatrix::TransformMatrix(Rotation rotData, Vector3D v3dData) : m_matData
     m_iCol = 4;
 }
 
-Vector<double> TransformMatrix::GetRowVector(unsigned int iRow)
+Vector<double> Matrix4D::GetRowVector(unsigned int iRow)
 {
     if (iRow > m_iCol)
     {
@@ -47,7 +47,7 @@ Vector<double> TransformMatrix::GetRowVector(unsigned int iRow)
     return vecDirData;
 }
 
-Vector<double> TransformMatrix::GetColVector(unsigned int iCol)
+Vector<double> Matrix4D::GetColVector(unsigned int iCol)
 {
     if (iCol > m_iRow)
     {
@@ -62,7 +62,7 @@ Vector<double> TransformMatrix::GetColVector(unsigned int iCol)
     return vecDirData;
 }
 
-Rotation TransformMatrix::GetRotation()
+Rotation Matrix4D::GetRotation()
 {
     Rotation oResult;
     for (int iRow = 0; iRow < 3; iRow++)
@@ -75,7 +75,7 @@ Rotation TransformMatrix::GetRotation()
     return oResult;
 }
 
-Vector3D TransformMatrix::GetPoseTranslate()
+Vector3D Matrix4D::GetPose()
 {
     Vector3D oResult;
     for (int iRow = 0; iRow < 3; ++iRow)
@@ -85,7 +85,7 @@ Vector3D TransformMatrix::GetPoseTranslate()
     return oResult;
 }
 
-void TransformMatrix::SwapRow(int iSrcRow, int iDirRow)
+void Matrix4D::SwapRow(int iSrcRow, int iDirRow)
 {
     double dValue = 0.0;
     for (int ii = 0; ii < m_iCol; ++ii)
@@ -96,14 +96,14 @@ void TransformMatrix::SwapRow(int iSrcRow, int iDirRow)
     }
 }
 
-void TransformMatrix::SetEye()
+void Matrix4D::SetIndentyMatrix()
 {
-    m_matData.SetEye();
+    m_matData.SetIdentityMatrix();
 }
 
-bool TransformMatrix::Inv(TransformMatrix transMat)
+bool Matrix4D::Inv(Matrix4D transMat)
 {
-    SetEye(); //创建单位矩阵
+    SetIndentyMatrix(); //创建单位矩阵
     //下来进行自上而下的初等行变换，使得矩阵 a.mat 变成单位上三角矩阵
     for (int ii = 0; ii < m_iCol; ii++) //注意这里要 i<=m，和之前的上三角矩阵有不同
     { //因为要判断最后一行化为上三角矩阵的最后一行最后一列元素是否为 0
@@ -157,7 +157,7 @@ bool TransformMatrix::Inv(TransformMatrix transMat)
     return true;
 }
 
-std::ostream &operator<<(std::ostream &os, TransformMatrix &transData)
+std::ostream &operator<<(std::ostream &os, Matrix4D &transData)
 {
     int iTemp = 3;
     for (int ii = 0; ii < 4; ii++)
@@ -176,7 +176,7 @@ std::ostream &operator<<(std::ostream &os, TransformMatrix &transData)
     return os;
 }
 
-Vector<double> &TransformMatrix::operator[](int iIndex)
+Vector<double> &Matrix4D::operator[](int iIndex)
 {
     if ((iIndex > m_iRow) || (iIndex < 0))
     {
@@ -186,9 +186,9 @@ Vector<double> &TransformMatrix::operator[](int iIndex)
     return m_matData[iIndex];
 }
 
-TransformMatrix TransformMatrix::operator*(TransformMatrix &transData)
+Matrix4D Matrix4D::operator*(Matrix4D &transData)
 {
-    TransformMatrix transDirData;
+    Matrix4D transDirData;
     for (int ii = 0; ii < m_iRow; ii++)
     {
         Vector<double> vecData1 = this->GetRowVector(ii);
@@ -201,10 +201,10 @@ TransformMatrix TransformMatrix::operator*(TransformMatrix &transData)
     return transDirData;
 }
 
-Vector3D TransformMatrix::operator*(Vector3D &v3dData)
+Vector3D Matrix4D::operator*(Vector3D &v3dData)
 {
     Rotation rotTempResult = GetRotation();
-    Vector3D v3dTempResult = GetPoseTranslate();
+    Vector3D v3dTempResult = GetPose();
     Vector3D v3dResult = rotTempResult * v3dData + v3dTempResult;
     return v3dResult;
 }

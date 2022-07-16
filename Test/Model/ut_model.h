@@ -122,7 +122,7 @@ TEST_F(TestModel, CollisionDetection)
     oBBB = oOBBA;
     ModelManager oMod;
     Vector3D v3d{0, 0, 1.01};
-    TransformMatrix transPose(rotRot, v3d);
+    Matrix4D transPose(rotRot, v3d);
     auto bResult = oMod.IsColliding(oOBBA, oBBB, transPose);
     ZLOG << "bResult " << bResult;
 }

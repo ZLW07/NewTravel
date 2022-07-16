@@ -50,15 +50,15 @@ OBBData ModelManager::GetModelOBBDataVector(ModelDataBase &oDataBase)
     return oOBBData;
 }
 
-bool ModelManager::IsColliding(OBBData &OBB_A, OBBData &OBB_B, TransformMatrix &transOBB)
+bool ModelManager::IsColliding(OBBData &OBB_A, OBBData &OBB_B, Matrix4D &transOBB)
 {
-    TransformMatrix transBB1(OBB_A.rotBaseVector, OBB_A.v3dCenterPoint);
-    TransformMatrix transBB2(OBB_B.rotBaseVector, OBB_B.v3dCenterPoint);
-    TransformMatrix tranInvBB1;
+    Matrix4D transBB1(OBB_A.rotBaseVector, OBB_A.v3dCenterPoint);
+    Matrix4D transBB2(OBB_B.rotBaseVector, OBB_B.v3dCenterPoint);
+    Matrix4D tranInvBB1;
     tranInvBB1.Inv(transBB1);
-    TransformMatrix tranBaseBToA = tranInvBB1 * transOBB * transBB2;
+    Matrix4D tranBaseBToA = tranInvBB1 * transOBB * transBB2;
     Rotation rotBToA = tranBaseBToA.GetRotation();
-    Vector3D v3dBToAPose = tranBaseBToA.GetPoseTranslate();
+    Vector3D v3dBToAPose = tranBaseBToA.GetPose();
     double dRa = 0.0;
     double dRb = 0.0;
     double dT = 0.0;

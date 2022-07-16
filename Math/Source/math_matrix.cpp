@@ -38,7 +38,7 @@ int Matrix::GetColSize() const
 
 Matrix::~Matrix() = default;
 
-void Matrix::SetEye()
+void Matrix::SetIdentityMatrix()
 {
     for (int ii = 0; ii < m_iRow; ++ii)
     {

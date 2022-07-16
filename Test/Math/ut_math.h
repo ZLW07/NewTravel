@@ -6,11 +6,11 @@
 #define NEWTRAVEL_UT_MATH_H
 
 #include "Log/log.h"
+#include "Math/math_linear_algebra.h"
 #include "Math/math_matrix.h"
-#include "Math/math_transfromation_matrix.h"
+#include "Math/math_matrix4d.h"
 #include "Math/math_rotation.h"
 #include "Math/math_vector3d.h"
-#include "Math/math_linear_algebra.h"
 #include <iostream>
 
 #include "gtest/gtest.h"
@@ -26,7 +26,7 @@ private:
 
 TEST_F(TestMath, TestVector3DOperate)
 {
-    TransformMatrix oTran;
+    Matrix4D oTran;
     Vector3D v3dData1(1, 0, 0);
     Vector3D v3dData2(0, 1, 0);
     Vector3D v3dData3(0, 0, 1);
@@ -43,7 +43,7 @@ TEST_F(TestMath, TestTransForm)
     Vector3D v3dData4(1, 3, 1);
     Vector3D v3dData5(1, 0, 8);
     Rotation rotData(v3dData1, v3dData2, v3dData3);
-    TransformMatrix oTrans(rotData, v3dData5);
+    Matrix4D oTrans(rotData, v3dData5);
     ZLOG << oTrans;
     Vector3D v3dResult = oTrans * v3dData4;
     ZLOG << v3dResult;
@@ -59,9 +59,9 @@ TEST_F(TestMath, TestTransForm)
     Rotation rotRation;
     rotRation.SetEye();
     Vector3D v3dPose(1, 0, 0);
-    TransformMatrix transMat{rotRation,v3dPose};
+    Matrix4D transMat{rotRation,v3dPose};
     v3dPose[0] = 5;
-    TransformMatrix transMat1{rotRation,v3dPose};
+    Matrix4D transMat1{rotRation,v3dPose};
     ZLOG  << transMat*transMat1;
 }
 
@@ -73,8 +73,8 @@ TEST_F(TestMath, TestInv)
     Vector3D v3dData4(1, 3, 1);
     Vector3D v3dData5(1, 0, 8);
     Rotation rotData(v3dData1, v3dData2, v3dData3);
-    TransformMatrix oTrans(rotData, v3dData5);
-    TransformMatrix oInv;
+    Matrix4D oTrans(rotData, v3dData5);
+    Matrix4D oInv;
     oInv.Inv(oTrans);
     // {0.75 0.5 0.25 -2.75} {0.5 1 0.5 -4.5} {0.25 0.5 0.75 -6.25} {0 0 0 1}
     ZLOG << oInv;

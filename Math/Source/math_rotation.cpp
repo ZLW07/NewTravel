@@ -170,7 +170,7 @@ double Rotation::Dot(Vector3D &vd3Data, VectorD3 &v3dData)
     return dResult;
 }
 
-Matrix & Rotation::GetMatValue()
+Matrix &Rotation::GetMatValue()
 {
     return m_matData;
 }
@@ -231,7 +231,7 @@ Rotation Rotation::Transpose()
 
 void Rotation::SetEye()
 {
-    m_matData.SetEye();
+    m_matData.SetIdentityMatrix();
 }
 
 Matrix Rotation::Householder(Vector<double> &vecData)
@@ -251,7 +251,7 @@ Matrix Rotation::Householder(Vector<double> &vecData)
     }
     vec_e[0] = dSigma;
     Vector<double> vec_nu = vecData + vec_e;
-    oMatResult.SetEye();
+    oMatResult.SetIdentityMatrix();
     Matrix oMat(iSize,iSize);
     oMat.Dot(vec_nu,vec_nu);
     oMat.Dot(2/pow(vec_nu.Norm2(),2));
@@ -277,4 +277,16 @@ Rotation Rotation::GetOBBDirectionVector(Rotation &rotData)
     Matrix oMat = rotRot_H3.GetMatValue() * rotRot_H2.GetMatValue() * oMat_H1;
     rot_Q.ConversionMatToRot(oMat);
     return rot_Q;
+}
+
+Rotation Rotation::RotateEular(double dGamma, double dBeta, double dAlpha,int iXAxis,int iYAxis, int ZAxis)
+{
+    double dElement0_0 = cos(dAlpha)* cos(dBeta);
+    double dElement0_1 =  cos(dAlpha)* sin(dBeta) * sin(dGamma) - sin(dAlpha) * cos(dGamma);
+    double dElement0_2 = cos(dAlpha)* sin(dBeta)*cos(dGamma) + sin(dAlpha) * sin(dGamma);
+    double dElement1_0 = sin(dAlpha) * cos(dBeta);
+    double dElement1_1 = sin(dAlpha) * sin(dBeta) * sin(dGamma) + cos(dAlpha) * cos(dGamma);
+    double dElemnet1_2 = sin(dAlpha)*sin(dBeta)*cos(dGamma) - cos(dAlpha)*sin(dGamma);
+    double
+    Vector3D v3dX(cos(dAlpha)* cos(dBeta),cos)
 }
