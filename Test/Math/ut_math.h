@@ -12,6 +12,8 @@
 #include "Math/math_rotation.h"
 #include "Math/math_vector3d.h"
 #include <iostream>
+#include "Eigen/Eigen"
+#include "Math/math_rotation_eigen.h"
 
 #include "gtest/gtest.h"
 
@@ -117,6 +119,26 @@ TEST_F(TestMath, TestOBB)
     v3d.Clear();
     Rotation rot;
     rot.Cov(vecSrc);
+//    {0.435833 0.166667 0.333333} {0.166667 0.74 0.52} {0.333333 0.52 3.04667}
+    ZLOG << rot;
+    auto result = rot.GetOBBDirectionVector(rot);
+//    {-0.760026 -0.290641 -0.581282} {0.491677 -0.842044 -0.221846} {0.424987 0.454412 -0.782877}
+    ZLOG << result;
+}
+
+TEST_F(TestMath, TestOBB_E)
+{
+    std::vector<Eigen::Vector3d> vecSrc;
+    Eigen::Vector3d v3d(3.7,1.7,3.5);
+    vecSrc.push_back(v3d);
+    v3d = {4.1,3.8,5.2};
+    vecSrc.push_back(v3d);
+    v3d = { 4.7,2.9,2.1};
+    vecSrc.push_back(v3d);
+    v3d = {  5.2,2.8,6.0};
+    vecSrc.push_back(v3d);
+    RotationE rot;
+    rot.CovarianceMatrix(vecSrc);
 //    {0.435833 0.166667 0.333333} {0.166667 0.74 0.52} {0.333333 0.52 3.04667}
     ZLOG << rot;
     auto result = rot.GetOBBDirectionVector(rot);

@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "Model/model_data.h"
+#include "Math/math_vector3d_eigen.h"
 
 ModelManager::ModelManager() {}
 
@@ -229,3 +230,4 @@ bool ModelManager::ReadAscllSTlFile(const char *cFileName, ModelDataBase &oModel
     } while (!in.eof());
     return true;
 }
+

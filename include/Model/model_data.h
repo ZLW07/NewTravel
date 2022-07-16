@@ -5,6 +5,7 @@
 #ifndef NEWTRAVEL_MODEL_DATA_H
 #define NEWTRAVEL_MODEL_DATA_H
 
+
 #include "Math/math_linear_algebra.h"
 #include "Math/math_matrix4d.h"
 #include "Math/math_vector3d.h"
@@ -39,9 +40,11 @@ struct CollisionDectionData
     std::vector<Vector3D> vecModelNormalVector;
     DetectionBase oSurfacePoint_1;
     DetectionBase oSurfacePoint_2;
-
-
 };
+
+
+
+
 
 class ModelManager
 {

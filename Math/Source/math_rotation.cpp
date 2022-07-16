@@ -279,14 +279,14 @@ Rotation Rotation::GetOBBDirectionVector(Rotation &rotData)
     return rot_Q;
 }
 
-Rotation Rotation::RotateEular(double dGamma, double dBeta, double dAlpha,int iXAxis,int iYAxis, int ZAxis)
-{
-    double dElement0_0 = cos(dAlpha)* cos(dBeta);
-    double dElement0_1 =  cos(dAlpha)* sin(dBeta) * sin(dGamma) - sin(dAlpha) * cos(dGamma);
-    double dElement0_2 = cos(dAlpha)* sin(dBeta)*cos(dGamma) + sin(dAlpha) * sin(dGamma);
-    double dElement1_0 = sin(dAlpha) * cos(dBeta);
-    double dElement1_1 = sin(dAlpha) * sin(dBeta) * sin(dGamma) + cos(dAlpha) * cos(dGamma);
-    double dElemnet1_2 = sin(dAlpha)*sin(dBeta)*cos(dGamma) - cos(dAlpha)*sin(dGamma);
-    double
-    Vector3D v3dX(cos(dAlpha)* cos(dBeta),cos)
-}
+//Rotation Rotation::RotateEular(double dGamma, double dBeta, double dAlpha,int iXAxis,int iYAxis, int ZAxis)
+//{
+//    double dElement0_0 = cos(dAlpha)* cos(dBeta);
+//    double dElement0_1 =  cos(dAlpha)* sin(dBeta) * sin(dGamma) - sin(dAlpha) * cos(dGamma);
+//    double dElement0_2 = cos(dAlpha)* sin(dBeta)*cos(dGamma) + sin(dAlpha) * sin(dGamma);
+//    double dElement1_0 = sin(dAlpha) * cos(dBeta);
+//    double dElement1_1 = sin(dAlpha) * sin(dBeta) * sin(dGamma) + cos(dAlpha) * cos(dGamma);
+//    double dElemnet1_2 = sin(dAlpha)*sin(dBeta)*cos(dGamma) - cos(dAlpha)*sin(dGamma);
+//    double
+//    Vector3D v3dX(cos(dAlpha)* cos(dBeta),cos)
+//}
