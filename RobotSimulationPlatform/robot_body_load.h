@@ -70,6 +70,7 @@ private:
     QMatrix4x4 projection;
 
     QVector2D mousePos;
+    QVector2D mousePosForTranslationView;
     QQuaternion rotation;
     QMatrix4x4 Rot;
     QMatrix4x4 m_matJointTrans[7];
@@ -79,6 +80,7 @@ private:
     QVector3D m_v3dCamera;
     qreal  alpha;
     qreal  theta;
+    double m_dEyeToModelDistance;
 
 };
 #endif // NEWTRAVEL_ROBOT_BODY_LOAD_H

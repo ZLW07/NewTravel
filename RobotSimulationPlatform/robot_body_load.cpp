@@ -11,7 +11,7 @@
 #include <QtMath>
 
 RobotBody::RobotBody(QWidget *parent)
-    : QOpenGLWidget(parent),alpha(0.0),theta(0.0)
+    : QOpenGLWidget(parent),alpha(0.0),theta(0.0),m_dEyeToModelDistance(3.0)
 {
     QSurfaceFormat format;
     format.setAlphaBufferSize(24); //设置alpha缓冲大小
@@ -55,6 +55,7 @@ RobotBody::RobotBody(QWidget *parent)
     Rot.translate(0,-0.5,0);
     Rot.rotate(-90, 1, 0,0);
     m_v3dCamera = QVector3D(3,0,0);
+    mousePosForTranslationView = QVector2D(0.0, 0.0);
     std::cout << sizeof(m_aJointModel)/ sizeof(JointParameters) << std::endl;
 }
 
@@ -161,7 +162,6 @@ void RobotBody::paintGL()
 
         view.setToIdentity();
         view.lookAt(m_v3dCamera, QVector3D(0.0f, 0.0f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f));
-
         shaderprogram.setUniformValue("objectColor", objectColor);
         shaderprogram.setUniformValue("lightColor", lightColor);
         shaderprogram.setUniformValue("lightPos", lightPos);
@@ -217,15 +217,23 @@ void RobotBody::mousePressEvent(QMouseEvent *event)
 
 void RobotBody::mouseMoveEvent(QMouseEvent *event)
 {
+    if (event->buttons() == Qt::RightButton)
+    {
+        QVector2D newPos = (QVector2D)event->pos();
+        mousePosForTranslationView = mousePosForTranslationView + (newPos - mousePos)/30;
+        mousePos = newPos;
+        this->update();
+    }
+
     if (event->buttons() == Qt::LeftButton)
     {
         QVector2D newPos = (QVector2D)event->pos();
         QVector2D diff = newPos - mousePos;
         alpha = diff[0]/15 + alpha;
         theta = diff[1]/15 + theta;
-        m_v3dCamera[0] = 3 *cos(theta)* cos(alpha) ;
-        m_v3dCamera[2] = 3 *cos(theta) * sin(alpha);
-        m_v3dCamera[1] = 3 *sin(theta);
+        m_v3dCamera[0] = m_dEyeToModelDistance *cos(theta)* cos(alpha) ;
+        m_v3dCamera[2] = m_dEyeToModelDistance *cos(theta) * sin(alpha);
+        m_v3dCamera[1] = m_dEyeToModelDistance *sin(theta);
         mousePos = newPos;
         this->update();
     }
@@ -234,18 +242,21 @@ void RobotBody::mouseMoveEvent(QMouseEvent *event)
 
 void RobotBody::wheelEvent(QWheelEvent *event)
 {
-//    QPoint numDegrees = event->angleDelta() / 8;
-//
-//    if (numDegrees.y() > 0)
-//    {
-//        ytrans += 0.25f;
-//    }
-//    else if (numDegrees.y() < 0)
-//    {
-//        ytrans -= 0.25f;
-//    }
-//    this->update();
-//    event->accept();
+    QPoint numDegrees = event->angleDelta() / 8;
+
+    if (numDegrees.y() > 0)
+    {
+        m_dEyeToModelDistance += 0.25f;
+    }
+    else if (numDegrees.y() < 0)
+    {
+        m_dEyeToModelDistance -= 0.25f;
+    }
+    m_v3dCamera[0] = m_dEyeToModelDistance *cos(theta)* cos(alpha) ;
+    m_v3dCamera[2] = m_dEyeToModelDistance *cos(theta) * sin(alpha);
+    m_v3dCamera[1] = m_dEyeToModelDistance *sin(theta);
+    this->update();
+    event->accept();
 }
 
 void RobotBody::SetRotationAngleOfJoint_0(int value)
