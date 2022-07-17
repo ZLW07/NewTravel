@@ -27,6 +27,12 @@ Matrix4E::Matrix4E(RotationE oRot, Vector3DE v3d)
 
 Matrix4E::~Matrix4E() {}
 
+std::ostream &operator<<(std::ostream &os, Matrix4E &oMatrix4E)
+{
+    os << oMatrix4E.m_mat;
+    return os;
+}
+
 RotationE Matrix4E::GetRotation()
 {
     RotationE oRat;
@@ -52,9 +58,11 @@ Vector3DE Matrix4E::GetPose()
 
 
 
-void Matrix4E::Inv()
+Matrix4E Matrix4E::Inv()
 {
-    m_mat.inverse();
+    Matrix4E oMatrix4E;
+    oMatrix4E.m_mat = m_mat.inverse();
+    return oMatrix4E;
 }
 
 Matrix4E Matrix4E::operator*(Matrix4E &oMat4)

@@ -75,7 +75,7 @@ Eigen::Matrix3d RotationE::GetData()
 
 void RotationE::IdentityMatrix()
 {
-    m_mat3Rotation.Identity();
+    m_mat3Rotation = m_mat3Rotation.Identity();
 }
 
 RotationE RotationE::operator/(double dData)

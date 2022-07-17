@@ -109,14 +109,13 @@ bool ModelManagerE::IsColliding(OBBElement &OBB_A, OBBElement &OBB_B, Matrix4E &
 {
     Matrix4E transBB1(OBB_A.rotBaseVector, OBB_A.v3dCenterPoint);
     Matrix4E transBB2(OBB_B.rotBaseVector, OBB_B.v3dCenterPoint);
-    transBB1.Inv();
-    Matrix4E tranBaseBToA = transBB1 * transOBB * transBB2;
+    Matrix4E oInvTransBB1 = transBB1.Inv();
+    Matrix4E tranBaseBToA = oInvTransBB1 * transOBB * transBB2;
     RotationE rotBToA = tranBaseBToA.GetRotation();
     Vector3DE v3dBToAPose = tranBaseBToA.GetPose();
     double dRa = 0.0;
     double dRb = 0.0;
     double dT = 0.0;
-    ZLOG << rotBToA[0][0];
     // test axes L = A0 ; A1; A2
     for (int ii = 0; ii < 3; ++ii)
     {
@@ -171,7 +170,7 @@ bool ModelManagerE::IsColliding(OBBElement &OBB_A, OBBElement &OBB_B, Matrix4E &
 
     // u1_A X u0_B   4
     dT = fabs(v3dBToAPose.X() * rotBToA[2][0] - v3dBToAPose.Z() * fabs(rotBToA[0][0]));
-    dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[2][0] + OBB_A.v3dOBBLength.Z() * fabs(rotBToA[0][0]));
+    dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[2][0]) + OBB_A.v3dOBBLength.Z() * fabs(rotBToA[0][0]);
     dRb = OBB_B.v3dOBBLength.Y() * fabs(rotBToA[1][2]) + OBB_B.v3dOBBLength.Z() * fabs(rotBToA[1][1]);
     if (dT > (dRa + dRb))
     {

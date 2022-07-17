@@ -57,7 +57,8 @@ bool ModelManager::IsColliding(OBBData &OBB_A, OBBData &OBB_B, Matrix4D &transOB
     Matrix4D transBB2(OBB_B.rotBaseVector, OBB_B.v3dCenterPoint);
     Matrix4D tranInvBB1;
     tranInvBB1.Inv(transBB1);
-    Matrix4D tranBaseBToA = tranInvBB1 * transOBB * transBB2;
+//    Matrix4D tranBaseBToA = tranInvBB1 * transOBB * transBB2;
+    Matrix4D tranBaseBToA = tranInvBB1 * transOBB  * transBB2;
     Rotation rotBToA = tranBaseBToA.GetRotation();
     Vector3D v3dBToAPose = tranBaseBToA.GetPose();
     double dRa = 0.0;
@@ -117,7 +118,7 @@ bool ModelManager::IsColliding(OBBData &OBB_A, OBBData &OBB_B, Matrix4D &transOB
 
     // u1_A X u0_B   4
     dT = fabs(v3dBToAPose.X() * rotBToA[2][0] - v3dBToAPose.Z() * fabs(rotBToA[0][0]));
-    dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[2][0] + OBB_A.v3dOBBLength.Z() * fabs(rotBToA[0][0]));
+    dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[2][0]) + OBB_A.v3dOBBLength.Z() * fabs(rotBToA[0][0]);
     dRb = OBB_B.v3dOBBLength.Y() * fabs(rotBToA[1][2]) + OBB_B.v3dOBBLength.Z() * fabs(rotBToA[1][1]);
     if (dT > (dRa + dRb))
     {

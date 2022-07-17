@@ -11,7 +11,7 @@
 #include <QtMath>
 
 RobotBody::RobotBody(QWidget *parent)
-    : QOpenGLWidget(parent),alpha(0.0),theta(0.0),m_dEyeToModelDistance(3.0)
+    : QOpenGLWidget(parent),alpha(0.0),theta(0.0),m_dEyeToModelDistance(2.0)
 {
     QSurfaceFormat format;
     format.setAlphaBufferSize(24); //设置alpha缓冲大小
@@ -54,9 +54,8 @@ RobotBody::RobotBody(QWidget *parent)
     Rot.setToIdentity();
     Rot.translate(0,-0.5,0);
     Rot.rotate(-90, 1, 0,0);
-    m_v3dCamera = QVector3D(3,0,0);
+    m_v3dCamera = QVector3D(m_dEyeToModelDistance,0,0);
     mousePosForTranslationView = QVector2D(0.0, 0.0);
-    std::cout << sizeof(m_aJointModel)/ sizeof(JointParameters) << std::endl;
 }
 
 RobotBody::~RobotBody()
@@ -217,13 +216,13 @@ void RobotBody::mousePressEvent(QMouseEvent *event)
 
 void RobotBody::mouseMoveEvent(QMouseEvent *event)
 {
-    if (event->buttons() == Qt::RightButton)
-    {
-        QVector2D newPos = (QVector2D)event->pos();
-        mousePosForTranslationView = mousePosForTranslationView + (newPos - mousePos)/30;
-        mousePos = newPos;
-        this->update();
-    }
+//    if (event->buttons() == Qt::RightButton)
+//    {
+//        QVector2D newPos = (QVector2D)event->pos();
+//        mousePosForTranslationView = mousePosForTranslationView + (newPos - mousePos)/30;
+//        mousePos = newPos;
+//        this->update();
+//    }
 
     if (event->buttons() == Qt::LeftButton)
     {

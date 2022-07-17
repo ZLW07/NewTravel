@@ -10,6 +10,7 @@
 
 class Matrix4E
 {
+    friend  std::ostream &operator<<(std::ostream &os, Matrix4E &oMatrix4E);
 public:
     Matrix4E();
     Matrix4E(RotationE oRot, Vector3DE v3d);
@@ -20,7 +21,7 @@ public:
     Vector3DE GetPose();
 
 public:
-    void Inv();
+    Matrix4E Inv();
     Matrix4E operator*(Matrix4E &oMat4);
 private:
     Eigen::Matrix4d m_mat;
