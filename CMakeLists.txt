@@ -24,6 +24,12 @@ include_directories(include)
 include_directories(ExternalSource/googletest/include)
 include_directories(ExternalSource/googletest)
 include_directories(ExternalSource)
+include_directories(ExternalSource/Webots/include/controller/cpp)
+include_directories(ExternalSource/Webots/include/controller/c)
+include_directories(ExternalSource/Webots)
+link_directories(ExternalSource/Webots/lib/controller)
+link_directories(ExternalSource/Webots/lib/webots)
+
 set(BUILD_SHARED_LIBS ON)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/Cmake)
