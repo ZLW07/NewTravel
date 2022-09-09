@@ -31,3 +31,7 @@ build_execute(UT_Math  Math Log gtest)
 set(UT_Model_DIR Test/Model)
 build_execute(UT_Model Model Math Log gtest)
 
+
+set(my_robot_controller_DIR Test/Webots)
+build_execute(my_robot_controller Controller CppController)
+
