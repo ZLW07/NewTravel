@@ -1,0 +1,184 @@
+#VRML_SIM R2022a utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.35137608559984085 0.5662286878861135 0.7456003751898892 1.388251443538378
+  position -0.957627843477527 -2.205205893127952 3.1242095123409337
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  name "Ground"
+}
+Robot {
+  children [
+    Shape {
+      appearance DEF base_link_material PBRAppearance {
+        baseColor 1 0.5 1
+        roughness 1
+        metalness 0
+      }
+      geometry DEF aa Mesh {
+        url [
+          "/home/wei/CLionProjects/NewTravel/Data/Test/aa.STL"
+        ]
+      }
+    }
+    Solid {
+      translation 0 0 0.375
+      rotation 1 0 0 -1.5708
+      children [
+        Shape {
+          appearance DEF Link_1_material PBRAppearance {
+            baseColor 1 0.5 1
+            roughness 1
+            metalness 0
+          }
+          geometry DEF bb Mesh {
+            url [
+              "/home/wei/CLionProjects/NewTravel/Data/Test/bb.STL"
+            ]
+          }
+        }
+        Solid {
+          children [
+            Shape {
+              appearance DEF Link_2_material PBRAppearance {
+                baseColor 1 0.5 1
+                roughness 1
+                metalness 0
+              }
+              geometry DEF cc Mesh {
+                url [
+                  "/home/wei/CLionProjects/NewTravel/Data/Test/cc.STL"
+                ]
+              }
+            }
+            Solid {
+              translation 0 -0.4 0.02
+              children [
+                Shape {
+                  appearance DEF Link_3_material PBRAppearance {
+                    baseColor 1 0.5 1
+                    roughness 1
+                    metalness 0
+                  }
+                  geometry DEF dd Mesh {
+                    url [
+                      "/home/wei/CLionProjects/NewTravel/Data/Test/dd.STL"
+                    ]
+                  }
+                }
+                Solid {
+                  rotation 1 0 0 1.5708
+                  children [
+                    Shape {
+                      appearance DEF Link_4_material PBRAppearance {
+                        baseColor 1 0.5 1
+                        roughness 1
+                        metalness 0
+                      }
+                      geometry DEF ee Mesh {
+                        url [
+                          "/home/wei/CLionProjects/NewTravel/Data/Test/ee.STL"
+                        ]
+                      }
+                    }
+                    Solid {
+                      translation 0 0 0.45
+                      rotation -1 0 0 1.5708
+                      children [
+                        Shape {
+                          appearance DEF Link_5_material PBRAppearance {
+                            baseColor 1 0.5 1
+                            roughness 1
+                            metalness 0
+                          }
+                          geometry DEF gg Mesh {
+                            url [
+                              "/home/wei/CLionProjects/NewTravel/Data/Test/ff.STL"
+                            ]
+                          }
+                        }
+                        Solid {
+                          translation 0 -0.07 0
+                          rotation 1 0 0 1.5708
+                          children [
+                            Shape {
+                              appearance DEF Link_6_material PBRAppearance {
+                                baseColor 1 0.5 1
+                                roughness 1
+                                metalness 0
+                              }
+                              geometry DEF ff Mesh {
+                                url [
+                                  "/home/wei/CLionProjects/NewTravel/Data/Test/gg.STL"
+                                ]
+                              }
+                            }
+                          ]
+                          name "Link_6"
+                          boundingObject USE gg
+                          physics Physics {
+                            centerOfMass [
+                              0 0 0
+                            ]
+                          }
+                        }
+                      ]
+                      name "Link_5"
+                      boundingObject USE ff
+                      physics Physics {
+                        centerOfMass [
+                          0 0 0
+                        ]
+                      }
+                    }
+                  ]
+                  name "Link_4"
+                  boundingObject USE ee
+                  physics Physics {
+                    centerOfMass [
+                      0 0 0
+                    ]
+                  }
+                }
+              ]
+              name "Link_3"
+              boundingObject USE dd
+              physics Physics {
+                centerOfMass [
+                  0 0 0
+                ]
+              }
+            }
+          ]
+          name "Link_2"
+          boundingObject USE cc
+          physics Physics {
+            centerOfMass [
+              0 0 0
+            ]
+          }
+        }
+      ]
+      name "Link_1"
+      boundingObject USE bb
+      physics Physics {
+        mass 100
+        centerOfMass [
+          0 0 0
+        ]
+      }
+    }
+  ]
+  name "TX2"
+  boundingObject USE aa
+  physics Physics {
+    centerOfMass [
+      0 0 0
+    ]
+  }
+}

@@ -1,0 +1,302 @@
+#VRML_SIM R2022a utf8
+# license: Apache License 2.0
+# license url: http://www.apache.org/licenses/LICENSE-2.0
+# This is a proto file for Webots for the TX2-60L
+# Extracted from: /home/wei/Documents/Webots/TX2-60L.urdf
+
+PROTO TX2-60L [
+  field  SFVec3f     translation     0 0 0
+  field  SFRotation  rotation        0 0 1 0
+  field  SFString    name            "TX2-60L"  # Is `Robot.name`.
+  field  SFString    controller      "void"     # Is `Robot.controller`.
+  field  MFString    controllerArgs  []         # Is `Robot.controllerArgs`.
+  field  SFString    customData      ""         # Is `Robot.customData`.
+  field  SFBool      supervisor      FALSE      # Is `Robot.supervisor`.
+  field  SFBool      synchronization TRUE       # Is `Robot.synchronization`.
+  field  SFBool      selfCollision   FALSE      # Is `Robot.selfCollision`.
+]
+{
+  Robot {
+    translation IS translation
+    rotation IS rotation
+    controller IS controller
+    controllerArgs IS controllerArgs
+    customData IS customData
+    supervisor IS supervisor
+    synchronization IS synchronization
+    selfCollision IS selfCollision
+    children [
+      Shape {
+        appearance DEF base_link_material PBRAppearance {
+          baseColor 1.000000 1.000000 1.000000
+          transparency 0.000000
+          roughness 1.000000
+          metalness 0
+          emissiveColor 0.000000 0.000000 0.000000
+        }
+        geometry DEF base_link Mesh {
+          url "../../libraries/Model/aa.STL"
+        }
+      }
+      HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0.000000 0.000000 1.000000
+          anchor 0.000000 0.00000 0.000000
+          dampingConstant 0.0
+          staticFriction 0.0
+        }
+        device [
+          RotationalMotor {
+            name "joint_1"
+            maxTorque 10000
+          }
+          PositionSensor {
+            name "joint_1_sensor"
+          }
+        ]
+        endPoint Solid {
+          translation 0.000000  0.000000 0.375000
+          rotation 1.000000 0.000000 0.000000 -1.570800
+          children [
+            Shape {
+              appearance DEF Link_1_material PBRAppearance {
+                baseColor 1.000000 1.000000 1.000000
+                transparency 0.000000
+                roughness 1.000000
+                metalness 0
+                emissiveColor 0.000000 0.000000 0.000000
+              }
+              geometry DEF Link_1 Mesh {
+                url "../../libraries/Model/bb.STL"
+              }
+            }
+            HingeJoint {
+              jointParameters HingeJointParameters {
+                axis 0.000000 0.000000 1.000000
+                anchor 0.000000 0.000000 0.000000
+                dampingConstant 0.0
+                staticFriction 0.0
+              }
+              device [
+                RotationalMotor {
+                  name "joint_2"
+                  maxTorque 10000
+                }
+                PositionSensor {
+                  name "joint_2_sensor"
+                }
+              ]
+              endPoint Solid {
+                translation 0.000000 0.000000 0.000000
+                rotation 0.000000 0.000000 1.000000 0.000000
+                children [
+                  Shape {
+                    appearance DEF Link_2_material PBRAppearance {
+                      baseColor 1.000000 1.000000 1.000000
+                      transparency 0.000000
+                      roughness 1.000000
+                      metalness 0
+                      emissiveColor 0.000000 0.000000 0.000000
+                    }
+                    geometry DEF Link_2 Mesh {
+                      url "../../libraries/Model/cc.STL"
+                    }
+                  }
+                  HingeJoint {
+                    jointParameters HingeJointParameters {
+                      axis 0.000000 0.000000 1.000000
+                      anchor 0.000000 -0.400000 0.020000
+                      dampingConstant 0.0
+                      staticFriction 0.0
+                    }
+                    device [
+                      RotationalMotor {
+                        name "Joint_3"
+                        maxTorque 10000
+                      }
+                      PositionSensor {
+                        name "Joint_3_sensor"
+                      }
+                    ]
+                    endPoint Solid {
+                      translation 0.000000 -0.400000 0.020000
+                      rotation 0.000000 0.000000 1.000000 0.000000
+                      children [
+                        Shape {
+                          appearance DEF Link_3_material PBRAppearance {
+                            baseColor 1.000000 1.000000 1.000000
+                            transparency 0.000000
+                            roughness 1.000000
+                            metalness 0
+                            emissiveColor 0.000000 0.000000 0.000000
+                          }
+                          geometry DEF Link_3 Mesh {
+                            url "../../libraries/Model/dd.STL"
+                          }
+                        }
+                        HingeJoint {
+                          jointParameters HingeJointParameters {
+                            axis 0.000000 -1.000000 -0.000004
+                            anchor 0.000000 0.000000 0.000000
+                            dampingConstant 0.0
+                            staticFriction 0.0
+                          }
+                          device [
+                            RotationalMotor {
+                              name "Joint_4"
+                              maxTorque 10000
+                            }
+                            PositionSensor {
+                              name "Joint_4_sensor"
+                            }
+                          ]
+                          endPoint Solid {
+                            translation 0.000000 0.000000 0.000000
+                            rotation 1.000000 0.000000 0.000000 1.570800
+                            children [
+                              Shape {
+                                appearance DEF Link_4_material PBRAppearance {
+                                  baseColor 1.000000 1.000000 1.000000
+                                  transparency 0.000000
+                                  roughness 1.000000
+                                  metalness 0
+                                  emissiveColor 0.000000 0.000000 0.000000
+                                }
+                                geometry DEF Link_4 Mesh {
+                                  url "../../libraries/Model/ee.STL"
+                                }
+                              }
+                              HingeJoint {
+                                jointParameters HingeJointParameters {
+                                  axis 0.000000 1.000000 -0.000004
+                                  anchor 0.000000 0.000000 0.450000
+                                  dampingConstant 0.0
+                                  staticFriction 0.0
+                                }
+                                device [
+                                  RotationalMotor {
+                                    name "Joint_5"
+                                    maxTorque 10000
+                                  }
+                                  PositionSensor {
+                                    name "Joint_5_sensor"
+                                  }
+                                ]
+                                endPoint Solid {
+                                  translation 0.000000 0.000000 0.450000
+                                  rotation -1.000000 0.000000 0.000000 1.570800
+                                  children [
+                                    Shape {
+                                      appearance DEF Link_5_material PBRAppearance {
+                                        baseColor 1.000000 1.000000 1.000000
+                                        transparency 0.000000
+                                        roughness 1.000000
+                                        metalness 0
+                                        emissiveColor 0.000000 0.000000 0.000000
+                                      }
+                                      geometry DEF Link_5 Mesh {
+                                        url "../../libraries/Model/ff.STL"
+                                      }
+                                    }
+                                    HingeJoint {
+                                      jointParameters HingeJointParameters {
+                                        axis 0.000000 -1.000000 -0.000004
+                                        anchor 0.000000 -0.070000 0.000000
+                                        dampingConstant 0.0
+                                        staticFriction 0.0
+                                      }
+                                      device [
+                                        RotationalMotor {
+                                          name "Joint_6"
+                                          maxTorque 10000
+                                        }
+                                        PositionSensor {
+                                          name "Joint_6_sensor"
+                                        }
+                                      ]
+                                      endPoint Solid {
+                                        translation 0.000000 -0.070000 0.000000
+                                        rotation 1.000000 0.000000 0.000000 1.570800
+                                        children [
+                                          Shape {
+                                            appearance DEF Link_6_material PBRAppearance {
+                                              baseColor 1.000000 1.000000 1.000000
+                                              transparency 0.000000
+                                              roughness 1.000000
+                                              metalness 0
+                                              emissiveColor 0.000000 0.000000 0.000000
+                                            }
+                                            geometry DEF Link_6 Mesh {
+                                              url "../../libraries/Model/gg.STL"
+                                            }
+                                          }
+                                        ]
+                                        name "Link_6"
+                                        boundingObject USE Link_6
+                                        physics Physics {
+                                          density -1
+                                          mass 0.000000
+                                          centerOfMass [ 0.000000 0.000000 0.000000 ]
+                                        }
+                                      }
+                                    }
+                                  ]
+                                  name "Link_5"
+                                  boundingObject USE Link_5
+                                  physics Physics {
+                                    density -1
+                                    mass 0.000000
+                                    centerOfMass [ 0.000000 0.000000 0.000000 ]
+                                  }
+                                }
+                              }
+                            ]
+                            name "Link_4"
+                            boundingObject USE Link_4
+                            physics Physics {
+                              density -1
+                              mass 0.000000
+                              centerOfMass [ 0.000000 0.000000 0.000000 ]
+                            }
+                          }
+                        }
+                      ]
+                      name "Link_3"
+                      boundingObject USE Link_3
+                      physics Physics {
+                        density -1
+                        mass 0.000000
+                        centerOfMass [ 0.000000 0.000000 0.000000 ]
+                      }
+                    }
+                  }
+                ]
+                name "Link_2"
+                boundingObject USE Link_2
+                physics Physics {
+                  density -1
+                  mass 0.000000
+                  centerOfMass [ 0.000000 0.000000 0.000000 ]
+                }
+              }
+            }
+          ]
+          name "Link_1"
+          boundingObject USE Link_1
+          physics Physics {
+            density -1
+            mass 0.000000
+            centerOfMass [ 0.000000 0.000000 0.000000 ]
+          }
+        }
+      }
+    ]
+    name IS name
+    boundingObject USE base_link
+    physics Physics {
+      density -1
+      mass 0.000000
+      centerOfMass [ 0.000000 0.000000 0.000000 ]
+    }
+  }
+}
