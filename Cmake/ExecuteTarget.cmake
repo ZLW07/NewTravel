@@ -22,9 +22,6 @@ message(STATUS "Link path is = ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
 set(UT_Log_DIR Test/Log)
 build_execute(UT_Log Log)
 
-set(UT_Mutex_DIR Test/Mutex)
-build_execute(UT_Mutex  Mutex Log gtest)
-
 set(UT_Math_DIR Test/Math)
 build_execute(UT_Math  Math Log gtest)
 
