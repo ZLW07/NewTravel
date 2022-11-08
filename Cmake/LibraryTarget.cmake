@@ -20,9 +20,6 @@
 set(Log_DIR Log)
 build_library(Log)
 
-set(Mutex_DIR Mutex)
-build_library(Mutex)
-
 set(Math_DIR Math)
 build_library(Math)
 
