@@ -50,7 +50,7 @@ function(build_library MODULE_NAME)
     foreach (file IN LISTS MODULE_SRC)
         message(STATUS "file is = ${file}")
     endforeach (file)
-    add_library(${MODULE_NAME} SHARED ${MODULE_SRC})
+    add_library(${MODULE_NAME} STATIC ${MODULE_SRC})
 endfunction()
 
 function(build_execute MODULE_NAME)
