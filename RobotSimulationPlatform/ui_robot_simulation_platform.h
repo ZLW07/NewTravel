@@ -260,9 +260,9 @@ public:
 
         doubleSpinBox->setMinimum(-180);
         doubleSpinBox->setMaximum(180);
-        doubleSpinBox->setSingleStep(0.01);
+        doubleSpinBox->setSingleStep(1);
         QObject::connect(horizontalSlider, SIGNAL(valueChanged(int)),doubleSpinBox, SLOT(setValue(int)));
-//        QObject::connect(doubleSpinBox, SIGNAL(ValueChange(double)),horizontalSlider, SLOT(setValue(double)));
+        QObject::connect(doubleSpinBox, SIGNAL(valueChanged(int)),horizontalSlider, SLOT(setValue(int)));
         QObject::connect(horizontalSlider, SIGNAL(valueChanged(int)),openGLWidget, SLOT(SetRotationAngleOfJoint_0(int)));
 
     } // retranslateUi
