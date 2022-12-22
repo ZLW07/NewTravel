@@ -5,6 +5,7 @@
 #ifndef NEWTRAVEL_ROBOT_BODY_LOAD_H
 #define NEWTRAVEL_ROBOT_BODY_LOAD_H
 
+#include "glew.h"
 #include <QMatrix3x3>
 #include <QMatrix4x4>
 #include <QOpenGLBuffer>
@@ -81,6 +82,9 @@ private:
     qreal  alpha;
     qreal  theta;
     double m_dEyeToModelDistance;
+    QVector2D m_v2cMove;
+    int m_iW;
+    int m_iV;
 
 };
 #endif // NEWTRAVEL_ROBOT_BODY_LOAD_H

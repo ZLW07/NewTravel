@@ -10,8 +10,9 @@
 #include <QWheelEvent>
 #include <QtMath>
 
+
 RobotBody::RobotBody(QWidget *parent)
-    : QOpenGLWidget(parent),alpha(0.0),theta(0.0),m_dEyeToModelDistance(2.0)
+    : QOpenGLWidget(parent), alpha(0.0), theta(0.0), m_dEyeToModelDistance(0.00), m_v2cMove(0.0, 0.0),m_iW(0),m_iV(0)
 {
     QSurfaceFormat format;
     format.setAlphaBufferSize(24); //设置alpha缓冲大小
@@ -19,13 +20,13 @@ RobotBody::RobotBody(QWidget *parent)
     format.setSamples(10);         //设置重采样次数，用于反走样
 
     this->setFormat(format);
-//    loadAscllStl("../../Data/RobotModel/TX2-60L HORIZONTAL BASE.STL", 1, m_aJointModel[0]);
-//    loadAscllStl("../../Data/RobotModel/TX2-60L SHOULDER.STL", 1,m_aJointModel[1]);
-//    loadAscllStl("../../Data/RobotModel/TX2-60L ARM.STL", 1,m_aJointModel[2]);
-//    loadAscllStl("../../Data/RobotModel/TX2-60L ELBOW.STL", 1,m_aJointModel[3]);
-//    loadAscllStl("../../Data/RobotModel/TX2-60L FOREARM.STL", 1,m_aJointModel[4]);
-//    loadAscllStl("../../Data/RobotModel/TX2-60L WRIST.STL", 1,m_aJointModel[5]);
-//
+    //    loadAscllStl("../../Data/RobotModel/TX2-60L HORIZONTAL BASE.STL", 1, m_aJointModel[0]);
+    //    loadAscllStl("../../Data/RobotModel/TX2-60L SHOULDER.STL", 1,m_aJointModel[1]);
+    //    loadAscllStl("../../Data/RobotModel/TX2-60L ARM.STL", 1,m_aJointModel[2]);
+    //    loadAscllStl("../../Data/RobotModel/TX2-60L ELBOW.STL", 1,m_aJointModel[3]);
+    //    loadAscllStl("../../Data/RobotModel/TX2-60L FOREARM.STL", 1,m_aJointModel[4]);
+    //    loadAscllStl("../../Data/RobotModel/TX2-60L WRIST.STL", 1,m_aJointModel[5]);
+    //
     loadAscllStl("../../Data/RobotModel/1.STL", 1, m_aJointModel[0]);
     loadAscllStl("../../Data/RobotModel/2.STL", 1, m_aJointModel[1]);
     loadAscllStl("../../Data/RobotModel/3.STL", 1, m_aJointModel[2]);
@@ -34,15 +35,15 @@ RobotBody::RobotBody(QWidget *parent)
     loadAscllStl("../../Data/RobotModel/6.STL", 1, m_aJointModel[5]);
     loadAscllStl("../../Data/RobotModel/7.STL", 1, m_aJointModel[6]);
 
-    QVector3D qRotVector(0,1,0);
+    QVector3D qRotVector(0, 1, 0);
     m_mapRotVector[0] = qRotVector;
-    qRotVector={0,0,1};
+    qRotVector = {0, 0, 1};
     m_mapRotVector[1] = qRotVector;
-    qRotVector={0,0,1};
+    qRotVector = {0, 0, 1};
     m_mapRotVector[2] = qRotVector;
-    qRotVector={0,0,1};
+    qRotVector = {0, 0, 1};
     m_mapRotVector[3] = qRotVector;
-    qRotVector={0,0,1};
+    qRotVector = {0, 0, 1};
     m_mapRotVector[4] = qRotVector;
     qRotVector = {0, 0, 1};
     m_mapRotVector[5] = qRotVector;
@@ -52,9 +53,7 @@ RobotBody::RobotBody(QWidget *parent)
         m_fRotDegree[ii] = 0.0;
     }
     Rot.setToIdentity();
-    Rot.translate(0,-0.5,0);
-    Rot.rotate(-90, 1, 0,0);
-    m_v3dCamera = QVector3D(m_dEyeToModelDistance,0,0);
+    m_v3dCamera = QVector3D(2, 0, 0.5);
     mousePosForTranslationView = QVector2D(0.0, 0.0);
 }
 
@@ -63,7 +62,7 @@ RobotBody::~RobotBody()
     makeCurrent();
 }
 
-void RobotBody:: loadAscllStl(const QString& filename,int ratio,JointParameters &oJointPara)
+void RobotBody::loadAscllStl(const QString &filename, int ratio, JointParameters &oJointPara)
 {
     ZLOG << "load text file ";
 
@@ -74,7 +73,7 @@ void RobotBody:: loadAscllStl(const QString& filename,int ratio,JointParameters 
     }
     while (!file.atEnd())
     {
-        QString line = file.readLine().trimmed();                                                 // trimmed去除了开头和结尾的空白字符串
+        QString line = file.readLine().trimmed(); // trimmed去除了开头和结尾的空白字符串
         QStringList words = line.split(' ', QString::SkipEmptyParts);
 
         if (words[0] == "facet")
@@ -99,12 +98,13 @@ void RobotBody:: loadAscllStl(const QString& filename,int ratio,JointParameters 
 
 void RobotBody::SetDrawParameters(JointParameters &oJointPara)
 {
-    oJointPara.vaoJoint.create();                     // 创建一个VAO对象，OpenGL会给它（顶点数组缓存对象）分配一个id
-    oJointPara.vaoJoint.bind();                         //将RC中的当前顶点数组缓存对象Id设置为VAO的id
+    oJointPara.vaoJoint.create(); // 创建一个VAO对象，OpenGL会给它（顶点数组缓存对象）分配一个id
+    oJointPara.vaoJoint.bind();   //将RC中的当前顶点数组缓存对象Id设置为VAO的id
     oJointPara.vboJoint.create();
     oJointPara.vboJoint.bind();
     oJointPara.vboJoint.allocate(oJointPara.vecJoint.data(),
-                 sizeof(float) * oJointPara.vecJoint.size());                                         //将顶点数据分配到VBO中，第一个参数为数据指针，第二个参数为数据的字节长度
+        sizeof(float) *
+            oJointPara.vecJoint.size()); //将顶点数据分配到VBO中，第一个参数为数据指针，第二个参数为数据的字节长度
     shaderprogram.setAttributeBuffer("aPos", GL_FLOAT, 0, 3, sizeof(GLfloat) * 6);
     shaderprogram.enableAttributeArray("aPos");
     shaderprogram.setAttributeBuffer("aNormal", GL_FLOAT, sizeof(GLfloat) * 3, 3, sizeof(GLfloat) * 6);
@@ -120,7 +120,7 @@ void RobotBody::initializeGL()
     shaderprogram.create();            //生成着色器程序
     if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Vertex, "../../RobotSimulationPlatform/stl.vert"))
     {
-        ZLOG << "failed load ../../Test/Qt/stl.vert";         //如果编译出错,打印报错信息
+        ZLOG << "failed load ../../Test/Qt/stl.vert"; //如果编译出错,打印报错信息
     }
     if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Fragment, "../../RobotSimulationPlatform/stl.frag"))
     {
@@ -132,13 +132,13 @@ void RobotBody::initializeGL()
         ZLOG << "ERROR: link error"; //如果链接出错,打印报错信息
     }
 
-    for (auto & ii : m_aJointModel)
+    for (auto &ii : m_aJointModel)
     {
         SetDrawParameters(ii);
     }
 
-
 }
+
 void RobotBody::resizeGL(int w, int h)
 {
     this->glViewport(0, 0, w, h);
@@ -148,7 +148,7 @@ void RobotBody::resizeGL(int w, int h)
 
 void RobotBody::paintGL()
 {
-    this->glClearColor(0.9f, 0.94f, 1.0f, 1.0f);               //设置清屏颜色
+    this->glClearColor(0.9f, 0.94f, 1.0f, 1.0f);              //设置清屏颜色
     this->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //清空颜色缓冲区
 
     shaderprogram.bind();
@@ -157,16 +157,21 @@ void RobotBody::paintGL()
     {
         QVector3D lightColor(1.0f, 1.0f, 1.0f);
         QVector3D objectColor(1.0f, 0.5f, 0.31f);
-        QVector3D lightPos(m_v3dCamera);
-
+        QVector3D lightPos(4,0,0);
+        GLfloat mat_ambient[]   = {0.0f, 0.0f, 0.2f, 1.0f};
+        glMaterialfv(GL_FRONT, GL_AMBIENT,    mat_ambient);
         view.setToIdentity();
-        view.lookAt(m_v3dCamera, QVector3D(0.0f, 0.0f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f));
+        view.lookAt(m_v3dCamera, QVector3D(0.0f, 0.0f, 0.50f), QVector3D(0.0f, 0.0f, 1.0f));
         shaderprogram.setUniformValue("objectColor", objectColor);
         shaderprogram.setUniformValue("lightColor", lightColor);
         shaderprogram.setUniformValue("lightPos", lightPos);
 
-        shaderprogram.setUniformValue("Rot",Rot);
+        Rot.translate(m_v2cMove.x(),-m_v2cMove.y(),0);
+        m_v2cMove = QVector2D(0,0);
+        shaderprogram.setUniformValue("Rot", Rot);
         shaderprogram.setUniformValue("view", view);
+        projection.translate(0.0,0.0,m_dEyeToModelDistance);
+        m_dEyeToModelDistance = 0.0;
         shaderprogram.setUniformValue("projection", projection);
         InitialTranslate();
         for (int ii = 0; ii < 7; ii++)
@@ -177,25 +182,26 @@ void RobotBody::paintGL()
             this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[ii].iNumberOfTriangle);
         }
     }
+
 }
 
 void RobotBody::InitialTranslate()
 {
     m_matJointTrans[0].setToIdentity();
     m_matJointTrans[1].setToIdentity();
-    m_matJointTrans[1].translate(0,0,0.375);
+    m_matJointTrans[1].translate(0, 0, 0.375);
     m_matJointTrans[1].rotate(-90, 1, 0, 0);
     m_matJointTrans[2].setToIdentity();
     m_matJointTrans[3].setToIdentity();
     m_matJointTrans[3].translate(0, -0.4, 0.02);
     m_matJointTrans[4].setToIdentity();
-    m_matJointTrans[4].rotate(90,1,0,0);
+    m_matJointTrans[4].rotate(90, 1, 0, 0);
     m_matJointTrans[5].setToIdentity();
     m_matJointTrans[5].translate(0, 0, 0.45);
-    m_matJointTrans[5].rotate(-90,1,0,0);
+    m_matJointTrans[5].rotate(-90, 1, 0, 0);
     m_matJointTrans[6].setToIdentity();
     m_matJointTrans[6].translate(0, -0.07, 0.0);
-    m_matJointTrans[6].rotate(90,1,0,0);
+    m_matJointTrans[6].rotate(90, 1, 0, 0);
 }
 
 void RobotBody::SetRobotRotation(int iJointIndex)
@@ -203,106 +209,105 @@ void RobotBody::SetRobotRotation(int iJointIndex)
     m_matJointRot[iJointIndex].setToIdentity();
     if (iJointIndex >= 1)
     {
-        m_matJointRot[iJointIndex].rotate(m_fRotDegree[iJointIndex - 1],m_mapRotVector[iJointIndex - 1]);
-        m_matJointTrans[iJointIndex] = m_matJointTrans[iJointIndex -1]  * m_matJointTrans[iJointIndex] * m_matJointRot[iJointIndex];
+        m_matJointRot[iJointIndex].rotate(m_fRotDegree[iJointIndex - 1], m_mapRotVector[iJointIndex - 1]);
+        m_matJointTrans[iJointIndex] =
+            m_matJointTrans[iJointIndex - 1] * m_matJointTrans[iJointIndex] * m_matJointRot[iJointIndex];
     }
 }
 
 void RobotBody::mousePressEvent(QMouseEvent *event)
 {
     mousePos = QVector2D(event->pos());
-    event->accept();
 }
 
 void RobotBody::mouseMoveEvent(QMouseEvent *event)
 {
-//    if (event->buttons() == Qt::RightButton)
-//    {
-//        QVector2D newPos = (QVector2D)event->pos();
-//        mousePosForTranslationView = mousePosForTranslationView + (newPos - mousePos)/30;
-//        mousePos = newPos;
-//        this->update();
-//    }
-
-    if (event->buttons() == Qt::LeftButton)
+    if(event->buttons()& Qt::MiddleButton)
     {
-        QVector2D newPos = (QVector2D)event->pos();
-        QVector2D diff = newPos - mousePos;
-        alpha = diff[0]/15 + alpha;
-        theta = diff[1]/15 + theta;
-        m_v3dCamera[0] = m_dEyeToModelDistance *cos(theta)* cos(alpha) ;
-        m_v3dCamera[2] = m_dEyeToModelDistance *cos(theta) * sin(alpha);
-        m_v3dCamera[1] = m_dEyeToModelDistance *sin(theta);
-        mousePos = newPos;
-        this->update();
+        if(event->modifiers()== Qt::CTRL)
+        {
+            QVector2D newPos = (QVector2D)event->pos();
+            m_v2cMove = (newPos - mousePos)/500;
+            mousePos = newPos;
+        }
+        else
+        {
+
+
+        }
     }
-    event->accept();
+    this->update();
 }
 
 void RobotBody::wheelEvent(QWheelEvent *event)
 {
-    QPoint numDegrees = event->angleDelta() / 8;
-
-    if (numDegrees.y() > 0)
+    if(event->delta()>=0)
     {
-        m_dEyeToModelDistance += 0.25f;
+        m_dEyeToModelDistance = 0.1f;
     }
-    else if (numDegrees.y() < 0)
+    else
     {
-        m_dEyeToModelDistance -= 0.25f;
+        m_dEyeToModelDistance = -0.1f;
     }
-    m_v3dCamera[0] = m_dEyeToModelDistance *cos(theta)* cos(alpha) ;
-    m_v3dCamera[2] = m_dEyeToModelDistance *cos(theta) * sin(alpha);
-    m_v3dCamera[1] = m_dEyeToModelDistance *sin(theta);
     this->update();
-    event->accept();
 }
 
 void RobotBody::SetRotationAngleOfJoint_0(int value)
 {
     InitialTranslate();
-    m_fRotDegree[0] = (float)value ;
+    m_fRotDegree[0] = (float)value;
     SetRobotRotation(0);
+    m_v2cMove = QVector2D(0,0);
+    m_dEyeToModelDistance = 0.0;
     update();
 }
 
 void RobotBody::SetRotationAngleOfJoint_1(int value)
 {
     InitialTranslate();
-    m_fRotDegree[1] = (float)value ;
+    m_fRotDegree[1] = (float)value;
     SetRobotRotation(1);
+    m_v2cMove = QVector2D(0,0);
+    m_dEyeToModelDistance = 0.0;
     update();
 }
 
 void RobotBody::SetRotationAngleOfJoint_2(int value)
 {
     InitialTranslate();
-    m_fRotDegree[2] = (float)value ;
+    m_fRotDegree[2] = (float)value;
     SetRobotRotation(2);
+    m_v2cMove = QVector2D(0,0);
+    m_dEyeToModelDistance = 0.0;
     update();
 }
 
 void RobotBody::SetRotationAngleOfJoint_3(int value)
 {
     InitialTranslate();
-    m_fRotDegree[3] = (float)value ;
+    m_fRotDegree[3] = (float)value;
     SetRobotRotation(3);
+    m_v2cMove = QVector2D(0,0);
+    m_dEyeToModelDistance = 0.0;
     update();
 }
 
 void RobotBody::SetRotationAngleOfJoint_4(int value)
 {
     InitialTranslate();
-    m_fRotDegree[4] = (float)value ;
+    m_fRotDegree[4] = (float)value;
     SetRobotRotation(4);
+    m_v2cMove = QVector2D(0,0);
+    m_dEyeToModelDistance = 0.0;
     update();
 }
 
 void RobotBody::SetRotationAngleOfJoint_5(int value)
 {
     InitialTranslate();
-    m_fRotDegree[5] = (float)value ;
+    m_fRotDegree[5] = (float)value;
     SetRobotRotation(5);
+    m_v2cMove = QVector2D(0,0);
+    m_dEyeToModelDistance = 0.0;
     update();
 }
-
