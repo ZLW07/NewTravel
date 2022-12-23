@@ -12,83 +12,93 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QDoubleSpinBox>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QOpenGLWidget>
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
-#include "robot_body_load.h"
-#include "robot_joint_degree_spinbox.h"
-#include "robot_joint_label.h"
-
 
 QT_BEGIN_NAMESPACE
 
 class Ui_RobotSimulationPlatform
 {
 public:
-    QGridLayout *gridLayout_2;
     QGridLayout *gridLayout;
-    RobotBody *openGLWidget;
+    QHBoxLayout *horizontalLayout_9;
+    QOpenGLWidget *openGLWidget;
+    QVBoxLayout *verticalLayout_4;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *horizontalLayout;
-    RobotJointLabel *label;
-    RobotJointSpinBox *doubleSpinBox;
+    QLabel *label;
+    QDoubleSpinBox *doubleSpinBox;
     QSlider *horizontalSlider;
     QHBoxLayout *horizontalLayout_2;
-    RobotJointLabel *label_2;
-    RobotJointSpinBox *doubleSpinBox_2;
+    QLabel *label_2;
+    QDoubleSpinBox *doubleSpinBox_2;
     QSlider *horizontalSlider_2;
-    QHBoxLayout *horizontalLayout_4;
-    RobotJointLabel *label_4;
-    RobotJointSpinBox *doubleSpinBox_4;
-    QSlider *horizontalSlider_4;
     QHBoxLayout *horizontalLayout_3;
-    RobotJointLabel *label_3;
-    RobotJointSpinBox *doubleSpinBox_3;
+    QLabel *label_3;
+    QDoubleSpinBox *doubleSpinBox_3;
     QSlider *horizontalSlider_3;
-    QHBoxLayout *horizontalLayout_6;
-    RobotJointLabel *label_6;
-    RobotJointSpinBox *doubleSpinBox_6;
-    QSlider *horizontalSlider_6;
+    QHBoxLayout *horizontalLayout_4;
+    QLabel *label_4;
+    QDoubleSpinBox *doubleSpinBox_4;
+    QSlider *horizontalSlider_4;
     QHBoxLayout *horizontalLayout_5;
-    RobotJointLabel *label_5;
-    RobotJointSpinBox *doubleSpinBox_5;
+    QLabel *label_5;
+    QDoubleSpinBox *doubleSpinBox_5;
     QSlider *horizontalSlider_5;
+    QHBoxLayout *horizontalLayout_6;
+    QLabel *label_6;
+    QDoubleSpinBox *doubleSpinBox_6;
+    QSlider *horizontalSlider_6;
     QVBoxLayout *verticalLayout_2;
     QHBoxLayout *horizontalLayout_7;
     QLabel *label_7;
     QCheckBox *checkBox;
     QTextBrowser *textBrowser;
+    QVBoxLayout *verticalLayout_3;
+    QHBoxLayout *horizontalLayout_8;
+    QLabel *label_8;
+    QCheckBox *checkBox_3;
+    QCheckBox *checkBox_2;
+    QTextBrowser *textBrowser_2;
 
     void setupUi(QWidget *RobotSimulationPlatform)
     {
         if (RobotSimulationPlatform->objectName().isEmpty())
             RobotSimulationPlatform->setObjectName(QString::fromUtf8("RobotSimulationPlatform"));
-        RobotSimulationPlatform->resize(874, 476);
-        gridLayout_2 = new QGridLayout(RobotSimulationPlatform);
-        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
-        gridLayout = new QGridLayout();
+        RobotSimulationPlatform->resize(1083, 713);
+        gridLayout = new QGridLayout(RobotSimulationPlatform);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        openGLWidget = new RobotBody(RobotSimulationPlatform);
+        horizontalLayout_9 = new QHBoxLayout();
+        horizontalLayout_9->setObjectName(QString::fromUtf8("horizontalLayout_9"));
+        openGLWidget = new QOpenGLWidget(RobotSimulationPlatform);
         openGLWidget->setObjectName(QString::fromUtf8("openGLWidget"));
         openGLWidget->setEnabled(true);
-        openGLWidget->setMinimumSize(QSize(400, 400));
+        openGLWidget->setMinimumSize(QSize(700, 600));
 
-        gridLayout->addWidget(openGLWidget, 0, 0, 2, 1);
+        horizontalLayout_9->addWidget(openGLWidget);
 
+        verticalLayout_4 = new QVBoxLayout();
+        verticalLayout_4->setSpacing(21);
+        verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
+        verticalLayout_4->setContentsMargins(0, -1, -1, -1);
         verticalLayout = new QVBoxLayout();
+        verticalLayout->setSpacing(16);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        label = new RobotJointLabel(RobotSimulationPlatform);
+        label = new QLabel(RobotSimulationPlatform);
         label->setObjectName(QString::fromUtf8("label"));
 
         horizontalLayout->addWidget(label);
 
-        doubleSpinBox = new RobotJointSpinBox(RobotSimulationPlatform);
+        doubleSpinBox = new QDoubleSpinBox(RobotSimulationPlatform);
         doubleSpinBox->setObjectName(QString::fromUtf8("doubleSpinBox"));
 
         horizontalLayout->addWidget(doubleSpinBox);
@@ -106,12 +116,12 @@ public:
 
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
-        label_2 = new RobotJointLabel(RobotSimulationPlatform);
+        label_2 = new QLabel(RobotSimulationPlatform);
         label_2->setObjectName(QString::fromUtf8("label_2"));
 
         horizontalLayout_2->addWidget(label_2);
 
-        doubleSpinBox_2 = new RobotJointSpinBox(RobotSimulationPlatform);
+        doubleSpinBox_2 = new QDoubleSpinBox(RobotSimulationPlatform);
         doubleSpinBox_2->setObjectName(QString::fromUtf8("doubleSpinBox_2"));
 
         horizontalLayout_2->addWidget(doubleSpinBox_2);
@@ -125,35 +135,14 @@ public:
 
         verticalLayout->addLayout(horizontalLayout_2);
 
-        horizontalLayout_4 = new QHBoxLayout();
-        horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
-        label_4 = new RobotJointLabel(RobotSimulationPlatform);
-        label_4->setObjectName(QString::fromUtf8("label_4"));
-
-        horizontalLayout_4->addWidget(label_4);
-
-        doubleSpinBox_4 = new RobotJointSpinBox(RobotSimulationPlatform);
-        doubleSpinBox_4->setObjectName(QString::fromUtf8("doubleSpinBox_4"));
-
-        horizontalLayout_4->addWidget(doubleSpinBox_4);
-
-        horizontalSlider_4 = new QSlider(RobotSimulationPlatform);
-        horizontalSlider_4->setObjectName(QString::fromUtf8("horizontalSlider_4"));
-        horizontalSlider_4->setOrientation(Qt::Horizontal);
-
-        horizontalLayout_4->addWidget(horizontalSlider_4);
-
-
-        verticalLayout->addLayout(horizontalLayout_4);
-
         horizontalLayout_3 = new QHBoxLayout();
         horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
-        label_3 = new RobotJointLabel(RobotSimulationPlatform);
+        label_3 = new QLabel(RobotSimulationPlatform);
         label_3->setObjectName(QString::fromUtf8("label_3"));
 
         horizontalLayout_3->addWidget(label_3);
 
-        doubleSpinBox_3 = new RobotJointSpinBox(RobotSimulationPlatform);
+        doubleSpinBox_3 = new QDoubleSpinBox(RobotSimulationPlatform);
         doubleSpinBox_3->setObjectName(QString::fromUtf8("doubleSpinBox_3"));
 
         horizontalLayout_3->addWidget(doubleSpinBox_3);
@@ -167,35 +156,35 @@ public:
 
         verticalLayout->addLayout(horizontalLayout_3);
 
-        horizontalLayout_6 = new QHBoxLayout();
-        horizontalLayout_6->setObjectName(QString::fromUtf8("horizontalLayout_6"));
-        label_6 = new RobotJointLabel(RobotSimulationPlatform);
-        label_6->setObjectName(QString::fromUtf8("label_6"));
+        horizontalLayout_4 = new QHBoxLayout();
+        horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
+        label_4 = new QLabel(RobotSimulationPlatform);
+        label_4->setObjectName(QString::fromUtf8("label_4"));
 
-        horizontalLayout_6->addWidget(label_6);
+        horizontalLayout_4->addWidget(label_4);
 
-        doubleSpinBox_6 = new RobotJointSpinBox(RobotSimulationPlatform);
-        doubleSpinBox_6->setObjectName(QString::fromUtf8("doubleSpinBox_6"));
+        doubleSpinBox_4 = new QDoubleSpinBox(RobotSimulationPlatform);
+        doubleSpinBox_4->setObjectName(QString::fromUtf8("doubleSpinBox_4"));
 
-        horizontalLayout_6->addWidget(doubleSpinBox_6);
+        horizontalLayout_4->addWidget(doubleSpinBox_4);
 
-        horizontalSlider_6 = new QSlider(RobotSimulationPlatform);
-        horizontalSlider_6->setObjectName(QString::fromUtf8("horizontalSlider_6"));
-        horizontalSlider_6->setOrientation(Qt::Horizontal);
+        horizontalSlider_4 = new QSlider(RobotSimulationPlatform);
+        horizontalSlider_4->setObjectName(QString::fromUtf8("horizontalSlider_4"));
+        horizontalSlider_4->setOrientation(Qt::Horizontal);
 
-        horizontalLayout_6->addWidget(horizontalSlider_6);
+        horizontalLayout_4->addWidget(horizontalSlider_4);
 
 
-        verticalLayout->addLayout(horizontalLayout_6);
+        verticalLayout->addLayout(horizontalLayout_4);
 
         horizontalLayout_5 = new QHBoxLayout();
         horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
-        label_5 = new RobotJointLabel(RobotSimulationPlatform);
+        label_5 = new QLabel(RobotSimulationPlatform);
         label_5->setObjectName(QString::fromUtf8("label_5"));
 
         horizontalLayout_5->addWidget(label_5);
 
-        doubleSpinBox_5 = new RobotJointSpinBox(RobotSimulationPlatform);
+        doubleSpinBox_5 = new QDoubleSpinBox(RobotSimulationPlatform);
         doubleSpinBox_5->setObjectName(QString::fromUtf8("doubleSpinBox_5"));
 
         horizontalLayout_5->addWidget(doubleSpinBox_5);
@@ -209,8 +198,29 @@ public:
 
         verticalLayout->addLayout(horizontalLayout_5);
 
+        horizontalLayout_6 = new QHBoxLayout();
+        horizontalLayout_6->setObjectName(QString::fromUtf8("horizontalLayout_6"));
+        label_6 = new QLabel(RobotSimulationPlatform);
+        label_6->setObjectName(QString::fromUtf8("label_6"));
 
-        gridLayout->addLayout(verticalLayout, 0, 1, 1, 1);
+        horizontalLayout_6->addWidget(label_6);
+
+        doubleSpinBox_6 = new QDoubleSpinBox(RobotSimulationPlatform);
+        doubleSpinBox_6->setObjectName(QString::fromUtf8("doubleSpinBox_6"));
+
+        horizontalLayout_6->addWidget(doubleSpinBox_6);
+
+        horizontalSlider_6 = new QSlider(RobotSimulationPlatform);
+        horizontalSlider_6->setObjectName(QString::fromUtf8("horizontalSlider_6"));
+        horizontalSlider_6->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_6->addWidget(horizontalSlider_6);
+
+
+        verticalLayout->addLayout(horizontalLayout_6);
+
+
+        verticalLayout_4->addLayout(verticalLayout);
 
         verticalLayout_2 = new QVBoxLayout();
         verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
@@ -235,10 +245,43 @@ public:
         verticalLayout_2->addWidget(textBrowser);
 
 
-        gridLayout->addLayout(verticalLayout_2, 1, 1, 1, 1);
+        verticalLayout_4->addLayout(verticalLayout_2);
+
+        verticalLayout_3 = new QVBoxLayout();
+        verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
+        horizontalLayout_8 = new QHBoxLayout();
+        horizontalLayout_8->setObjectName(QString::fromUtf8("horizontalLayout_8"));
+        label_8 = new QLabel(RobotSimulationPlatform);
+        label_8->setObjectName(QString::fromUtf8("label_8"));
+
+        horizontalLayout_8->addWidget(label_8);
+
+        checkBox_3 = new QCheckBox(RobotSimulationPlatform);
+        checkBox_3->setObjectName(QString::fromUtf8("checkBox_3"));
+
+        horizontalLayout_8->addWidget(checkBox_3);
+
+        checkBox_2 = new QCheckBox(RobotSimulationPlatform);
+        checkBox_2->setObjectName(QString::fromUtf8("checkBox_2"));
+
+        horizontalLayout_8->addWidget(checkBox_2);
 
 
-        gridLayout_2->addLayout(gridLayout, 0, 0, 1, 1);
+        verticalLayout_3->addLayout(horizontalLayout_8);
+
+        textBrowser_2 = new QTextBrowser(RobotSimulationPlatform);
+        textBrowser_2->setObjectName(QString::fromUtf8("textBrowser_2"));
+
+        verticalLayout_3->addWidget(textBrowser_2);
+
+
+        verticalLayout_4->addLayout(verticalLayout_3);
+
+
+        horizontalLayout_9->addLayout(verticalLayout_4);
+
+
+        gridLayout->addLayout(horizontalLayout_9, 0, 0, 1, 1);
 
 
         retranslateUi(RobotSimulationPlatform);
@@ -249,22 +292,17 @@ public:
     void retranslateUi(QWidget *RobotSimulationPlatform)
     {
         RobotSimulationPlatform->setWindowTitle(QApplication::translate("RobotSimulationPlatform", "RobotSimulationPlatform", nullptr));
-        label->setProperty("text", QVariant(QApplication::translate("RobotSimulationPlatform", "Joint_1", nullptr)));
-        label_2->setProperty("text", QVariant(QApplication::translate("RobotSimulationPlatform", "Joint_2", nullptr)));
-        label_4->setProperty("text", QVariant(QApplication::translate("RobotSimulationPlatform", "Joint_3", nullptr)));
-        label_3->setProperty("text", QVariant(QApplication::translate("RobotSimulationPlatform", "Joint_4", nullptr)));
-        label_6->setProperty("text", QVariant(QApplication::translate("RobotSimulationPlatform", "Joint_5", nullptr)));
-        label_5->setProperty("text", QVariant(QApplication::translate("RobotSimulationPlatform", "Joint_6", nullptr)));
+        label->setText(QApplication::translate("RobotSimulationPlatform", "Joint_1", nullptr));
+        label_2->setText(QApplication::translate("RobotSimulationPlatform", "Joint_2", nullptr));
+        label_3->setText(QApplication::translate("RobotSimulationPlatform", "Joint_3", nullptr));
+        label_4->setText(QApplication::translate("RobotSimulationPlatform", "Joint_4", nullptr));
+        label_5->setText(QApplication::translate("RobotSimulationPlatform", "Joint_5", nullptr));
+        label_6->setText(QApplication::translate("RobotSimulationPlatform", "Joint_6", nullptr));
         label_7->setText(QApplication::translate("RobotSimulationPlatform", "\346\234\253\347\253\257\345\205\263\350\212\202\345\200\274", nullptr));
         checkBox->setText(QApplication::translate("RobotSimulationPlatform", "\345\274\247\345\272\246", nullptr));
-
-        doubleSpinBox->setMinimum(-180);
-        doubleSpinBox->setMaximum(180);
-        doubleSpinBox->setSingleStep(1);
-        QObject::connect(horizontalSlider, SIGNAL(valueChanged(int)),doubleSpinBox, SLOT(setValue(int)));
-        QObject::connect(doubleSpinBox, SIGNAL(valueChanged(int)),horizontalSlider, SLOT(setValue(int)));
-        QObject::connect(horizontalSlider, SIGNAL(valueChanged(int)),openGLWidget, SLOT(SetRotationAngleOfJoint_0(int)));
-
+        label_8->setText(QApplication::translate("RobotSimulationPlatform", "\345\244\264\351\203\250\345\210\260\346\234\272\345\231\250\344\272\272\345\235\220\346\240\207\350\275\254\346\215\242\347\237\251\351\230\265\357\274\232", nullptr));
+        checkBox_3->setText(QApplication::translate("RobotSimulationPlatform", "\346\257\253\347\261\263", nullptr));
+        checkBox_2->setText(QApplication::translate("RobotSimulationPlatform", "\345\274\247\345\272\246", nullptr));
     } // retranslateUi
 
 };

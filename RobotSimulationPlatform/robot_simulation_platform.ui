@@ -1,217 +1,244 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-    <class>RobotSimulationPlatform</class>
-    <widget class="QWidget" name="RobotSimulationPlatform">
-        <property name="geometry">
-            <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>874</width>
-                <height>476</height>
-            </rect>
-        </property>
-        <property name="windowTitle">
-            <string>RobotSimulationPlatform</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_2">
-            <item row="0" column="0">
-                <layout class="QGridLayout" name="gridLayout">
-                    <item row="0" column="0" rowspan="2">
-                        <widget class="RobotBody" name="openGLWidget" native="true">
-                            <property name="enabled">
-                                <bool>true</bool>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>400</width>
-                                    <height>400</height>
-                                </size>
-                            </property>
-                        </widget>
-                    </item>
-                    <item row="0" column="1">
-                        <layout class="QVBoxLayout" name="verticalLayout">
-                            <item>
-                                <layout class="QHBoxLayout" name="horizontalLayout">
-                                    <item>
-                                        <widget class="RobotJointLabel" name="label" native="true">
-                                            <property name="text" stdset="0">
-                                                <string>Joint_1</string>
-                                            </property>
-                                        </widget>
-                                    </item>
-                                    <item>
-                                        <widget class="RobotJointSpinBox" name="doubleSpinBox" native="true"/>
-                                    </item>
-                                    <item>
-                                        <widget class="QSlider" name="horizontalSlider">
-                                            <property name="minimum">
-                                                <number>-180</number>
-                                            </property>
-                                            <property name="maximum">
-                                                <number>180</number>
-                                            </property>
-                                            <property name="orientation">
-                                                <enum>Qt::Horizontal</enum>
-                                            </property>
-                                        </widget>
-                                    </item>
-                                </layout>
-                            </item>
-                            <item>
-                                <layout class="QHBoxLayout" name="horizontalLayout_2">
-                                    <item>
-                                        <widget class="RobotJointLabel" name="label_2" native="true">
-                                            <property name="text" stdset="0">
-                                                <string>Joint_2</string>
-                                            </property>
-                                        </widget>
-                                    </item>
-                                    <item>
-                                        <widget class="RobotJointSpinBox" name="doubleSpinBox_2" native="true"/>
-                                    </item>
-                                    <item>
-                                        <widget class="QSlider" name="horizontalSlider_2">
-                                            <property name="orientation">
-                                                <enum>Qt::Horizontal</enum>
-                                            </property>
-                                        </widget>
-                                    </item>
-                                </layout>
-                            </item>
-                            <item>
-                                <layout class="QHBoxLayout" name="horizontalLayout_4">
-                                    <item>
-                                        <widget class="RobotJointLabel" name="label_4" native="true">
-                                            <property name="text" stdset="0">
-                                                <string>Joint_3</string>
-                                            </property>
-                                        </widget>
-                                    </item>
-                                    <item>
-                                        <widget class="RobotJointSpinBox" name="doubleSpinBox_4" native="true"/>
-                                    </item>
-                                    <item>
-                                        <widget class="QSlider" name="horizontalSlider_4">
-                                            <property name="orientation">
-                                                <enum>Qt::Horizontal</enum>
-                                            </property>
-                                        </widget>
-                                    </item>
-                                </layout>
-                            </item>
-                            <item>
-                                <layout class="QHBoxLayout" name="horizontalLayout_3">
-                                    <item>
-                                        <widget class="RobotJointLabel" name="label_3" native="true">
-                                            <property name="text" stdset="0">
-                                                <string>Joint_4</string>
-                                            </property>
-                                        </widget>
-                                    </item>
-                                    <item>
-                                        <widget class="RobotJointSpinBox" name="doubleSpinBox_3" native="true"/>
-                                    </item>
-                                    <item>
-                                        <widget class="QSlider" name="horizontalSlider_3">
-                                            <property name="orientation">
-                                                <enum>Qt::Horizontal</enum>
-                                            </property>
-                                        </widget>
-                                    </item>
-                                </layout>
-                            </item>
-                            <item>
-                                <layout class="QHBoxLayout" name="horizontalLayout_6">
-                                    <item>
-                                        <widget class="RobotJointLabel" name="label_6" native="true">
-                                            <property name="text" stdset="0">
-                                                <string>Joint_5</string>
-                                            </property>
-                                        </widget>
-                                    </item>
-                                    <item>
-                                        <widget class="RobotJointSpinBox" name="doubleSpinBox_6" native="true"/>
-                                    </item>
-                                    <item>
-                                        <widget class="QSlider" name="horizontalSlider_6">
-                                            <property name="orientation">
-                                                <enum>Qt::Horizontal</enum>
-                                            </property>
-                                        </widget>
-                                    </item>
-                                </layout>
-                            </item>
-                            <item>
-                                <layout class="QHBoxLayout" name="horizontalLayout_5">
-                                    <item>
-                                        <widget class="RobotJointLabel" name="label_5" native="true">
-                                            <property name="text" stdset="0">
-                                                <string>Joint_6</string>
-                                            </property>
-                                        </widget>
-                                    </item>
-                                    <item>
-                                        <widget class="RobotJointSpinBox" name="doubleSpinBox_5" native="true"/>
-                                    </item>
-                                    <item>
-                                        <widget class="QSlider" name="horizontalSlider_5">
-                                            <property name="orientation">
-                                                <enum>Qt::Horizontal</enum>
-                                            </property>
-                                        </widget>
-                                    </item>
-                                </layout>
-                            </item>
-                        </layout>
-                    </item>
-                    <item row="1" column="1">
-                        <layout class="QVBoxLayout" name="verticalLayout_2">
-                            <item>
-                                <layout class="QHBoxLayout" name="horizontalLayout_7">
-                                    <item>
-                                        <widget class="QLabel" name="label_7">
-                                            <property name="text">
-                                                <string>末端关节值</string>
-                                            </property>
-                                        </widget>
-                                    </item>
-                                    <item>
-                                        <widget class="QCheckBox" name="checkBox">
-                                            <property name="text">
-                                                <string>弧度</string>
-                                            </property>
-                                        </widget>
-                                    </item>
-                                </layout>
-                                Z
-                            </item>
-                            <item>
-                                <widget class="QTextBrowser" name="textBrowser"/>
-                            </item>
-                        </layout>
-                    </item>
-                </layout>
-            </item>
+ <class>RobotSimulationPlatform</class>
+ <widget class="QWidget" name="RobotSimulationPlatform">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1083</width>
+    <height>713</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>RobotSimulationPlatform</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_9">
+     <item>
+      <widget class="QOpenGLWidget" name="openGLWidget">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>700</width>
+         <height>600</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <property name="spacing">
+        <number>21</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="spacing">
+          <number>16</number>
+         </property>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Joint_1</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
+           </item>
+           <item>
+            <widget class="QSlider" name="horizontalSlider">
+             <property name="minimum">
+              <number>-180</number>
+             </property>
+             <property name="maximum">
+              <number>180</number>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>Joint_2</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QDoubleSpinBox" name="doubleSpinBox_2"/>
+           </item>
+           <item>
+            <widget class="QSlider" name="horizontalSlider_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Joint_3</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QDoubleSpinBox" name="doubleSpinBox_3"/>
+           </item>
+           <item>
+            <widget class="QSlider" name="horizontalSlider_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Joint_4</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QDoubleSpinBox" name="doubleSpinBox_4"/>
+           </item>
+           <item>
+            <widget class="QSlider" name="horizontalSlider_4">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>Joint_5</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QDoubleSpinBox" name="doubleSpinBox_5"/>
+           </item>
+           <item>
+            <widget class="QSlider" name="horizontalSlider_5">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <item>
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>Joint_6</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QDoubleSpinBox" name="doubleSpinBox_6"/>
+           </item>
+           <item>
+            <widget class="QSlider" name="horizontalSlider_6">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
         </layout>
-    </widget>
-    <customwidgets>
-        <customwidget>
-            <class>RobotBody</class>
-            <extends>QWidget</extends>
-            <header>robot_body_load.h</header>
-        </customwidget>
-        <customwidget>
-            <class>RobotJointLabel</class>
-            <extends>QWidget</extends>
-            <header>robot_joint_label.h</header>
-        </customwidget>
-        <customwidget>
-            <class>RobotJointSpinBox</class>
-            <extends>QWidget</extends>
-            <header>robot_joint_degree_spinbox.h</header>
-        </customwidget>
-    </customwidgets>
-    <resources/>
-    <connections/>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <item>
+            <widget class="QLabel" name="label_7">
+             <property name="text">
+              <string>末端关节值</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox">
+             <property name="text">
+              <string>弧度</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QTextBrowser" name="textBrowser"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_8">
+           <item>
+            <widget class="QLabel" name="label_8">
+             <property name="text">
+              <string>头部到机器人坐标转换矩阵：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox_3">
+             <property name="text">
+              <string>毫米</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox_2">
+             <property name="text">
+              <string>弧度</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QTextBrowser" name="textBrowser_2"/>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
 </ui>

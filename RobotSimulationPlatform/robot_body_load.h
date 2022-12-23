@@ -5,7 +5,7 @@
 #ifndef NEWTRAVEL_ROBOT_BODY_LOAD_H
 #define NEWTRAVEL_ROBOT_BODY_LOAD_H
 
-#include "glew.h"
+//#include "glew.h"
 #include <QMatrix3x3>
 #include <QMatrix4x4>
 #include <QOpenGLBuffer>
@@ -19,6 +19,7 @@
 #include <QTimer>
 #include <QVector2D>
 #include <QVector>
+#include "robot_camera.h"
 
 #include "Log/log.h"
 
@@ -53,12 +54,12 @@ public:
     void SetRobotRotation(int iJointIndex);
 
 public  Q_SLOTS:
-    void SetRotationAngleOfJoint_0(int value);
-    void SetRotationAngleOfJoint_1(int value);
-    void SetRotationAngleOfJoint_2(int value);
-    void SetRotationAngleOfJoint_3(int value);
-    void SetRotationAngleOfJoint_4(int value);
-    void SetRotationAngleOfJoint_5(int value);
+    void SetRotationAngleOfJoint_0(double value);
+    void SetRotationAngleOfJoint_1(double value);
+    void SetRotationAngleOfJoint_2(double value);
+    void SetRotationAngleOfJoint_3(double value);
+    void SetRotationAngleOfJoint_4(double value);
+    void SetRotationAngleOfJoint_5(double value);
 
 private:
     JointParameters m_aJointModel[7];
@@ -83,8 +84,7 @@ private:
     qreal  theta;
     double m_dEyeToModelDistance;
     QVector2D m_v2cMove;
-    int m_iW;
-    int m_iV;
+    RobotCamera m_oRobotCamera;
 
 };
 #endif // NEWTRAVEL_ROBOT_BODY_LOAD_H

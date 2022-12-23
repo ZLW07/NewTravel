@@ -6,7 +6,7 @@
 #define NEWTRAVEL_ROBOT_SIMULATION_H
 
 #include "robot_body_load.h"
-#include "robot_joint_degree_constrol_slider.h"
+#include "robot_joint_degree_control_slider.h"
 #include "robot_joint_degree_spinbox.h"
 #include "robot_joint_label.h"
 #include <QWidget>

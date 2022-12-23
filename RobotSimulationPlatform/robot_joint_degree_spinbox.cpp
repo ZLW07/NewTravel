@@ -4,7 +4,7 @@
 
 #include "robot_joint_degree_spinbox.h"
 
-RobotJointSpinBox::RobotJointSpinBox(QWidget *parent) : QSpinBox(parent)
+RobotJointSpinBox::RobotJointSpinBox(QWidget *parent) : QDoubleSpinBox(parent)
 {
 }
 
@@ -20,6 +20,14 @@ void RobotJointSpinBox::Initial(int iIndex)
     setMaximum(180);
     setSingleStep(1);
     show();
+}
+
+void RobotJointSpinBox::SetLimitValue(double iMaxValue,double iMinValue,double iStep)
+{
+    setMaximum(iMaxValue);
+    setMinimum(iMinValue);
+    setSingleStep(iStep);
+    setValue(0);
 }
 
 

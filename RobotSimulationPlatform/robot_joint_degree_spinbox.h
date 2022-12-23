@@ -5,11 +5,10 @@
 #ifndef NEWTRAVEL_ROBOT_JOINT_DEGREE_SPINBOX_H
 #define NEWTRAVEL_ROBOT_JOINT_DEGREE_SPINBOX_H
 
-#include "robot_joint_degree_constrol_slider.h"
 #include <QSpinBox>
 #include <QTextEdit>
 
-class RobotJointSpinBox :  public  QSpinBox
+class RobotJointSpinBox :  public  QDoubleSpinBox
 {
 Q_OBJECT
 public:
@@ -18,10 +17,7 @@ public:
 
 public:
     void Initial(int iIndex);
-    void SetValue(int iValue);
-
-private:
-    RobotJointDegreeControlSlider *m_pSlider;
+    void SetLimitValue(double iMaxValue,double iMinValue,double iStep);
 };
 
 #endif // NEWTRAVEL_ROBOT_JOINT_DEGREE_SPINBOX_H

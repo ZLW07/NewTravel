@@ -10,9 +10,8 @@
 #include <QWheelEvent>
 #include <QtMath>
 
-
 RobotBody::RobotBody(QWidget *parent)
-    : QOpenGLWidget(parent), alpha(0.0), theta(0.0), m_dEyeToModelDistance(0.00), m_v2cMove(0.0, 0.0),m_iW(0),m_iV(0)
+    : QOpenGLWidget(parent), alpha(0.0), theta(0.0), m_dEyeToModelDistance(0.00), m_v2cMove(0.0, 0.0)
 {
     QSurfaceFormat format;
     format.setAlphaBufferSize(24); //设置alpha缓冲大小
@@ -136,20 +135,19 @@ void RobotBody::initializeGL()
     {
         SetDrawParameters(ii);
     }
-
 }
 
 void RobotBody::resizeGL(int w, int h)
 {
     this->glViewport(0, 0, w, h);
     projection.setToIdentity();
-    projection.perspective(60.0f, (GLfloat)w / (GLfloat)h, 0.001f, 100.0f);
+    projection.perspective(60.0f, (GLfloat)w / (GLfloat)h, 0.001f, 500.0f);
 }
 
 void RobotBody::paintGL()
 {
     this->glClearColor(0.9f, 0.94f, 1.0f, 1.0f);              //设置清屏颜色
-    this->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //清空颜色缓冲区
+    this->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                 //清空颜色缓冲区
 
     shaderprogram.bind();
     //将此着色器程序绑定到活动的qopenglcontext，并使其成为当前着色器程序。任何先前绑定的着色器程序都将被释放
@@ -157,20 +155,31 @@ void RobotBody::paintGL()
     {
         QVector3D lightColor(1.0f, 1.0f, 1.0f);
         QVector3D objectColor(1.0f, 0.5f, 0.31f);
-        QVector3D lightPos(4,0,0);
-        GLfloat mat_ambient[]   = {0.0f, 0.0f, 0.2f, 1.0f};
-        glMaterialfv(GL_FRONT, GL_AMBIENT,    mat_ambient);
+//        QVector3D lightPos(m_oRobotCamera.NewEye->X() + 2 , m_oRobotCamera.NewEye->Y(), m_oRobotCamera.NewEye->Z());
+        QVector3D lightPos(m_oRobotCamera.NewEye->x(), m_oRobotCamera.NewEye->y(), m_oRobotCamera.NewEye->z());
+
+        GLfloat mat_ambient[] = {0.0f, 0.0f, 0.2f, 1.0f};
+        glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+
         view.setToIdentity();
-        view.lookAt(m_v3dCamera, QVector3D(0.0f, 0.0f, 0.50f), QVector3D(0.0f, 0.0f, 1.0f));
+//        view.lookAt(QVector3D(m_oRobotCamera.NewEye->X(), m_oRobotCamera.NewEye->Y(), m_oRobotCamera.NewEye->Z()),
+//            QVector3D(m_oRobotCamera.NewView->X(), m_oRobotCamera.NewView->Y(), m_oRobotCamera.NewView->Z()),
+//            QVector3D(m_oRobotCamera.NewUp->X(), m_oRobotCamera.NewUp->Y(), m_oRobotCamera.NewUp->Z()));
+
+        view.lookAt(QVector3D(m_oRobotCamera.NewEye->x(), m_oRobotCamera.NewEye->y(), m_oRobotCamera.NewEye->z()),
+                    QVector3D(m_oRobotCamera.NewView->x(), m_oRobotCamera.NewView->y(), m_oRobotCamera.NewView->z()),
+                    QVector3D(m_oRobotCamera.NewUp->x(), m_oRobotCamera.NewUp->y(), m_oRobotCamera.NewUp->z()));
+
+
         shaderprogram.setUniformValue("objectColor", objectColor);
         shaderprogram.setUniformValue("lightColor", lightColor);
         shaderprogram.setUniformValue("lightPos", lightPos);
 
-        Rot.translate(m_v2cMove.x(),-m_v2cMove.y(),0);
-        m_v2cMove = QVector2D(0,0);
+        Rot.translate(m_v2cMove.x(), -m_v2cMove.y(), 0);
+        m_v2cMove = QVector2D(0, 0);
         shaderprogram.setUniformValue("Rot", Rot);
         shaderprogram.setUniformValue("view", view);
-        projection.translate(0.0,0.0,m_dEyeToModelDistance);
+        projection.translate(0.0, 0.0, m_dEyeToModelDistance);
         m_dEyeToModelDistance = 0.0;
         shaderprogram.setUniformValue("projection", projection);
         InitialTranslate();
@@ -182,7 +191,6 @@ void RobotBody::paintGL()
             this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[ii].iNumberOfTriangle);
         }
     }
-
 }
 
 void RobotBody::InitialTranslate()
@@ -218,22 +226,22 @@ void RobotBody::SetRobotRotation(int iJointIndex)
 void RobotBody::mousePressEvent(QMouseEvent *event)
 {
     mousePos = QVector2D(event->pos());
+    m_oRobotCamera.getInitPos(event->x(), event->y());
 }
 
 void RobotBody::mouseMoveEvent(QMouseEvent *event)
 {
-    if(event->buttons()& Qt::MiddleButton)
+    if (event->buttons() & Qt::MiddleButton)
     {
-        if(event->modifiers()== Qt::CTRL)
+        if (event->modifiers() == Qt::CTRL)
         {
             QVector2D newPos = (QVector2D)event->pos();
-            m_v2cMove = (newPos - mousePos)/500;
+            m_v2cMove = (newPos - mousePos) / 500;
             mousePos = newPos;
         }
         else
         {
-
-
+            m_oRobotCamera.executeRotateOperation(event->x(),event->y());
         }
     }
     this->update();
@@ -241,7 +249,7 @@ void RobotBody::mouseMoveEvent(QMouseEvent *event)
 
 void RobotBody::wheelEvent(QWheelEvent *event)
 {
-    if(event->delta()>=0)
+    if (event->delta() >= 0)
     {
         m_dEyeToModelDistance = 0.1f;
     }
@@ -252,62 +260,62 @@ void RobotBody::wheelEvent(QWheelEvent *event)
     this->update();
 }
 
-void RobotBody::SetRotationAngleOfJoint_0(int value)
+void RobotBody::SetRotationAngleOfJoint_0(double value)
 {
     InitialTranslate();
     m_fRotDegree[0] = (float)value;
     SetRobotRotation(0);
-    m_v2cMove = QVector2D(0,0);
+    m_v2cMove = QVector2D(0, 0);
     m_dEyeToModelDistance = 0.0;
     update();
 }
 
-void RobotBody::SetRotationAngleOfJoint_1(int value)
+void RobotBody::SetRotationAngleOfJoint_1(double value)
 {
     InitialTranslate();
     m_fRotDegree[1] = (float)value;
     SetRobotRotation(1);
-    m_v2cMove = QVector2D(0,0);
+    m_v2cMove = QVector2D(0, 0);
     m_dEyeToModelDistance = 0.0;
     update();
 }
 
-void RobotBody::SetRotationAngleOfJoint_2(int value)
+void RobotBody::SetRotationAngleOfJoint_2(double value)
 {
     InitialTranslate();
     m_fRotDegree[2] = (float)value;
     SetRobotRotation(2);
-    m_v2cMove = QVector2D(0,0);
+    m_v2cMove = QVector2D(0, 0);
     m_dEyeToModelDistance = 0.0;
     update();
 }
 
-void RobotBody::SetRotationAngleOfJoint_3(int value)
+void RobotBody::SetRotationAngleOfJoint_3(double value)
 {
     InitialTranslate();
     m_fRotDegree[3] = (float)value;
     SetRobotRotation(3);
-    m_v2cMove = QVector2D(0,0);
+    m_v2cMove = QVector2D(0, 0);
     m_dEyeToModelDistance = 0.0;
     update();
 }
 
-void RobotBody::SetRotationAngleOfJoint_4(int value)
+void RobotBody::SetRotationAngleOfJoint_4(double value)
 {
     InitialTranslate();
     m_fRotDegree[4] = (float)value;
     SetRobotRotation(4);
-    m_v2cMove = QVector2D(0,0);
+    m_v2cMove = QVector2D(0, 0);
     m_dEyeToModelDistance = 0.0;
     update();
 }
 
-void RobotBody::SetRotationAngleOfJoint_5(int value)
+void RobotBody::SetRotationAngleOfJoint_5(double value)
 {
     InitialTranslate();
     m_fRotDegree[5] = (float)value;
     SetRobotRotation(5);
-    m_v2cMove = QVector2D(0,0);
+    m_v2cMove = QVector2D(0, 0);
     m_dEyeToModelDistance = 0.0;
     update();
 }
