@@ -93,9 +93,8 @@ void RobotSimulation::SetUpUI(QWidget *RobotSimulationPlatform)
     m_pMySlider[0]->setOrientation(Qt::Horizontal);
 
     horizontalLayout->addWidget(m_pMySlider[0]);
-    group_8->setLayout(horizontalLayout);
-    verticalLayout->addWidget(group_8);
-//    verticalLayout->addLayout(horizontalLayout);
+
+    verticalLayout->addLayout(horizontalLayout);
 
 
 
@@ -204,11 +203,11 @@ void RobotSimulation::SetUpUI(QWidget *RobotSimulationPlatform)
 
     horizontalLayout_6->addWidget(m_pMySlider[5]);
 
-
     verticalLayout->addLayout(horizontalLayout_6);
+    group_8 = new QGroupBox("Joint Value");
+    group_8->setLayout(verticalLayout);
 
-
-    verticalLayout_4->addLayout(verticalLayout);
+    verticalLayout_4->addWidget(group_8);
 
     verticalLayout_2 = new QVBoxLayout();
     verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
