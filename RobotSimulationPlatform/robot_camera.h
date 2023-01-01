@@ -57,9 +57,7 @@
 
      void getInitPos(int x, int y)
      {
-         std::cout <<"----: " << Mouse->x() << std::endl;
          Mouse->x() = x;
-         std::cout <<"=====: " << Mouse->x() << std::endl;
          Mouse->y() = y;
          *OldMouse = *Mouse;
      }

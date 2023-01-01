@@ -10,8 +10,8 @@ RobotJointLabel::~RobotJointLabel() noexcept = default;
 
 void RobotJointLabel::Initial(int iIndex)
 {
-    move(800, iIndex * 40 + 10);
-    resize(50, 30);
+//    move(800, iIndex * 40 + 10);
+//    resize(50, 30);
     setText(QString::fromStdString("Joint_" + std::to_string(iIndex)));
-    show();
+//    show();
 }

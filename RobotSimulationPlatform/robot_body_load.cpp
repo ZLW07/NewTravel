@@ -155,17 +155,12 @@ void RobotBody::paintGL()
     {
         QVector3D lightColor(1.0f, 1.0f, 1.0f);
         QVector3D objectColor(1.0f, 0.5f, 0.31f);
-//        QVector3D lightPos(m_oRobotCamera.NewEye->X() + 2 , m_oRobotCamera.NewEye->Y(), m_oRobotCamera.NewEye->Z());
         QVector3D lightPos(m_oRobotCamera.NewEye->x(), m_oRobotCamera.NewEye->y(), m_oRobotCamera.NewEye->z());
 
         GLfloat mat_ambient[] = {0.0f, 0.0f, 0.2f, 1.0f};
         glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
 
         view.setToIdentity();
-//        view.lookAt(QVector3D(m_oRobotCamera.NewEye->X(), m_oRobotCamera.NewEye->Y(), m_oRobotCamera.NewEye->Z()),
-//            QVector3D(m_oRobotCamera.NewView->X(), m_oRobotCamera.NewView->Y(), m_oRobotCamera.NewView->Z()),
-//            QVector3D(m_oRobotCamera.NewUp->X(), m_oRobotCamera.NewUp->Y(), m_oRobotCamera.NewUp->Z()));
-
         view.lookAt(QVector3D(m_oRobotCamera.NewEye->x(), m_oRobotCamera.NewEye->y(), m_oRobotCamera.NewEye->z()),
                     QVector3D(m_oRobotCamera.NewView->x(), m_oRobotCamera.NewView->y(), m_oRobotCamera.NewView->z()),
                     QVector3D(m_oRobotCamera.NewUp->x(), m_oRobotCamera.NewUp->y(), m_oRobotCamera.NewUp->z()));
