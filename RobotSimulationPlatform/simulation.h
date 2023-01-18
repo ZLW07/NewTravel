@@ -4,11 +4,13 @@
 
 #ifndef NEWTRAVEL_SIMULATION_H
 #define NEWTRAVEL_SIMULATION_H
+#include <QFileDialog>
 
 #include "robot_body_load.h"
 #include "robot_joint_degree_control_slider.h"
 #include "robot_joint_degree_spinbox.h"
 #include "robot_joint_label.h"
+#include "robot_pushbutton_openfile.h"
 #include <QGroupBox>
 #include <QWidget>
 
@@ -68,11 +70,14 @@ public:
     void SetRobotTargetJointsFormat();
     void SetLoadOtherModelFormat();
 
+
+    void openfile();
 private:
     RobotJointSpinBox *m_pMySpinBox[6];
     RobotJointDegreeControlSlider *m_pMySlider[6];
     RobotJointLabel *m_pMyJointLabel[6];
     QHBoxLayout *m_pRobotJointsHorizontalLayout[6];
+    OpenFile *pOpenFile;
 };
 
 RobotSimulation::RobotSimulation(QWidget *parent) : QWidget(parent)
@@ -230,11 +235,11 @@ void RobotSimulation::InitPushButtonGroup()
     m_pSplitterPushButton->setObjectName(QString::fromUtf8("splitter_3"));
     m_pSplitterPushButton->setGeometry(QRect(0, 20, 311, 41));
     m_pSplitterPushButton->setOrientation(Qt::Horizontal);
-    pushButton = new QPushButton(m_pSplitterPushButton);
-    pushButton->setObjectName(QString::fromUtf8("pushButton"));
-    pushButton->setText("加载存储模型路径文件");
+    pOpenFile = new OpenFile(m_pSplitterPushButton);
+    pOpenFile->setObjectName(QString::fromUtf8("pushButton"));
+    pOpenFile->setText("加载存储模型路径文件");
 
-    m_pSplitterPushButton->addWidget(pushButton);
+    m_pSplitterPushButton->addWidget(pOpenFile);
     pushButton_2 = new QPushButton(m_pSplitterPushButton);
     pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
     pushButton_2->setText("待定");
@@ -517,6 +522,9 @@ void RobotSimulation::SetLoadOtherModelFormat()
     m_pVerticalLayoutOtherModel->addLayout(m_pHorizontalLayoutOtherModel);
     m_pVerticalLayoutOtherModel->addWidget(m_pTextEditOtherModelTransform);
 }
+
+
+
 } // namespace Ui
 
 QT_END_NAMESPACE
