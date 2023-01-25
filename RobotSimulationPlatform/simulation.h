@@ -11,10 +11,11 @@
 #include "robot_joint_degree_spinbox.h"
 #include "robot_joint_label.h"
 #include "robot_pushbutton_openfile.h"
-#include <QGroupBox>
-#include <QWidget>
-
+//#include "robot_qfile_dialog.h"
 #include "ui_robot_simulation_platform.h"
+#include <QGroupBox>
+#include <QKeyEvent>
+#include <QWidget>
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -70,14 +71,15 @@ public:
     void SetRobotTargetJointsFormat();
     void SetLoadOtherModelFormat();
 
+    void keyPressEvent(QKeyEvent *ev) override;
 
-    void openfile();
 private:
-    RobotJointSpinBox *m_pMySpinBox[6];
-    RobotJointDegreeControlSlider *m_pMySlider[6];
-    RobotJointLabel *m_pMyJointLabel[6];
-    QHBoxLayout *m_pRobotJointsHorizontalLayout[6];
-    OpenFile *pOpenFile;
+    RobotJointSpinBox *m_pMySpinBox[6]{};
+    RobotJointDegreeControlSlider *m_pMySlider[6]{};
+    RobotJointLabel *m_pMyJointLabel[6]{};
+    QHBoxLayout *m_pRobotJointsHorizontalLayout[6]{};
+    OpenFile *pOpenFile{};
+    FileDialog *m_pFileDialog{};
 };
 
 RobotSimulation::RobotSimulation(QWidget *parent) : QWidget(parent)
@@ -121,17 +123,16 @@ void RobotSimulation::SetUpUI(QWidget *RobotSimulationPlatform)
 
     InitLoadOtherModelFormat();
     InitLoadOtherModelComponent();
-//
+    //
 
     SetLoadOtherModelFormat();
 
-
-//
+    //
     InitRobotControllerVerticalLayout();
     SetRobotControllerVerticalLayout();
 
     SetMainGridLayout();
-//    RetranslateUi(RobotSimulationPlatform);
+    //    RetranslateUi(RobotSimulationPlatform);
 
     QMetaObject::connectSlotsByName(RobotSimulationPlatform);
 }
@@ -173,6 +174,8 @@ void RobotSimulation::InitSignalConnection()
         SLOT(SetRotationAngleOfJoint_4(double)));
     QObject::connect(m_pMySlider[5], SIGNAL(valueChanged(double)), openGLWidget,
         SLOT(SetRotationAngleOfJoint_5(double)));
+    QObject::connect(m_pFileDialog, SIGNAL(fileSelected(const QString &)), openGLWidget,
+        SLOT(SetFilePath(const QString &)));
 }
 
 void RobotSimulation::InitRobotShowGroupt(QWidget *pQWidget)
@@ -235,7 +238,8 @@ void RobotSimulation::InitPushButtonGroup()
     m_pSplitterPushButton->setObjectName(QString::fromUtf8("splitter_3"));
     m_pSplitterPushButton->setGeometry(QRect(0, 20, 311, 41));
     m_pSplitterPushButton->setOrientation(Qt::Horizontal);
-    pOpenFile = new OpenFile(m_pSplitterPushButton);
+    m_pFileDialog = new FileDialog(m_pSplitterPushButton);
+    pOpenFile = new OpenFile(m_pFileDialog, m_pSplitterPushButton);
     pOpenFile->setObjectName(QString::fromUtf8("pushButton"));
     pOpenFile->setText("加载存储模型路径文件");
 
@@ -495,7 +499,6 @@ void RobotSimulation::InitLoadOtherModelComponent()
 
     m_pTextEditOtherModelTransform = new QTextEdit(m_pWidgetOtherModelSetting);
     m_pTextEditOtherModelTransform->setObjectName(QString::fromUtf8("textEdit_2"));
-
 }
 void RobotSimulation::InitLoadOtherModelFormat()
 {
@@ -523,7 +526,13 @@ void RobotSimulation::SetLoadOtherModelFormat()
     m_pVerticalLayoutOtherModel->addWidget(m_pTextEditOtherModelTransform);
 }
 
-
+void RobotSimulation::keyPressEvent(QKeyEvent *ev)
+{
+    if (ev->key() == Qt::Key_Escape)
+    {
+        close();
+    }
+}
 
 } // namespace Ui
 

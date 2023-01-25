@@ -6,13 +6,14 @@
 #define NEWTRAVEL_ROBOT_PUSHBUTTON_OPENFILE_H
 
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
+//#include <QtWidgets/QFileDialog>
+#include "robot_qfile_dialog.h"
 #include <iostream>
 class OpenFile : public QPushButton
 {
 Q_OBJECT
 public:
-    OpenFile(QWidget *parent = nullptr);
+    OpenFile(FileDialog *pFileDialog,QWidget *parent = nullptr);
     ~OpenFile();
 
     void mousePressEvent(QMouseEvent *event) override
@@ -22,11 +23,20 @@ public:
     }
     void openfile()
     {
-        QString strFileName = QFileDialog::getOpenFileName(this, "Open File", "",
-                                                           tr("STL(*.STL)"), 0, QFileDialog::DontResolveSymlinks);
+        QString strFileName = FileDialog::getOpenFileName(this, "Open File", "",
+                                                           tr("STL(*.STL)"), nullptr, QFileDialog::DontResolveSymlinks);
         strFileName = QDir::toNativeSeparators(strFileName);
-        std::cout << "strFileName : "  << strFileName.toStdString() <<std::endl;
+        if (!strFileName.isEmpty())
+        {
+            m_pQFileDialog->SetPath(strFileName);
+            std::cout << "strFileName : "  << strFileName.toStdString() <<std::endl;
+
+
+        }
     }
+
+private:
+    FileDialog *m_pQFileDialog;
 };
 
 

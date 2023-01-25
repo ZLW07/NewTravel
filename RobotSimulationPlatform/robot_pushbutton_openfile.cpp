@@ -3,5 +3,9 @@
 //
 #include "robot_pushbutton_openfile.h"
 
-OpenFile::OpenFile(QWidget *parent) : QPushButton(parent) {}
+OpenFile::OpenFile(FileDialog *pFileDialog,QWidget *parent) : QPushButton(parent)
+{
+    m_pQFileDialog = pFileDialog;
+}
+
 OpenFile::~OpenFile() {}

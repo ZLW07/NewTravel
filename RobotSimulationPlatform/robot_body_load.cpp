@@ -17,7 +17,7 @@ RobotBody::RobotBody(QWidget *parent)
     format.setAlphaBufferSize(24); //设置alpha缓冲大小
     format.setVersion(3, 3);       //设置版本号
     format.setSamples(10);         //设置重采样次数，用于反走样
-
+    m_bIsFile = false;
     this->setFormat(format);
     //    loadAscllStl("../../Data/RobotModel/TX2-60L HORIZONTAL BASE.STL", 1, m_aJointModel[0]);
     //    loadAscllStl("../../Data/RobotModel/TX2-60L SHOULDER.STL", 1,m_aJointModel[1]);
@@ -26,13 +26,13 @@ RobotBody::RobotBody(QWidget *parent)
     //    loadAscllStl("../../Data/RobotModel/TX2-60L FOREARM.STL", 1,m_aJointModel[4]);
     //    loadAscllStl("../../Data/RobotModel/TX2-60L WRIST.STL", 1,m_aJointModel[5]);
     //
-    loadAscllStl("../../Data/RobotModel/1.STL", 1, m_aJointModel[0]);
-    loadAscllStl("../../Data/RobotModel/2.STL", 1, m_aJointModel[1]);
-    loadAscllStl("../../Data/RobotModel/3.STL", 1, m_aJointModel[2]);
-    loadAscllStl("../../Data/RobotModel/4.STL", 1, m_aJointModel[3]);
-    loadAscllStl("../../Data/RobotModel/5.STL", 1, m_aJointModel[4]);
-    loadAscllStl("../../Data/RobotModel/6.STL", 1, m_aJointModel[5]);
-    loadAscllStl("../../Data/RobotModel/7.STL", 1, m_aJointModel[6]);
+//    loadAscllStl("../../Data/RobotModel/1.STL", 1, m_aJointModel[0]);
+//    loadAscllStl("../../Data/RobotModel/2.STL", 1, m_aJointModel[1]);
+//    loadAscllStl("../../Data/RobotModel/3.STL", 1, m_aJointModel[2]);
+//    loadAscllStl("../../Data/RobotModel/4.STL", 1, m_aJointModel[3]);
+//    loadAscllStl("../../Data/RobotModel/5.STL", 1, m_aJointModel[4]);
+//    loadAscllStl("../../Data/RobotModel/6.STL", 1, m_aJointModel[5]);
+//    loadAscllStl("../../Data/RobotModel/7.STL", 1, m_aJointModel[6]);
 
     QVector3D qRotVector(0, 1, 0);
     m_mapRotVector[0] = qRotVector;
@@ -131,10 +131,10 @@ void RobotBody::initializeGL()
         ZLOG << "ERROR: link error"; //如果链接出错,打印报错信息
     }
 
-    for (auto &ii : m_aJointModel)
+/*    for (auto &ii : m_aJointModel)
     {
         SetDrawParameters(ii);
-    }
+    }*/
 }
 
 void RobotBody::resizeGL(int w, int h)
@@ -148,7 +148,23 @@ void RobotBody::paintGL()
 {
     this->glClearColor(0.9f, 0.94f, 1.0f, 1.0f);              //设置清屏颜色
     this->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                 //清空颜色缓冲区
+    if (m_bIsFile)
+    {
+        loadAscllStl("../../Data/RobotModel/1.STL", 1, m_aJointModel[0]);
+        loadAscllStl("../../Data/RobotModel/2.STL", 1, m_aJointModel[1]);
+        loadAscllStl("../../Data/RobotModel/3.STL", 1, m_aJointModel[2]);
+        loadAscllStl("../../Data/RobotModel/4.STL", 1, m_aJointModel[3]);
+        loadAscllStl("../../Data/RobotModel/5.STL", 1, m_aJointModel[4]);
+        loadAscllStl("../../Data/RobotModel/6.STL", 1, m_aJointModel[5]);
+        loadAscllStl("../../Data/RobotModel/7.STL", 1, m_aJointModel[6]);
 
+        for (auto &ii : m_aJointModel)
+        {
+            SetDrawParameters(ii);
+        }
+        m_bIsFile = false;
+
+    }
     shaderprogram.bind();
     //将此着色器程序绑定到活动的qopenglcontext，并使其成为当前着色器程序。任何先前绑定的着色器程序都将被释放
     //成功绑定返回ture,反之，返回false.
@@ -312,5 +328,11 @@ void RobotBody::SetRotationAngleOfJoint_5(double value)
     SetRobotRotation(5);
     m_v2cMove = QVector2D(0, 0);
     m_dEyeToModelDistance = 0.0;
+    update();
+}
+void RobotBody::SetFilePath(const QString &sFilePath)
+{
+    ZLOG << "The path is: " << sFilePath.toStdString();
+    m_bIsFile = true;
     update();
 }

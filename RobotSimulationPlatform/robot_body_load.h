@@ -60,6 +60,8 @@ public  Q_SLOTS:
     void SetRotationAngleOfJoint_3(double value);
     void SetRotationAngleOfJoint_4(double value);
     void SetRotationAngleOfJoint_5(double value);
+public  Q_SLOTS:
+    void SetFilePath(const QString &sFilePath);
 
 private:
     JointParameters m_aJointModel[7];
@@ -85,6 +87,7 @@ private:
     double m_dEyeToModelDistance;
     QVector2D m_v2cMove;
     RobotCamera m_oRobotCamera;
+    bool m_bIsFile;
 
 };
 #endif // NEWTRAVEL_ROBOT_BODY_LOAD_H
