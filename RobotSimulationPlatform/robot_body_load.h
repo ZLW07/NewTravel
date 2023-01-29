@@ -53,6 +53,9 @@ public:
     void InitialTranslate();
     void SetRobotRotation(int iJointIndex);
 
+private:
+    bool ReadXml(std::vector<std::string> &vecNodePath);
+
 public  Q_SLOTS:
     void SetRotationAngleOfJoint_0(double value);
     void SetRotationAngleOfJoint_1(double value);
@@ -88,6 +91,7 @@ private:
     QVector2D m_v2cMove;
     RobotCamera m_oRobotCamera;
     bool m_bIsFile;
+    QString m_sXmlFile;
 
 };
 #endif // NEWTRAVEL_ROBOT_BODY_LOAD_H

@@ -3,12 +3,11 @@
 //
 
 #include "robot_body_load.h"
+#include "Configure/configure_base.h"
 #include <QFile>
 #include <QMouseEvent>
 #include <QOpenGLShaderProgram>
 #include <QStringList>
-#include <QWheelEvent>
-#include <QtMath>
 
 RobotBody::RobotBody(QWidget *parent)
     : QOpenGLWidget(parent), alpha(0.0), theta(0.0), m_dEyeToModelDistance(0.00), m_v2cMove(0.0, 0.0)
@@ -26,13 +25,13 @@ RobotBody::RobotBody(QWidget *parent)
     //    loadAscllStl("../../Data/RobotModel/TX2-60L FOREARM.STL", 1,m_aJointModel[4]);
     //    loadAscllStl("../../Data/RobotModel/TX2-60L WRIST.STL", 1,m_aJointModel[5]);
     //
-//    loadAscllStl("../../Data/RobotModel/1.STL", 1, m_aJointModel[0]);
-//    loadAscllStl("../../Data/RobotModel/2.STL", 1, m_aJointModel[1]);
-//    loadAscllStl("../../Data/RobotModel/3.STL", 1, m_aJointModel[2]);
-//    loadAscllStl("../../Data/RobotModel/4.STL", 1, m_aJointModel[3]);
-//    loadAscllStl("../../Data/RobotModel/5.STL", 1, m_aJointModel[4]);
-//    loadAscllStl("../../Data/RobotModel/6.STL", 1, m_aJointModel[5]);
-//    loadAscllStl("../../Data/RobotModel/7.STL", 1, m_aJointModel[6]);
+    //    loadAscllStl("../../Data/RobotModel/1.STL", 1, m_aJointModel[0]);
+    //    loadAscllStl("../../Data/RobotModel/2.STL", 1, m_aJointModel[1]);
+    //    loadAscllStl("../../Data/RobotModel/3.STL", 1, m_aJointModel[2]);
+    //    loadAscllStl("../../Data/RobotModel/4.STL", 1, m_aJointModel[3]);
+    //    loadAscllStl("../../Data/RobotModel/5.STL", 1, m_aJointModel[4]);
+    //    loadAscllStl("../../Data/RobotModel/6.STL", 1, m_aJointModel[5]);
+    //    loadAscllStl("../../Data/RobotModel/7.STL", 1, m_aJointModel[6]);
 
     QVector3D qRotVector(0, 1, 0);
     m_mapRotVector[0] = qRotVector;
@@ -63,7 +62,7 @@ RobotBody::~RobotBody()
 
 void RobotBody::loadAscllStl(const QString &filename, int ratio, JointParameters &oJointPara)
 {
-    ZLOG << "load text file ";
+    ZLOG << "load text file " << filename.toStdString();
 
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -117,24 +116,57 @@ void RobotBody::initializeGL()
 {
     this->initializeOpenGLFunctions(); //初始化opengl函数
     shaderprogram.create();            //生成着色器程序
-    if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Vertex, "../../RobotSimulationPlatform/stl.vert"))
-    {
-        ZLOG << "failed load ../../Test/Qt/stl.vert"; //如果编译出错,打印报错信息
-    }
-    if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Fragment, "../../RobotSimulationPlatform/stl.frag"))
-    {
-        ZLOG << "failed load ../../Test/Qt/stl.frag"; //如果编译出错,打印报错信息
-    }
+    const char *vertexShaderSource =
+        "#version 330 core \n"
+        "layout (location = 0) in vec3 aPos; \n"
+        "layout (location = 1) in vec3 aNormal; \n"
+        "uniform mat4 view;\n"
+        "uniform mat4 projection;\n"
+        "uniform vec2 v2dMove;\n"
+        "uniform mat4 baseTrans;\n"
+        "uniform mat4 Rot;\n"
+        "out vec3 FragPos;\n"
+        "out vec3 Normal;\n"
+        "void main()\n"
+        "{\n"
+        "gl_Position = Rot * projection * view * baseTrans * vec4(aPos[0] ,aPos[1] , aPos[2],1.0);\n"
+        "Normal = vec3(baseTrans * vec4(aNormal,1.0));\n"
+        "FragPos = vec3(vec4(aPos, 1.0));\n"
+        "}\0";
+    // 片段着色器
+    const char *fragmentShaderSource = "#version 330 core\n"
+                                       "out vec4 FragColor;\n"
+                                       "uniform vec3 objectColor;\n"
+                                       "uniform vec3 lightColor;\n"
+                                       "in vec3 FragPos;\n"
+                                       "in vec3 Normal;\n"
+                                       "uniform vec3 lightPos;\n"
+                                       "void main()\n"
+                                       "{\n"
+                                       "float ambientStrength = 0.05;\n"
+                                       "vec3 ambient = ambientStrength * lightColor;\n"
+                                       "vec3 norm = normalize(Normal);\n"
+                                       "vec3 lightDir = normalize(lightPos - FragPos);\n"
+                                       "float diff = max(dot(norm, lightDir), 0.0);\n"
+                                       "vec3 diffuse = diff * lightColor;\n"
+                                       "vec3 result = (ambient + diffuse) * objectColor;\n"
+                                       "FragColor = vec4(result, 1.0);\n"
+                                       "}\n\0";
+    shaderprogram.addShaderFromSourceCode(QOpenGLShader::Vertex,vertexShaderSource);
+    shaderprogram.addShaderFromSourceCode(QOpenGLShader::Fragment,fragmentShaderSource);
+//    if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Vertex, "../../RobotSimulationPlatform/stl.vert"))
+//    {
+//        ZLOG << "failed load ../../Test/Qt/stl.vert"; //如果编译出错,打印报错信息
+//    }
+//    if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Fragment, "../../RobotSimulationPlatform/stl.frag"))
+//    {
+//        ZLOG << "failed load ../../Test/Qt/stl.frag"; //如果编译出错,打印报错信息
+//    }
     //将添加到此程序的着色器与addshader链接在一起
     if (!shaderprogram.link())
     {
         ZLOG << "ERROR: link error"; //如果链接出错,打印报错信息
     }
-
-/*    for (auto &ii : m_aJointModel)
-    {
-        SetDrawParameters(ii);
-    }*/
 }
 
 void RobotBody::resizeGL(int w, int h)
@@ -147,23 +179,25 @@ void RobotBody::resizeGL(int w, int h)
 void RobotBody::paintGL()
 {
     this->glClearColor(0.9f, 0.94f, 1.0f, 1.0f);              //设置清屏颜色
-    this->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                 //清空颜色缓冲区
+    this->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //清空颜色缓冲区
     if (m_bIsFile)
     {
-        loadAscllStl("../../Data/RobotModel/1.STL", 1, m_aJointModel[0]);
-        loadAscllStl("../../Data/RobotModel/2.STL", 1, m_aJointModel[1]);
-        loadAscllStl("../../Data/RobotModel/3.STL", 1, m_aJointModel[2]);
-        loadAscllStl("../../Data/RobotModel/4.STL", 1, m_aJointModel[3]);
-        loadAscllStl("../../Data/RobotModel/5.STL", 1, m_aJointModel[4]);
-        loadAscllStl("../../Data/RobotModel/6.STL", 1, m_aJointModel[5]);
-        loadAscllStl("../../Data/RobotModel/7.STL", 1, m_aJointModel[6]);
 
-        for (auto &ii : m_aJointModel)
+        std::vector<std::string> sPath;
+        if (ReadXml(sPath))
         {
-            SetDrawParameters(ii);
+            ZLOG << sPath.size();
+            for (size_t ii = 0; ii < sPath.size(); ++ii)
+            {
+                loadAscllStl(sPath[ii].c_str(), 1, m_aJointModel[ii]);
+                ZLOG << sPath[ii];
+            }
+            for (auto &ii : m_aJointModel)
+            {
+                SetDrawParameters(ii);
+            }
+            m_bIsFile = false;
         }
-        m_bIsFile = false;
-
     }
     shaderprogram.bind();
     //将此着色器程序绑定到活动的qopenglcontext，并使其成为当前着色器程序。任何先前绑定的着色器程序都将被释放
@@ -178,9 +212,8 @@ void RobotBody::paintGL()
 
         view.setToIdentity();
         view.lookAt(QVector3D(m_oRobotCamera.NewEye->x(), m_oRobotCamera.NewEye->y(), m_oRobotCamera.NewEye->z()),
-                    QVector3D(m_oRobotCamera.NewView->x(), m_oRobotCamera.NewView->y(), m_oRobotCamera.NewView->z()),
-                    QVector3D(m_oRobotCamera.NewUp->x(), m_oRobotCamera.NewUp->y(), m_oRobotCamera.NewUp->z()));
-
+            QVector3D(m_oRobotCamera.NewView->x(), m_oRobotCamera.NewView->y(), m_oRobotCamera.NewView->z()),
+            QVector3D(m_oRobotCamera.NewUp->x(), m_oRobotCamera.NewUp->y(), m_oRobotCamera.NewUp->z()));
 
         shaderprogram.setUniformValue("objectColor", objectColor);
         shaderprogram.setUniformValue("lightColor", lightColor);
@@ -252,7 +285,7 @@ void RobotBody::mouseMoveEvent(QMouseEvent *event)
         }
         else
         {
-            m_oRobotCamera.executeRotateOperation(event->x(),event->y());
+            m_oRobotCamera.executeRotateOperation(event->x(), event->y());
         }
     }
     this->update();
@@ -332,7 +365,61 @@ void RobotBody::SetRotationAngleOfJoint_5(double value)
 }
 void RobotBody::SetFilePath(const QString &sFilePath)
 {
+    m_sXmlFile = sFilePath;
     ZLOG << "The path is: " << sFilePath.toStdString();
     m_bIsFile = true;
     update();
+}
+bool RobotBody::ReadXml(std::vector<std::string> &vecNodePath)
+{
+    LoadConfigre oConfig;
+    oConfig.ReadXML(m_sXmlFile.toStdString());
+    std::string sNodePath = "/Joint_1";
+    std::string sResult;
+    if (!oConfig.GetElementValue(sNodePath, sResult))
+    {
+        ZLOG << "Failed to load xml " << sNodePath;
+        return false;
+    }
+    vecNodePath.push_back(sResult);
+    sNodePath = "/Joint_2";
+    if (!oConfig.GetElementValue(sNodePath, sResult))
+    {
+        ZLOG << "Failed to load xml " << sNodePath;
+        return false;
+    }
+    vecNodePath.push_back(sResult);
+    sNodePath = "/Joint_3";
+    if (!oConfig.GetElementValue(sNodePath, sResult))
+    {
+        ZLOG << "Failed to load xml " << sNodePath;
+        return false;
+    }
+    vecNodePath.push_back(sResult);
+    sNodePath = "/Joint_4";
+    if (!oConfig.GetElementValue(sNodePath, sResult))
+    {
+        ZLOG << "Failed to load xml " << sNodePath;
+        return false;
+    }
+    vecNodePath.push_back(sResult);
+    sNodePath = "/Joint_5";
+    if (!oConfig.GetElementValue(sNodePath, sResult))
+    {
+        ZLOG << "Failed to load xml " << sNodePath;
+        return false;
+    }
+    vecNodePath.push_back(sResult);
+    sNodePath = "/Joint_6";
+    if (!oConfig.GetElementValue(sNodePath, sResult))
+    {
+        ZLOG << "Failed to load xml " << sNodePath;
+        return false;
+    }
+    vecNodePath.push_back(sResult);
+    for (int i = 0; i < vecNodePath.size(); ++i)
+    {
+        ZLOG << vecNodePath[i];
+    }
+    return true;
 }

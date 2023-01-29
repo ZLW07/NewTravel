@@ -4,6 +4,10 @@ project(NewTravel)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
 
+
+set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+
+
 set(Qt_build ON)
 if (Qt_build)
     set(CMAKE_PREFIX_PATH  "${CMAKE_CURRENT_SOURCE_DIR}/bin")
@@ -14,11 +18,16 @@ if (Qt_build)
 
 endif ()
 
-set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/Package/lib)
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/Package/bin)
+#set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/Package/lib)
+#set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/Package/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/Package/lib_debug)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG  ${CMAKE_SOURCE_DIR}/Package/lib_debug)
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Package/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Package/bin)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/Package/lib_release)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/Package/lib_release)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/Package/bin_debug)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/Package/bin_release)
 
 include_directories(include)
 include_directories(ExternalSource/googletest/include)

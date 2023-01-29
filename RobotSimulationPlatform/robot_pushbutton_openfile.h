@@ -24,7 +24,7 @@ public:
     void openfile()
     {
         QString strFileName = FileDialog::getOpenFileName(this, "Open File", "",
-                                                           tr("STL(*.STL)"), nullptr, QFileDialog::DontResolveSymlinks);
+                                                           tr("XML(*.xml)"), nullptr, QFileDialog::DontResolveSymlinks);
         strFileName = QDir::toNativeSeparators(strFileName);
         if (!strFileName.isEmpty())
         {

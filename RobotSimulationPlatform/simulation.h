@@ -11,7 +11,6 @@
 #include "robot_joint_degree_spinbox.h"
 #include "robot_joint_label.h"
 #include "robot_pushbutton_openfile.h"
-//#include "robot_qfile_dialog.h"
 #include "ui_robot_simulation_platform.h"
 #include <QGroupBox>
 #include <QKeyEvent>
@@ -56,11 +55,6 @@ public:
 
     void InitLoadOtherModelComponent();
     void InitLoadOtherModelFormat();
-
-    void InitDoubleSpin(QDoubleSpinBox *qDoubleSpinBox, QWidget *pQWidget);
-    void InitQSlider(QSlider *pSlider, QWidget *pQWidget);
-    void InitQLable(QLabel *label, QWidget *pQWidget);
-    void InitJointDegreeGroup(QGroupBox *pQGroupBox, QWidget *pQWidget);
 
     void SetMainGridLayout();
     void SetRobotShowAndButtonVerticalLayout();
@@ -127,14 +121,13 @@ void RobotSimulation::SetUpUI(QWidget *RobotSimulationPlatform)
 
     SetLoadOtherModelFormat();
 
-    //
     InitRobotControllerVerticalLayout();
     SetRobotControllerVerticalLayout();
 
     SetMainGridLayout();
-    //    RetranslateUi(RobotSimulationPlatform);
 
     QMetaObject::connectSlotsByName(RobotSimulationPlatform);
+    RetranslateUi(RobotSimulationPlatform);
 }
 
 void RobotSimulation::RetranslateUi(QWidget *RobotSimulationPlatform)
@@ -193,24 +186,6 @@ void RobotSimulation::InitMainGridLayout(QWidget *pQWidget)
 {
     m_pMainGridLayout = new QGridLayout(pQWidget);
     m_pMainGridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-}
-
-void RobotSimulation::InitDoubleSpin(QDoubleSpinBox *qDoubleSpinBox, QWidget *pQWidget)
-{
-    qDoubleSpinBox = new QDoubleSpinBox(pQWidget);
-    qDoubleSpinBox->setObjectName(QString::fromUtf8("doubleSpinBox"));
-}
-
-void RobotSimulation::InitQSlider(QSlider *pSlider, QWidget *pQWidget)
-{
-    pSlider = new QSlider(pQWidget);
-    pSlider->setObjectName(QString::fromUtf8("horizontalSlider"));
-    pSlider->setOrientation(Qt::Horizontal);
-}
-void RobotSimulation::InitQLable(QLabel *pLabel, QWidget *pQWidget)
-{
-    pLabel = new QLabel(pQWidget);
-    pLabel->setObjectName(QString::fromUtf8("label"));
 }
 
 void RobotSimulation::InitRobotShowAndButtonVerticalLayout()
@@ -339,95 +314,9 @@ void RobotSimulation::InitRobotJointsController()
         m_pMySlider[ii]->setOrientation(Qt::Horizontal);
     }
 
-    //    m_pLabelRobotJoint_1 = new QLabel(m_pQWidgetRobotJoint);
-    //    m_pLabelRobotJoint_1->setObjectName(QString::fromUtf8("label"));
-
-    //    m_pDoubleSpinBoxJoint_1 = new QDoubleSpinBox(m_pQWidgetRobotJoint);
-    //    m_pDoubleSpinBoxJoint_1->setObjectName(QString::fromUtf8("doubleSpinBox"));
-
-    //    m_pHorizontalSliderJoint_1 = new QSlider(m_pQWidgetRobotJoint);
-    //    m_pHorizontalSliderJoint_1->setObjectName(QString::fromUtf8("horizontalSlider"));
-    //    m_pHorizontalSliderJoint_1->setOrientation(Qt::Horizontal);
-
-    //
-    //    m_pLabelRobotJoint_2 = new QLabel(m_pQWidgetRobotJoint);
-    //    m_pLabelRobotJoint_2->setObjectName(QString::fromUtf8("label_2"));
-    //
-    //    m_pDoubleSpinBoxJoint_2 = new QDoubleSpinBox(m_pQWidgetRobotJoint);
-    //    m_pDoubleSpinBoxJoint_2->setObjectName(QString::fromUtf8("doubleSpinBox_2"));
-
-    //    m_pHorizontalSliderJoint_2 = new QSlider(m_pQWidgetRobotJoint);
-    //    m_pHorizontalSliderJoint_2->setObjectName(QString::fromUtf8("horizontalSlider_2"));
-    //    m_pHorizontalSliderJoint_2->setOrientation(Qt::Horizontal);
-    //
-    //    m_pLabelRobotJoint_3 = new QLabel(m_pQWidgetRobotJoint);
-    //    m_pLabelRobotJoint_3->setObjectName(QString::fromUtf8("label_3"));
-
-    //    m_pDoubleSpinBoxJoint_3 = new QDoubleSpinBox(m_pQWidgetRobotJoint);
-    //    m_pDoubleSpinBoxJoint_3->setObjectName(QString::fromUtf8("doubleSpinBox_3"));
-
-    //    m_pHorizontalSliderJoint_3 = new QSlider(m_pQWidgetRobotJoint);
-    //    m_pHorizontalSliderJoint_3->setObjectName(QString::fromUtf8("horizontalSlider_3"));
-    //    m_pHorizontalSliderJoint_3->setOrientation(Qt::Horizontal);
-    //
-    //    m_pLabelRobotJoint_4 = new QLabel(m_pQWidgetRobotJoint);
-    //    m_pLabelRobotJoint_4->setObjectName(QString::fromUtf8("label_4"));
-
-    //    m_pDoubleSpinBoxJoint_4 = new QDoubleSpinBox(m_pQWidgetRobotJoint);
-    //    m_pDoubleSpinBoxJoint_4->setObjectName(QString::fromUtf8("doubleSpinBox_4"));
-
-    //    m_pHorizontalSliderJoint_4 = new QSlider(m_pQWidgetRobotJoint);
-    //    m_pHorizontalSliderJoint_4->setObjectName(QString::fromUtf8("horizontalSlider_4"));
-    //    m_pHorizontalSliderJoint_4->setOrientation(Qt::Horizontal);
-    //
-    //    m_pLabelRobotJoint_5 = new QLabel(m_pQWidgetRobotJoint);
-    //    m_pLabelRobotJoint_5->setObjectName(QString::fromUtf8("label_5"));
-
-    //    m_pDoubleSpinBoxJoint_5 = new QDoubleSpinBox(m_pQWidgetRobotJoint);
-    //    m_pDoubleSpinBoxJoint_5->setObjectName(QString::fromUtf8("doubleSpinBox_5"));
-
-    //    m_pHorizontalSliderJoint_5 = new QSlider(m_pQWidgetRobotJoint);
-    //    m_pHorizontalSliderJoint_5->setObjectName(QString::fromUtf8("horizontalSlider_5"));
-    //    m_pHorizontalSliderJoint_5->setOrientation(Qt::Horizontal);
-    //
-    //    m_pLabelRobotJoint_6 = new QLabel(m_pQWidgetRobotJoint);
-    //    m_pLabelRobotJoint_6->setObjectName(QString::fromUtf8("label_6"));
-
-    //    m_pDoubleSpinBoxJoint_6 = new QDoubleSpinBox(m_pQWidgetRobotJoint);
-    //    m_pDoubleSpinBoxJoint_6->setObjectName(QString::fromUtf8("doubleSpinBox_6"));
-
-    //    m_pHorizontalSliderJoint_6 = new QSlider(m_pQWidgetRobotJoint);
-    //    m_pHorizontalSliderJoint_6->setObjectName(QString::fromUtf8("horizontalSlider_6"));
-    //    m_pHorizontalSliderJoint_6->setOrientation(Qt::Horizontal);
 }
 void RobotSimulation::SetRobotJointsController()
 {
-    //    m_pRobotJointsHorizontalLayout[0]->addWidget(m_pLabelRobotJoint_1);
-    //    m_pRobotJointsHorizontalLayout[0]->addWidget(m_pDoubleSpinBoxJoint_1);
-    //    m_pRobotJointsHorizontalLayout[0]->addWidget(m_pHorizontalSliderJoint_1);
-    //
-    //    m_pRobotJointsHorizontalLayout[1]->addWidget(m_pLabelRobotJoint_2);
-
-    //    m_pRobotJointsHorizontalLayout[1]->addWidget(m_pDoubleSpinBoxJoint_2);
-
-    //    m_pRobotJointsHorizontalLayout[1]->addWidget(m_pHorizontalSliderJoint_2);
-    //
-    //    m_pRobotJointsHorizontalLayout[2]->addWidget(m_pLabelRobotJoint_3);
-    //    m_pRobotJointsHorizontalLayout[2]->addWidget(m_pDoubleSpinBoxJoint_3);
-    //    m_pRobotJointsHorizontalLayout[2]->addWidget(m_pHorizontalSliderJoint_3);
-
-    //
-    //    m_pRobotJointsHorizontalLayout[3]->addWidget(m_pLabelRobotJoint_4);
-    //    m_pRobotJointsHorizontalLayout[3]->addWidget(m_pDoubleSpinBoxJoint_4);
-    //    m_pRobotJointsHorizontalLayout[3]->addWidget(m_pHorizontalSliderJoint_4);
-    //
-    //    m_pRobotJointsHorizontalLayout[4]->addWidget(m_pLabelRobotJoint_5);
-    //    m_pRobotJointsHorizontalLayout[4]->addWidget(m_pDoubleSpinBoxJoint_5);
-    //    m_pRobotJointsHorizontalLayout[4]->addWidget(m_pHorizontalSliderJoint_5);
-    //
-    //    m_pRobotJointsHorizontalLayout[5]->addWidget(m_pLabelRobotJoint_6);
-    //    m_pRobotJointsHorizontalLayout[5]->addWidget(m_pDoubleSpinBoxJoint_6);
-    //    m_pRobotJointsHorizontalLayout[5]->addWidget(m_pHorizontalSliderJoint_6);
     for (int ii = 0; ii < 6; ++ii)
     {
         m_pRobotJointsHorizontalLayout[ii]->addWidget(m_pMyJointLabel[ii]);
