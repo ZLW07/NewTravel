@@ -19,7 +19,6 @@ public:
     void mousePressEvent(QMouseEvent *event) override
     {
         openfile();
-
     }
     void openfile()
     {
@@ -30,8 +29,6 @@ public:
         {
             m_pQFileDialog->SetPath(strFileName);
             std::cout << "strFileName : "  << strFileName.toStdString() <<std::endl;
-
-
         }
     }
 

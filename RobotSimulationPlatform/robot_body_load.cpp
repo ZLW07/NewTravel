@@ -18,22 +18,8 @@ RobotBody::RobotBody(QWidget *parent)
     format.setSamples(10);         //设置重采样次数，用于反走样
     m_bIsFile = false;
     this->setFormat(format);
-    //    loadAscllStl("../../Data/RobotModel/TX2-60L HORIZONTAL BASE.STL", 1, m_aJointModel[0]);
-    //    loadAscllStl("../../Data/RobotModel/TX2-60L SHOULDER.STL", 1,m_aJointModel[1]);
-    //    loadAscllStl("../../Data/RobotModel/TX2-60L ARM.STL", 1,m_aJointModel[2]);
-    //    loadAscllStl("../../Data/RobotModel/TX2-60L ELBOW.STL", 1,m_aJointModel[3]);
-    //    loadAscllStl("../../Data/RobotModel/TX2-60L FOREARM.STL", 1,m_aJointModel[4]);
-    //    loadAscllStl("../../Data/RobotModel/TX2-60L WRIST.STL", 1,m_aJointModel[5]);
-    //
-    //    loadAscllStl("../../Data/RobotModel/1.STL", 1, m_aJointModel[0]);
-    //    loadAscllStl("../../Data/RobotModel/2.STL", 1, m_aJointModel[1]);
-    //    loadAscllStl("../../Data/RobotModel/3.STL", 1, m_aJointModel[2]);
-    //    loadAscllStl("../../Data/RobotModel/4.STL", 1, m_aJointModel[3]);
-    //    loadAscllStl("../../Data/RobotModel/5.STL", 1, m_aJointModel[4]);
-    //    loadAscllStl("../../Data/RobotModel/6.STL", 1, m_aJointModel[5]);
-    //    loadAscllStl("../../Data/RobotModel/7.STL", 1, m_aJointModel[6]);
-
     QVector3D qRotVector(0, 1, 0);
+    // Set Joint rotation
     m_mapRotVector[0] = qRotVector;
     qRotVector = {0, 0, 1};
     m_mapRotVector[1] = qRotVector;
@@ -46,13 +32,17 @@ RobotBody::RobotBody(QWidget *parent)
     qRotVector = {0, 0, 1};
     m_mapRotVector[5] = qRotVector;
 
-    for (int ii = 0; ii < 6; ii++)
+    for (float & ii : m_fRotDegree)
     {
-        m_fRotDegree[ii] = 0.0;
+        ii = 0.0;
     }
     Rot.setToIdentity();
     m_v3dCamera = QVector3D(2, 0, 0.5);
     mousePosForTranslationView = QVector2D(0.0, 0.0);
+
+    // External import fixed model
+    m_matJointTrans[7].translate(0, 1, 1);
+    m_matJointTrans[7].rotate(90, 1, 0, 0);
 }
 
 RobotBody::~RobotBody()
@@ -152,21 +142,22 @@ void RobotBody::initializeGL()
                                        "vec3 result = (ambient + diffuse) * objectColor;\n"
                                        "FragColor = vec4(result, 1.0);\n"
                                        "}\n\0";
-    shaderprogram.addShaderFromSourceCode(QOpenGLShader::Vertex,vertexShaderSource);
-    shaderprogram.addShaderFromSourceCode(QOpenGLShader::Fragment,fragmentShaderSource);
-//    if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Vertex, "../../RobotSimulationPlatform/stl.vert"))
-//    {
-//        ZLOG << "failed load ../../Test/Qt/stl.vert"; //如果编译出错,打印报错信息
-//    }
-//    if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Fragment, "../../RobotSimulationPlatform/stl.frag"))
-//    {
-//        ZLOG << "failed load ../../Test/Qt/stl.frag"; //如果编译出错,打印报错信息
-//    }
+    shaderprogram.addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
+    shaderprogram.addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
+    //    if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Vertex, "../../RobotSimulationPlatform/stl.vert"))
+    //    {
+    //        ZLOG << "failed load ../../Test/Qt/stl.vert"; //如果编译出错,打印报错信息
+    //    }
+    //    if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Fragment, "../../RobotSimulationPlatform/stl.frag"))
+    //    {
+    //        ZLOG << "failed load ../../Test/Qt/stl.frag"; //如果编译出错,打印报错信息
+    //    }
     //将添加到此程序的着色器与addshader链接在一起
     if (!shaderprogram.link())
     {
         ZLOG << "ERROR: link error"; //如果链接出错,打印报错信息
     }
+
 }
 
 void RobotBody::resizeGL(int w, int h)
@@ -182,11 +173,9 @@ void RobotBody::paintGL()
     this->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //清空颜色缓冲区
     if (m_bIsFile)
     {
-
         std::vector<std::string> sPath;
         if (ReadXml(sPath))
         {
-            ZLOG << sPath.size();
             for (size_t ii = 0; ii < sPath.size(); ++ii)
             {
                 loadAscllStl(sPath[ii].c_str(), 1, m_aJointModel[ii]);
@@ -227,6 +216,9 @@ void RobotBody::paintGL()
         m_dEyeToModelDistance = 0.0;
         shaderprogram.setUniformValue("projection", projection);
         InitialTranslate();
+        shaderprogram.setUniformValue("baseTrans", m_matJointTrans[7]);
+        m_aJointModel[7].vaoJoint.bind();
+        this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[7].iNumberOfTriangle);
         for (int ii = 0; ii < 7; ii++)
         {
             SetRobotRotation(ii);
@@ -234,6 +226,7 @@ void RobotBody::paintGL()
             m_aJointModel[ii].vaoJoint.bind();
             this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[ii].iNumberOfTriangle);
         }
+
     }
 }
 
@@ -254,6 +247,7 @@ void RobotBody::InitialTranslate()
     m_matJointTrans[6].setToIdentity();
     m_matJointTrans[6].translate(0, -0.07, 0.0);
     m_matJointTrans[6].rotate(90, 1, 0, 0);
+
 }
 
 void RobotBody::SetRobotRotation(int iJointIndex)
@@ -363,6 +357,7 @@ void RobotBody::SetRotationAngleOfJoint_5(double value)
     m_dEyeToModelDistance = 0.0;
     update();
 }
+
 void RobotBody::SetFilePath(const QString &sFilePath)
 {
     m_sXmlFile = sFilePath;
@@ -370,56 +365,30 @@ void RobotBody::SetFilePath(const QString &sFilePath)
     m_bIsFile = true;
     update();
 }
+
 bool RobotBody::ReadXml(std::vector<std::string> &vecNodePath)
 {
     LoadConfigre oConfig;
     oConfig.ReadXML(m_sXmlFile.toStdString());
-    std::string sNodePath = "/Joint_1";
+
+    std::string sNodePath = "/Joint";
+    int iCount = oConfig.GetCountBrotherElement(sNodePath);
+
     std::string sResult;
-    if (!oConfig.GetElementValue(sNodePath, sResult))
+    for (int ii = 0; ii < iCount; ++ii)
     {
-        ZLOG << "Failed to load xml " << sNodePath;
-        return false;
-    }
-    vecNodePath.push_back(sResult);
-    sNodePath = "/Joint_2";
-    if (!oConfig.GetElementValue(sNodePath, sResult))
-    {
-        ZLOG << "Failed to load xml " << sNodePath;
-        return false;
-    }
-    vecNodePath.push_back(sResult);
-    sNodePath = "/Joint_3";
-    if (!oConfig.GetElementValue(sNodePath, sResult))
-    {
-        ZLOG << "Failed to load xml " << sNodePath;
-        return false;
-    }
-    vecNodePath.push_back(sResult);
-    sNodePath = "/Joint_4";
-    if (!oConfig.GetElementValue(sNodePath, sResult))
-    {
-        ZLOG << "Failed to load xml " << sNodePath;
-        return false;
-    }
-    vecNodePath.push_back(sResult);
-    sNodePath = "/Joint_5";
-    if (!oConfig.GetElementValue(sNodePath, sResult))
-    {
-        ZLOG << "Failed to load xml " << sNodePath;
-        return false;
-    }
-    vecNodePath.push_back(sResult);
-    sNodePath = "/Joint_6";
-    if (!oConfig.GetElementValue(sNodePath, sResult))
-    {
-        ZLOG << "Failed to load xml " << sNodePath;
-        return false;
-    }
-    vecNodePath.push_back(sResult);
-    for (int i = 0; i < vecNodePath.size(); ++i)
-    {
-        ZLOG << vecNodePath[i];
+        ZLOG << "sNodePath: " << sNodePath + "[" + std::to_string(ii) + "]";
+        if (!oConfig.GetElementValue(sNodePath + "[" + std::to_string(ii) + "]", sResult))
+        {
+            ZLOG << "Failed to load xml " << sNodePath;
+            return false;
+        }
+        vecNodePath.push_back(sResult);
     }
     return true;
+}
+
+void RobotBody::setTransForm(const QString &sFilePath)
+{
+    ZLOG << "The path is: " << sFilePath.toStdString();
 }

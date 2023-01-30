@@ -16,7 +16,10 @@ public:
     ~LoadConfigre();
     bool ReadXML(const std::string &sFilePath);
     bool GetElementValue(const std::string &sNodePath, std::string &sValue);
-    std::vector<std::string> ParseFilePath(const std::string &sNodePath);
+    int32_t GetCountBrotherElement(const std::string &sNodePath);
+private:
+
+    bool ParseFilePath(const std::string &sNodePath);
 private:
     tinyxml2::XMLDocument m_oXMLFile;
     tinyxml2::XMLElement *m_pElement;

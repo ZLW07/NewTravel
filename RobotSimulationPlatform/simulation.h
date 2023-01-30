@@ -11,6 +11,7 @@
 #include "robot_joint_degree_spinbox.h"
 #include "robot_joint_label.h"
 #include "robot_pushbutton_openfile.h"
+#include "robot_qtext.h"
 #include "ui_robot_simulation_platform.h"
 #include <QGroupBox>
 #include <QKeyEvent>
@@ -74,6 +75,7 @@ private:
     QHBoxLayout *m_pRobotJointsHorizontalLayout[6]{};
     OpenFile *pOpenFile{};
     FileDialog *m_pFileDialog{};
+    InputText *m_pTargetTrans;
 };
 
 RobotSimulation::RobotSimulation(QWidget *parent) : QWidget(parent)
@@ -169,6 +171,8 @@ void RobotSimulation::InitSignalConnection()
         SLOT(SetRotationAngleOfJoint_5(double)));
     QObject::connect(m_pFileDialog, SIGNAL(fileSelected(const QString &)), openGLWidget,
         SLOT(SetFilePath(const QString &)));
+    QObject::connect(m_pTargetTrans, SIGNAL(SetValue(const QString &)), openGLWidget,
+                     SLOT(setTransForm(const QString &)));
 }
 
 void RobotSimulation::InitRobotShowGroupt(QWidget *pQWidget)
@@ -361,15 +365,19 @@ void RobotSimulation::InitRobotTargetJointSettingComponent()
     m_pCheckBoxDegree->setObjectName(QString::fromUtf8("Angular unit about target joint"));
     m_pCheckBoxDegree->setText("弧度");
 
-    m_pTextEditTargetJoints = new QTextEdit(m_pWidgetTargetJointsSettingCenter);
-    m_pTextEditTargetJoints->setObjectName(QString::fromUtf8("textEdit"));
+//    m_pTextEditTargetJoints = new QTextEdit(m_pWidgetTargetJointsSettingCenter);
+//    m_pTextEditTargetJoints->setObjectName(QString::fromUtf8("textEdit"));
+
+    m_pTargetTrans = new InputText(m_pWidgetTargetJointsSettingCenter);
+    m_pTargetTrans->setObjectName(QString::fromUtf8("textEdit"));
+
 }
 void RobotSimulation::SetRobotTargetJointsFormat()
 {
     m_pHorizontalLayoutTargetJointsLabel->addWidget(m_pLabelSettingJoints);
     m_pHorizontalLayoutTargetJointsLabel->addWidget(m_pCheckBoxDegree);
     m_pVerticalLayoutTargetJointsSettingCenter->addLayout(m_pHorizontalLayoutTargetJointsLabel);
-    m_pVerticalLayoutTargetJointsSettingCenter->addWidget(m_pTextEditTargetJoints);
+    m_pVerticalLayoutTargetJointsSettingCenter->addWidget(m_pTargetTrans);
 }
 void RobotSimulation::InitLoadOtherModelComponent()
 {
@@ -420,6 +428,10 @@ void RobotSimulation::keyPressEvent(QKeyEvent *ev)
     if (ev->key() == Qt::Key_Escape)
     {
         close();
+    }
+    else if (ev->key() == Qt::Key_E)
+    {
+        m_pTargetTrans->emitValue();
     }
 }
 

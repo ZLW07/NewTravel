@@ -65,9 +65,11 @@ public  Q_SLOTS:
     void SetRotationAngleOfJoint_5(double value);
 public  Q_SLOTS:
     void SetFilePath(const QString &sFilePath);
+    void setTransForm(const QString &sTrans);
+//    void setTransForm();
 
 private:
-    JointParameters m_aJointModel[7];
+    JointParameters m_aJointModel[8];
 
     QVector<float> Position;
     QVector<float> Normal;                //读文件时的俩个临时变量顶点位置，法向量
@@ -80,7 +82,7 @@ private:
     QVector2D mousePosForTranslationView;
     QQuaternion rotation;
     QMatrix4x4 Rot;
-    QMatrix4x4 m_matJointTrans[7];
+    QMatrix4x4 m_matJointTrans[8];
     QMatrix4x4 m_matJointRot[7];
     float m_fRotDegree[6];
     std::map<int, QVector3D> m_mapRotVector;
