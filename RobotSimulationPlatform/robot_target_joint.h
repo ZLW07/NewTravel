@@ -2,10 +2,9 @@
 // Created by wei on 2023/1/29.
 //
 
-#ifndef NEWTRAVEL_ROBOT_QTEXT_H
-#define NEWTRAVEL_ROBOT_QTEXT_H
+#ifndef NEWTRAVEL_ROBOT_TARGET_JOINT_H
+#define NEWTRAVEL_ROBOT_TARGET_JOINT_H
 #include <QtWidgets/QTextEdit>
-#include <QKeyEvent>
 
 class InputText : public QTextEdit
 {
@@ -16,9 +15,10 @@ public:
 
 signals :
     void SetValue(const QString &oFilePath);
-
+public  Q_SLOTS:
+    void SetValue();
 public:
     void emitValue();
 };
 
-#endif // NEWTRAVEL_ROBOT_QTEXT_H
+#endif // NEWTRAVEL_ROBOT_TARGET_JOINT_H

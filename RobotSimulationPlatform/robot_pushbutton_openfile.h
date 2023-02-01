@@ -6,7 +6,6 @@
 #define NEWTRAVEL_ROBOT_PUSHBUTTON_OPENFILE_H
 
 #include <QtWidgets/QPushButton>
-//#include <QtWidgets/QFileDialog>
 #include "robot_qfile_dialog.h"
 #include <iostream>
 class OpenFile : public QPushButton

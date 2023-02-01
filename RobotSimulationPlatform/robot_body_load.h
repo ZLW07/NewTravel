@@ -55,6 +55,7 @@ public:
 
 private:
     bool ReadXml(std::vector<std::string> &vecNodePath);
+    void SetJointValue();
 
 public  Q_SLOTS:
     void SetRotationAngleOfJoint_0(double value);
@@ -65,9 +66,18 @@ public  Q_SLOTS:
     void SetRotationAngleOfJoint_5(double value);
 public  Q_SLOTS:
     void SetFilePath(const QString &sFilePath);
-    void setTransForm(const QString &sTrans);
-//    void setTransForm();
+    void setTargetJoints(const QString &sTrans);
+    void SetTargetJointDegreeFlag(bool bDegreeFlag);
 
+    void SetOtherModelTransform(QMatrix4x4 mat4Transform);
+    void SetUnitOfLength(bool bIsMillimeter);
+signals :
+    void SetRotationOfJoint_0(double dValue);
+    void SetRotationOfJoint_1(double dValue);
+    void SetRotationOfJoint_2(double dValue);
+    void SetRotationOfJoint_3(double dValue);
+    void SetRotationOfJoint_4(double dValue);
+    void SetRotationOfJoint_5(double dValue);
 private:
     JointParameters m_aJointModel[8];
 
@@ -84,7 +94,7 @@ private:
     QMatrix4x4 Rot;
     QMatrix4x4 m_matJointTrans[8];
     QMatrix4x4 m_matJointRot[7];
-    float m_fRotDegree[6];
+    QVector<float> m_vecRotDegree;
     std::map<int, QVector3D> m_mapRotVector;
     QVector3D m_v3dCamera;
     qreal  alpha;
@@ -94,6 +104,9 @@ private:
     RobotCamera m_oRobotCamera;
     bool m_bIsFile;
     QString m_sXmlFile;
+
+    bool m_bTargetJointRadianFlag;
+    bool m_bMillimeterFlag;
 
 };
 #endif // NEWTRAVEL_ROBOT_BODY_LOAD_H

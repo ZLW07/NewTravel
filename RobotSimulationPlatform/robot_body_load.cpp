@@ -17,9 +17,12 @@ RobotBody::RobotBody(QWidget *parent)
     format.setVersion(3, 3);       //设置版本号
     format.setSamples(10);         //设置重采样次数，用于反走样
     m_bIsFile = false;
+    m_bTargetJointRadianFlag = false;
+    m_bMillimeterFlag = false;
     this->setFormat(format);
-    QVector3D qRotVector(0, 1, 0);
+
     // Set Joint rotation
+    QVector3D qRotVector(0, -1, 0);
     m_mapRotVector[0] = qRotVector;
     qRotVector = {0, 0, 1};
     m_mapRotVector[1] = qRotVector;
@@ -32,7 +35,21 @@ RobotBody::RobotBody(QWidget *parent)
     qRotVector = {0, 0, 1};
     m_mapRotVector[5] = qRotVector;
 
-    for (float & ii : m_fRotDegree)
+/*    QVector3D qRotVector(0, 0, 1);
+    m_mapRotVector[0] = qRotVector;
+    qRotVector = {0, 0, 1};
+    m_mapRotVector[1] = qRotVector;
+    qRotVector = {0, 0, 1};
+    m_mapRotVector[2] = qRotVector;
+    qRotVector = {0, 0, 1};
+    m_mapRotVector[3] = qRotVector;
+    qRotVector = {0, 0, 1};
+    m_mapRotVector[4] = qRotVector;
+    qRotVector = {0, 0, 1};
+    m_mapRotVector[5] = qRotVector;*/
+
+    m_vecRotDegree.resize(6);
+    for (float &ii : m_vecRotDegree)
     {
         ii = 0.0;
     }
@@ -41,7 +58,8 @@ RobotBody::RobotBody(QWidget *parent)
     mousePosForTranslationView = QVector2D(0.0, 0.0);
 
     // External import fixed model
-    m_matJointTrans[7].translate(0, 1, 1);
+    m_matJointTrans[7].setToIdentity();
+    m_matJointTrans[7].translate(0, -1, 0);
     m_matJointTrans[7].rotate(90, 1, 0, 0);
 }
 
@@ -58,12 +76,12 @@ void RobotBody::loadAscllStl(const QString &filename, int ratio, JointParameters
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         ZLOG << "Open stl_file failed.";
+        return;
     }
     while (!file.atEnd())
     {
         QString line = file.readLine().trimmed(); // trimmed去除了开头和结尾的空白字符串
         QStringList words = line.split(' ', QString::SkipEmptyParts);
-
         if (words[0] == "facet")
         {
             Normal = {ratio * words[2].toFloat(), ratio * words[3].toFloat(), ratio * words[4].toFloat()};
@@ -157,7 +175,6 @@ void RobotBody::initializeGL()
     {
         ZLOG << "ERROR: link error"; //如果链接出错,打印报错信息
     }
-
 }
 
 void RobotBody::resizeGL(int w, int h)
@@ -216,17 +233,19 @@ void RobotBody::paintGL()
         m_dEyeToModelDistance = 0.0;
         shaderprogram.setUniformValue("projection", projection);
         InitialTranslate();
-        shaderprogram.setUniformValue("baseTrans", m_matJointTrans[7]);
-        m_aJointModel[7].vaoJoint.bind();
-        this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[7].iNumberOfTriangle);
-        for (int ii = 0; ii < 7; ii++)
+        for (int ii = 0; ii < 6; ii++)
         {
             SetRobotRotation(ii);
             shaderprogram.setUniformValue("baseTrans", m_matJointTrans[ii]);
             m_aJointModel[ii].vaoJoint.bind();
             this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[ii].iNumberOfTriangle);
         }
-
+        shaderprogram.setUniformValue("baseTrans", m_matJointTrans[6]);
+        m_aJointModel[6].vaoJoint.bind();
+        this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[6].iNumberOfTriangle);
+        shaderprogram.setUniformValue("baseTrans", m_matJointTrans[7]);
+        m_aJointModel[7].vaoJoint.bind();
+        this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[7].iNumberOfTriangle);
     }
 }
 
@@ -248,17 +267,30 @@ void RobotBody::InitialTranslate()
     m_matJointTrans[6].translate(0, -0.07, 0.0);
     m_matJointTrans[6].rotate(90, 1, 0, 0);
 
+/*    m_matJointTrans[0].setToIdentity();
+    m_matJointTrans[1].setToIdentity();
+    m_matJointTrans[2].setToIdentity();
+    m_matJointTrans[2].rotate(-90,1,0,0);
+    m_matJointTrans[2].rotate(-90,0,0,1);
+    m_matJointTrans[3].setToIdentity();
+    m_matJointTrans[3].translate(0.4, 0, 0.02);
+    m_matJointTrans[3].rotate(90,0,0,1);
+    m_matJointTrans[4].setToIdentity();
+    m_matJointTrans[4].translate(0, -0.45, 0);
+    m_matJointTrans[4].rotate(90, 1, 0, 0);
+    m_matJointTrans[5].setToIdentity();
+    m_matJointTrans[5].rotate(-90, 1, 0, 0);
+    m_matJointTrans[6].setToIdentity();
+    m_matJointTrans[6].translate(0, -0.07, 0.0);
+    m_matJointTrans[6].rotate(90, 1, 0, 0);*/
 }
 
 void RobotBody::SetRobotRotation(int iJointIndex)
 {
     m_matJointRot[iJointIndex].setToIdentity();
-    if (iJointIndex >= 1)
-    {
-        m_matJointRot[iJointIndex].rotate(m_fRotDegree[iJointIndex - 1], m_mapRotVector[iJointIndex - 1]);
-        m_matJointTrans[iJointIndex] =
-            m_matJointTrans[iJointIndex - 1] * m_matJointTrans[iJointIndex] * m_matJointRot[iJointIndex];
-    }
+    m_matJointRot[iJointIndex].rotate(m_vecRotDegree[iJointIndex], m_mapRotVector[iJointIndex]);
+    m_matJointTrans[iJointIndex + 1] =
+        m_matJointTrans[iJointIndex] * m_matJointTrans[iJointIndex + 1] * m_matJointRot[iJointIndex];
 }
 
 void RobotBody::mousePressEvent(QMouseEvent *event)
@@ -301,7 +333,7 @@ void RobotBody::wheelEvent(QWheelEvent *event)
 void RobotBody::SetRotationAngleOfJoint_0(double value)
 {
     InitialTranslate();
-    m_fRotDegree[0] = (float)value;
+    m_vecRotDegree[0] = (float)value;
     SetRobotRotation(0);
     m_v2cMove = QVector2D(0, 0);
     m_dEyeToModelDistance = 0.0;
@@ -311,7 +343,7 @@ void RobotBody::SetRotationAngleOfJoint_0(double value)
 void RobotBody::SetRotationAngleOfJoint_1(double value)
 {
     InitialTranslate();
-    m_fRotDegree[1] = (float)value;
+    m_vecRotDegree[1] = (float)value;
     SetRobotRotation(1);
     m_v2cMove = QVector2D(0, 0);
     m_dEyeToModelDistance = 0.0;
@@ -321,7 +353,7 @@ void RobotBody::SetRotationAngleOfJoint_1(double value)
 void RobotBody::SetRotationAngleOfJoint_2(double value)
 {
     InitialTranslate();
-    m_fRotDegree[2] = (float)value;
+    m_vecRotDegree[2] = (float)value;
     SetRobotRotation(2);
     m_v2cMove = QVector2D(0, 0);
     m_dEyeToModelDistance = 0.0;
@@ -331,7 +363,7 @@ void RobotBody::SetRotationAngleOfJoint_2(double value)
 void RobotBody::SetRotationAngleOfJoint_3(double value)
 {
     InitialTranslate();
-    m_fRotDegree[3] = (float)value;
+    m_vecRotDegree[3] = (float)value;
     SetRobotRotation(3);
     m_v2cMove = QVector2D(0, 0);
     m_dEyeToModelDistance = 0.0;
@@ -341,7 +373,7 @@ void RobotBody::SetRotationAngleOfJoint_3(double value)
 void RobotBody::SetRotationAngleOfJoint_4(double value)
 {
     InitialTranslate();
-    m_fRotDegree[4] = (float)value;
+    m_vecRotDegree[4] = (float)value;
     SetRobotRotation(4);
     m_v2cMove = QVector2D(0, 0);
     m_dEyeToModelDistance = 0.0;
@@ -351,7 +383,7 @@ void RobotBody::SetRotationAngleOfJoint_4(double value)
 void RobotBody::SetRotationAngleOfJoint_5(double value)
 {
     InitialTranslate();
-    m_fRotDegree[5] = (float)value;
+    m_vecRotDegree[5] = (float)value;
     SetRobotRotation(5);
     m_v2cMove = QVector2D(0, 0);
     m_dEyeToModelDistance = 0.0;
@@ -388,7 +420,71 @@ bool RobotBody::ReadXml(std::vector<std::string> &vecNodePath)
     return true;
 }
 
-void RobotBody::setTransForm(const QString &sFilePath)
+void RobotBody::setTargetJoints(const QString &sTrans)
 {
-    ZLOG << "The path is: " << sFilePath.toStdString();
+    std::string sTargetJoint = sTrans.toStdString();
+    ZLOG << "The path is: " << sTargetJoint;
+    int iIndex = sTargetJoint.find(',');
+    int iCount = 0;
+    while (std::string::npos != iIndex)
+    {
+        std::string sJointValue = sTargetJoint.substr(0, sTargetJoint.find(','));
+        m_vecRotDegree[iCount] = strtod(sJointValue.c_str(), nullptr);
+        iCount++;
+        sTargetJoint = sTargetJoint.substr(sTargetJoint.find(',') + 1, std::string::npos);
+        iIndex = sTargetJoint.find(',');
+    }
+    m_vecRotDegree[5] = strtod(sTargetJoint.c_str(), nullptr);
+    if (m_bTargetJointRadianFlag)
+    {
+        for (int ii = 0; ii < m_vecRotDegree.size(); ++ii)
+        {
+            double dDegree = m_vecRotDegree[ii] * 180 / 3.1415926;
+            m_vecRotDegree[ii] = dDegree;
+        }
+    }
+    SetJointValue();
+}
+
+void RobotBody::SetJointValue()
+{
+    emit SetRotationOfJoint_0(m_vecRotDegree[0]);
+    emit SetRotationOfJoint_1(m_vecRotDegree[1]);
+    emit SetRotationOfJoint_2(m_vecRotDegree[2]);
+    emit SetRotationOfJoint_3(m_vecRotDegree[3]);
+    emit SetRotationOfJoint_4(m_vecRotDegree[4]);
+    emit SetRotationOfJoint_5(m_vecRotDegree[5]);
+}
+void RobotBody::SetTargetJointDegreeFlag(bool bDegreeFlag)
+{
+    m_bTargetJointRadianFlag = bDegreeFlag;
+    ZLOG << " Degree flag is " << m_bTargetJointRadianFlag;
+}
+
+void RobotBody::SetOtherModelTransform(QMatrix4x4 mat4Tansform)
+{
+    if (mat4Tansform(3,0) != 1)
+    {
+        QVector4D vecPos;
+        if (m_bMillimeterFlag)
+        {
+            vecPos[0] = mat4Tansform(0, 3)/1000;
+            vecPos[1] = mat4Tansform(1, 3)/1000;
+            vecPos[2] = mat4Tansform(2, 3)/1000;
+            vecPos[3] = 1;
+            mat4Tansform.setColumn(3,vecPos);
+        }
+        m_matJointTrans[7] = mat4Tansform;
+        ZLOG << "TransForm is: " << mat4Tansform(0, 0) << ", " << mat4Tansform(1, 1) << ", " << mat4Tansform(1, 2) << ", "
+             << mat4Tansform(0, 3);
+        ZLOG << "TransForm is: " << mat4Tansform(1, 0) << ", " << mat4Tansform(2, 1) << ", " << mat4Tansform(2, 2) << ", "
+             << mat4Tansform(1, 3);
+        ZLOG << "TransForm is: " << mat4Tansform(2, 0) << ", " << mat4Tansform(2, 1) << ", " << mat4Tansform(2, 2) << ", "
+             << mat4Tansform(2, 3);
+        update();
+    }
+}
+void RobotBody::SetUnitOfLength(bool bIsMillimeter)
+{
+    m_bMillimeterFlag = true;
 }

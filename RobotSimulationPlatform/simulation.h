@@ -11,7 +11,9 @@
 #include "robot_joint_degree_spinbox.h"
 #include "robot_joint_label.h"
 #include "robot_pushbutton_openfile.h"
-#include "robot_qtext.h"
+#include "robot_pushbutton_send_message.h"
+#include "robot_target_joint.h"
+#include "robot_other_model_transform.h"
 #include "ui_robot_simulation_platform.h"
 #include <QGroupBox>
 #include <QKeyEvent>
@@ -75,7 +77,9 @@ private:
     QHBoxLayout *m_pRobotJointsHorizontalLayout[6]{};
     OpenFile *pOpenFile{};
     FileDialog *m_pFileDialog{};
-    InputText *m_pTargetTrans;
+    InputText *m_pTargetJoints;
+    SendButton *m_pSendButton;
+    OtherModelTrans *m_pOtherModelTrans;
 };
 
 RobotSimulation::RobotSimulation(QWidget *parent) : QWidget(parent)
@@ -171,8 +175,29 @@ void RobotSimulation::InitSignalConnection()
         SLOT(SetRotationAngleOfJoint_5(double)));
     QObject::connect(m_pFileDialog, SIGNAL(fileSelected(const QString &)), openGLWidget,
         SLOT(SetFilePath(const QString &)));
-    QObject::connect(m_pTargetTrans, SIGNAL(SetValue(const QString &)), openGLWidget,
-                     SLOT(setTransForm(const QString &)));
+
+    QObject::connect(m_pSendButton, SIGNAL(SendMessage()), m_pTargetJoints,
+                     SLOT(SetValue()));
+    QObject::connect(
+        m_pTargetJoints, SIGNAL(SetValue(const QString &)), openGLWidget,
+                     SLOT(setTargetJoints(const QString &)));
+
+
+    QObject::connect(m_pSendButton, SIGNAL(SendMessage()), m_pOtherModelTrans,
+                     SLOT(SetValue()));
+    QObject::connect(
+        m_pOtherModelTrans, SIGNAL(SetValue(QMatrix4x4)), openGLWidget,
+        SLOT(SetOtherModelTransform(QMatrix4x4 )));
+
+    QObject::connect(openGLWidget , SIGNAL(SetRotationOfJoint_0(double)), m_pMySlider[0], SLOT(setValue(double)));
+    QObject::connect(openGLWidget , SIGNAL(SetRotationOfJoint_1(double)), m_pMySlider[1], SLOT(setValue(double)));
+    QObject::connect(openGLWidget , SIGNAL(SetRotationOfJoint_2(double)), m_pMySlider[2], SLOT(setValue(double)));
+    QObject::connect(openGLWidget , SIGNAL(SetRotationOfJoint_3(double)), m_pMySlider[3], SLOT(setValue(double)));
+    QObject::connect(openGLWidget , SIGNAL(SetRotationOfJoint_4(double)), m_pMySlider[4], SLOT(setValue(double)));
+    QObject::connect(openGLWidget , SIGNAL(SetRotationOfJoint_5(double)), m_pMySlider[5], SLOT(setValue(double)));
+
+    QObject::connect(m_pCheckBoxDegree , SIGNAL(clicked(bool)), openGLWidget, SLOT(SetTargetJointDegreeFlag(bool)));
+    QObject::connect(m_pCheckBoxTransformUnitOfLength , SIGNAL(clicked(bool)), openGLWidget, SLOT(SetUnitOfLength(bool)));
 }
 
 void RobotSimulation::InitRobotShowGroupt(QWidget *pQWidget)
@@ -223,10 +248,10 @@ void RobotSimulation::InitPushButtonGroup()
     pOpenFile->setText("加载存储模型路径文件");
 
     m_pSplitterPushButton->addWidget(pOpenFile);
-    pushButton_2 = new QPushButton(m_pSplitterPushButton);
-    pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
-    pushButton_2->setText("待定");
-    m_pSplitterPushButton->addWidget(pushButton_2);
+    m_pSendButton = new SendButton(m_pSplitterPushButton);
+    m_pSendButton->setObjectName(QString::fromUtf8("pushButton"));
+    m_pSendButton->setText("确认");
+    m_pSplitterPushButton->addWidget(m_pSendButton);
 }
 
 void RobotSimulation::SetRobotShowAndButtonVerticalLayout()
@@ -368,8 +393,8 @@ void RobotSimulation::InitRobotTargetJointSettingComponent()
 //    m_pTextEditTargetJoints = new QTextEdit(m_pWidgetTargetJointsSettingCenter);
 //    m_pTextEditTargetJoints->setObjectName(QString::fromUtf8("textEdit"));
 
-    m_pTargetTrans = new InputText(m_pWidgetTargetJointsSettingCenter);
-    m_pTargetTrans->setObjectName(QString::fromUtf8("textEdit"));
+    m_pTargetJoints = new InputText(m_pWidgetTargetJointsSettingCenter);
+    m_pTargetJoints->setObjectName(QString::fromUtf8("textEdit"));
 
 }
 void RobotSimulation::SetRobotTargetJointsFormat()
@@ -377,7 +402,7 @@ void RobotSimulation::SetRobotTargetJointsFormat()
     m_pHorizontalLayoutTargetJointsLabel->addWidget(m_pLabelSettingJoints);
     m_pHorizontalLayoutTargetJointsLabel->addWidget(m_pCheckBoxDegree);
     m_pVerticalLayoutTargetJointsSettingCenter->addLayout(m_pHorizontalLayoutTargetJointsLabel);
-    m_pVerticalLayoutTargetJointsSettingCenter->addWidget(m_pTargetTrans);
+    m_pVerticalLayoutTargetJointsSettingCenter->addWidget(m_pTargetJoints);
 }
 void RobotSimulation::InitLoadOtherModelComponent()
 {
@@ -394,8 +419,8 @@ void RobotSimulation::InitLoadOtherModelComponent()
     m_pCheckBoxOtherModelDegree->setObjectName(QString::fromUtf8("Angular Unit"));
     m_pCheckBoxOtherModelDegree->setText("弧度");
 
-    m_pTextEditOtherModelTransform = new QTextEdit(m_pWidgetOtherModelSetting);
-    m_pTextEditOtherModelTransform->setObjectName(QString::fromUtf8("textEdit_2"));
+    m_pOtherModelTrans = new OtherModelTrans(m_pWidgetOtherModelSetting);
+    m_pOtherModelTrans->setObjectName(QString::fromUtf8("textEdit_2"));
 }
 void RobotSimulation::InitLoadOtherModelFormat()
 {
@@ -420,7 +445,7 @@ void RobotSimulation::SetLoadOtherModelFormat()
     m_pHorizontalLayoutOtherModel->addWidget(m_pCheckBoxTransformUnitOfLength);
     m_pHorizontalLayoutOtherModel->addWidget(m_pCheckBoxOtherModelDegree);
     m_pVerticalLayoutOtherModel->addLayout(m_pHorizontalLayoutOtherModel);
-    m_pVerticalLayoutOtherModel->addWidget(m_pTextEditOtherModelTransform);
+    m_pVerticalLayoutOtherModel->addWidget(m_pOtherModelTrans);
 }
 
 void RobotSimulation::keyPressEvent(QKeyEvent *ev)
@@ -431,7 +456,7 @@ void RobotSimulation::keyPressEvent(QKeyEvent *ev)
     }
     else if (ev->key() == Qt::Key_E)
     {
-        m_pTargetTrans->emitValue();
+        m_pTargetJoints->emitValue();
     }
 }
 

@@ -14,6 +14,3 @@ set(UT_Configure_DIR Test/Configure)
 build_execute(UT_Configure  Configure Log TinyXML gtest)
 
 
-set(my_robot_controller_DIR Test/Webots)
-build_execute(my_robot_controller Controller CppController)
-

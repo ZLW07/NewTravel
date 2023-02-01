@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-    <Joint>/home/wei/Documents/NewTravel/Data/RobotModel/1.STL</Joint>
-    <Joint>/home/wei/Documents/NewTravel/Data/RobotModel/2.STL</Joint>
-    <Joint>/home/wei/Documents/NewTravel/Data/RobotModel/3.STL</Joint>
-    <Joint>/home/wei/Documents/NewTravel/Data/RobotModel/4.STL</Joint>
-    <Joint>/home/wei/Documents/NewTravel/Data/RobotModel/5.STL</Joint>
-    <Joint>/home/wei/Documents/NewTravel/Data/RobotModel/6.STL</Joint>
-    <Joint>/home/wei/Documents/NewTravel/Data/RobotModel/7.STL</Joint>
-    <Joint>/home/wei/Documents/NewTravel/Data/RobotModel/1.STL</Joint>
+    <Joint>../../Data/RobotModel/1.STL</Joint>
+    <Joint>../../Data/RobotModel/2.STL</Joint>
+    <Joint>../../Data/RobotModel/3.STL</Joint>
+    <Joint>../../Data/RobotModel/4.STL</Joint>
+    <Joint>../../Data/RobotModel/5.STL</Joint>
+    <Joint>../../Data/RobotModel/6.STL</Joint>
+    <Joint>../../Data/RobotModel/7.STL</Joint>
+    <Joint>../../Data/RobotModel/1.STL</Joint>
 </root>

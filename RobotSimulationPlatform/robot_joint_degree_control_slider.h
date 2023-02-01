@@ -33,7 +33,7 @@ signals :
     void rangeChanged(double Min, double Max);
 
 private:
-    double	m_Multiplier;
+    double m_Multiplier;
 public:
     void Initial(int iIndex);
     int  GetCurrent();
