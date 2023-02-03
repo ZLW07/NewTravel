@@ -61,6 +61,7 @@ RobotBody::RobotBody(QWidget *parent)
     m_matJointTrans[7].setToIdentity();
     m_matJointTrans[7].translate(0, -1, 0);
     m_matJointTrans[7].rotate(90, 1, 0, 0);
+    m_matJointTrans[8].setToIdentity();
 }
 
 RobotBody::~RobotBody()
@@ -99,7 +100,7 @@ void RobotBody::loadAscllStl(const QString &filename, int ratio, JointParameters
     }
     ZLOG << "write vertice_temp success!";
     file.close();
-    oJointPara.iNumberOfTriangle = oJointPara.vecJoint.capacity() / sizeof(float);
+    oJointPara.iNumberOfTriangle = oJointPara.vecJoint.size()/6;
 }
 
 void RobotBody::SetDrawParameters(JointParameters &oJointPara)
@@ -162,14 +163,6 @@ void RobotBody::initializeGL()
                                        "}\n\0";
     shaderprogram.addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
     shaderprogram.addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
-    //    if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Vertex, "../../RobotSimulationPlatform/stl.vert"))
-    //    {
-    //        ZLOG << "failed load ../../Test/Qt/stl.vert"; //如果编译出错,打印报错信息
-    //    }
-    //    if (!shaderprogram.addShaderFromSourceFile(QOpenGLShader::Fragment, "../../RobotSimulationPlatform/stl.frag"))
-    //    {
-    //        ZLOG << "failed load ../../Test/Qt/stl.frag"; //如果编译出错,打印报错信息
-    //    }
     //将添加到此程序的着色器与addshader链接在一起
     if (!shaderprogram.link())
     {
@@ -243,9 +236,14 @@ void RobotBody::paintGL()
         shaderprogram.setUniformValue("baseTrans", m_matJointTrans[6]);
         m_aJointModel[6].vaoJoint.bind();
         this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[6].iNumberOfTriangle);
+
         shaderprogram.setUniformValue("baseTrans", m_matJointTrans[7]);
         m_aJointModel[7].vaoJoint.bind();
         this->glDrawArrays(GL_TRIANGLES, 0, m_aJointModel[7].iNumberOfTriangle);
+
+        shaderprogram.setUniformValue("baseTrans", m_matJointTrans[8]);
+        m_aJointModel[8].vaoJoint.bind();
+        this->glDrawArrays(GL_LINES, 0, m_aJointModel[8].iNumberOfTriangle);
     }
 }
 

@@ -3,4 +3,4 @@ qt_execute(UT_QT GL GLU Model Math Log)
 
 
 set(RobotSimulation_DIR RobotSimulationPlatform)
-qt_execute(RobotSimulation GL GLU glut Model Math Log Configure TinyXML)
+qt_execute(RobotSimulation GL GLU Model Math Log Configure TinyXML)

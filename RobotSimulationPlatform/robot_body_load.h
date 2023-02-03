@@ -79,7 +79,7 @@ signals :
     void SetRotationOfJoint_4(double dValue);
     void SetRotationOfJoint_5(double dValue);
 private:
-    JointParameters m_aJointModel[8];
+    JointParameters m_aJointModel[9];
 
     QVector<float> Position;
     QVector<float> Normal;                //读文件时的俩个临时变量顶点位置，法向量
@@ -92,7 +92,7 @@ private:
     QVector2D mousePosForTranslationView;
     QQuaternion rotation;
     QMatrix4x4 Rot;
-    QMatrix4x4 m_matJointTrans[8];
+    QMatrix4x4 m_matJointTrans[9];
     QMatrix4x4 m_matJointRot[7];
     QVector<float> m_vecRotDegree;
     std::map<int, QVector3D> m_mapRotVector;

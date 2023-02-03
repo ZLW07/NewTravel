@@ -8,4 +8,5 @@
     <Joint>../../Data/RobotModel/6.STL</Joint>
     <Joint>../../Data/RobotModel/7.STL</Joint>
     <Joint>../../Data/RobotModel/1.STL</Joint>
+    <Joint>../../Data/RobotModel/SquareGrid.STL</Joint>
 </root>
