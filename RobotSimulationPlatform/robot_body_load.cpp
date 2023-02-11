@@ -18,7 +18,7 @@ RobotBody::RobotBody(QWidget *parent)
     format.setSamples(10);         //设置重采样次数，用于反走样
     m_bIsFile = false;
     m_bTargetJointRadianFlag = false;
-    m_bMillimeterFlag = false;
+    m_bMillimeterFlag = true;
     this->setFormat(format);
 
     // Set Joint rotation
@@ -60,7 +60,6 @@ RobotBody::RobotBody(QWidget *parent)
     // External import fixed model
     m_matJointTrans[7].setToIdentity();
     m_matJointTrans[7].translate(0, -1, 0);
-    m_matJointTrans[7].rotate(90, 1, 0, 0);
     m_matJointTrans[8].setToIdentity();
 }
 
@@ -484,5 +483,5 @@ void RobotBody::SetOtherModelTransform(QMatrix4x4 mat4Tansform)
 }
 void RobotBody::SetUnitOfLength(bool bIsMillimeter)
 {
-    m_bMillimeterFlag = true;
+    m_bMillimeterFlag = bIsMillimeter;
 }
