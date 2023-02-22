@@ -25,7 +25,11 @@ class Vector
         return os;
     }
 public:
-    explicit Vector(int iSize = 1);
+    explicit Vector(int iSize = 1)
+    {
+        m_iVecSize = iSize;
+        m_vecData.resize(m_iVecSize, 0.0);
+    }
     double Norm2()
     {
             double dResult = 0.0;
@@ -52,7 +56,10 @@ public:
         m_vecData.clear();
     }
 
-    ~Vector();
+    ~Vector()
+    {
+
+    }
 
 public:
     T &operator[](int iIndex)

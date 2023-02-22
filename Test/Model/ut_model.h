@@ -175,4 +175,22 @@ TEST_F(TestModel, CollisionDetectionE)
     auto bResult = oMod.IsColliding(oOBBA, oBBB, transPose);
     ZLOG << "bResult " << bResult;
 }
+
+
+TEST_F(TestModel, ModelCollisionDetectionE)
+{
+    ModelManagerE oMod;
+    ModelDataElement oModelDataElement1;
+    OBBElement oOBBElement1;
+    ZLOG << oMod.LoadModelDataE("/home/wei/CLionProjects/NewTravel/Data/RobotModel/1.STL",oModelDataElement1,oOBBElement1);
+    ModelDataElement oModelDataElement2;
+    OBBElement oOBBElement2;
+    ZLOG << oMod.LoadModelDataE("/home/wei/CLionProjects/NewTravel/Data/RobotModel/2.STL",oModelDataElement2,oOBBElement2);
+    RotationE rotRot;
+    rotRot.IdentityMatrix();
+    Vector3DE v3d{0, 0, 0.4};
+    Matrix4E transPose(rotRot, v3d);
+    auto bResult = oMod.IsColliding(oOBBElement1, oOBBElement2, transPose);
+    ZLOG << bResult;
+}
 #endif // NEWTRAVEL_UT_MODEL_H

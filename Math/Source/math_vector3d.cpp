@@ -32,6 +32,8 @@ Vector3D::Vector3D(const Vector3D &v3dData)
     m_vecV3D = v3dData.m_vecV3D;
 }
 
+Vector3D::~Vector3D() {}
+
 double Vector3D::X()
 {
     return m_vecV3D[0];
@@ -197,3 +199,4 @@ std::pair<Vector3D, Vector3D> Vector3D::GetCoordinateExtremum(std::vector<Vector
     Vector3D v3dMax(dMax_X,dMax_Y,dMax_Z);
     return std::make_pair(v3dMin,v3dMax);
 }
+

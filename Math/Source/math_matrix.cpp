@@ -3,13 +3,12 @@
 //
 
 #include "Math/math_matrix.h"
-template <typename T> Vector<T>::Vector(int iSize)
-{
-    m_iVecSize = iSize;
-    m_vecData.resize(m_iVecSize, 0.0);
-}
-
-template <typename T> Vector<T>::~Vector() = default;
+//template <typename T> Vector<T>::Vector(int iSize)
+//{
+//
+//}
+//
+//template <typename T> Vector<T>::~Vector() = default;
 
 Matrix::Matrix(int iRow, int iCol)
 {

@@ -52,4 +52,4 @@ Vector<double> &VectorD3::GetVectorValue()
 {
     return m_vecD3;
 }
-
+VectorD3::~VectorD3() {}

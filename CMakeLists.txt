@@ -39,6 +39,9 @@ include_directories(ExternalSource/Webots)
 link_directories(ExternalSource/Webots/lib/controller)
 link_directories(ExternalSource/Webots/lib/webots)
 
+link_directories(${PROJECT_SOURCE_DIR}/Package/lib_debug)
+link_directories(${PROJECT_SOURCE_DIR}/Package/lib_release)
+
 set(BUILD_SHARED_LIBS ON)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/Cmake)
@@ -69,7 +72,6 @@ function(build_execute MODULE_NAME)
     message("")
     message("[Execute] [${MODULE_NAME}]------------")
     message(STATUS "Build library ${MODULE_NAME} IN ${${MODULE_NAME}_DIR}")
-
     if (${ARGC} GREATER_EQUAL 2)
         message(STATUS "Depend on ")
         foreach (arg ${ARGN})

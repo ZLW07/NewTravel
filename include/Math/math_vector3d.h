@@ -17,6 +17,7 @@ class Vector3D
     friend std::ostream &operator<<(std::ostream &os, Vector3D &v3dData);
 public:
     Vector3D();
+    ~Vector3D();
     Vector3D(double dData1, double dData2, double dData3);
     Vector3D(const Vector3D &v3dData);
     Matrix GetSkewSymmetricMatrix();
@@ -53,6 +54,7 @@ class VectorD3
     friend std::ostream &operator<<(std::ostream &os, VectorD3 &v3dData);
 public:
     VectorD3();
+    ~VectorD3();
     VectorD3(double dData1, double dData2, double dData3);
     VectorD3(const VectorD3 &v3dData);
     double &operator[](int iIndex);
