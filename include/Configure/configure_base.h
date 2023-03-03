@@ -9,6 +9,8 @@
 #include <iostream>
 #include <vector>
 
+namespace zl
+{
 class LoadConfigre
 {
 public:
@@ -17,12 +19,13 @@ public:
     bool ReadXML(const std::string &sFilePath);
     bool GetElementValue(const std::string &sNodePath, std::string &sValue);
     int32_t GetCountBrotherElement(const std::string &sNodePath);
-private:
 
+private:
     bool ParseFilePath(const std::string &sNodePath);
+
 private:
     tinyxml2::XMLDocument m_oXMLFile;
     tinyxml2::XMLElement *m_pElement;
 };
-
+}
 #endif // NEWTRAVEL_CONFIGURE_BASE_H

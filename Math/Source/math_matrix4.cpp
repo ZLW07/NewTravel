@@ -2,73 +2,73 @@
 // Created by wei on 2022/7/16.
 //
 
-#include "Math/math_matrix4_eigen.h"
+#include "Math/math_matrix4.h"
 
-Matrix4E::Matrix4E()
+namespace zl
+{
+Matrix4::Matrix4()
 {
     m_mat = Eigen::Matrix4d::Zero();
 }
 
-Matrix4E::Matrix4E(RotationE oRot, Vector3DE v3d)
+Matrix4::Matrix4(Rotation oRot, Vector3D v3d)
 {
-    m_mat =Eigen::Matrix4d::Identity();
+    m_mat = Eigen::Matrix4d::Identity();
     for (int ii = 0; ii < 3; ++ii)
     {
         for (int ij = 0; ij < 3; ++ij)
         {
-            m_mat(ii,ij) = oRot(ii,ij);
+            m_mat(ii, ij) = oRot(ii, ij);
         }
     }
     for (int jj = 0; jj < 3; ++jj)
     {
-        m_mat(jj,3) = v3d[jj];
+        m_mat(jj, 3) = v3d[jj];
     }
 }
 
-Matrix4E::~Matrix4E() {}
+Matrix4::~Matrix4() {}
 
-std::ostream &operator<<(std::ostream &os, Matrix4E &oMatrix4E)
+std::ostream &operator<<(std::ostream &os, Matrix4 &oMatrix4E)
 {
     os << oMatrix4E.m_mat;
     return os;
 }
 
-RotationE Matrix4E::GetRotation()
+Rotation Matrix4::GetRotation()
 {
-    RotationE oRat;
+    Rotation oRat;
     for (int ii = 0; ii < 3; ++ii)
     {
         for (int ij = 0; ij < 3; ++ij)
         {
-            oRat(ii,ij) = m_mat(ii,ij);
+            oRat(ii, ij) = m_mat(ii, ij);
         }
     }
     return oRat;
 }
 
-Vector3DE Matrix4E::GetPose()
+Vector3D Matrix4::GetPose()
 {
-    Vector3DE v3dResult;
+    Vector3D v3dResult;
     for (int ii = 0; ii < 3; ++ii)
     {
-        v3dResult[ii] = m_mat(ii,3);
+        v3dResult[ii] = m_mat(ii, 3);
     }
     return v3dResult;
 }
 
-
-
-Matrix4E Matrix4E::Inv()
+Matrix4 Matrix4::Inv()
 {
-    Matrix4E oMatrix4E;
+    Matrix4 oMatrix4E;
     oMatrix4E.m_mat = m_mat.inverse();
     return oMatrix4E;
 }
 
-Matrix4E Matrix4E::operator*(Matrix4E &oMat4)
+Matrix4 Matrix4::operator*(Matrix4 &oMat4)
 {
-    Matrix4E oMat;
+    Matrix4 oMat;
     oMat.m_mat = m_mat * oMat4.m_mat;
     return oMat;
 }
-
+}

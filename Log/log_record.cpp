@@ -9,7 +9,7 @@
     { \
         sFile = sFile.substr(sFile.find_last_of('/') + 1); \
         sData = GetLogTime();         \
-        sData = sData + " " + sFile + ":" + std::to_string(iLineNumber) + " "; \
+        sData = sData + " " + sFile + ":" + std::to_string(iLineNumber) + "] "; \
     }
 
 static std::string GetLogTime()

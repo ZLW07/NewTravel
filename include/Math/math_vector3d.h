@@ -1,68 +1,34 @@
 //
-// Created by zw on 2021/10/16.
+// Created by wei on 2022/7/16.
 //
 
-#ifndef NEWTRAVEL_MATH_VECTOR3D_H
-#define NEWTRAVEL_MATH_VECTOR3D_H
+#ifndef NEWTRAVEL_MATH_VECTOR3D_EIGEN_H
+#define NEWTRAVEL_MATH_VECTOR3D_EIGEN_H
 
-#include <math.h>
-#include <vector>
 
-#include "Math/math_matrix.h"
+#include "Eigen/Eigen"
 
-class VectorD3;
-
+namespace zl
+{
 class Vector3D
 {
-    friend std::ostream &operator<<(std::ostream &os, Vector3D &v3dData);
+    friend std::ostream &operator<<(std::ostream &os, Vector3D &oVector3DE);
 public:
     Vector3D();
+    Vector3D(double dData_0, double dData_1, double dData_2);
+    Vector3D(Eigen::Vector3d v3dData);
     ~Vector3D();
-    Vector3D(double dData1, double dData2, double dData3);
-    Vector3D(const Vector3D &v3dData);
-    Matrix GetSkewSymmetricMatrix();
-    double X();
-    double Y();
-    double Z();
+    std::pair<Vector3D, Vector3D> GetCoordinateExtremum(std::vector<Vector3D> &vecData);
+
 public:
     double &operator[](int iIndex);
-    Vector3D operator+(Vector3D &v3dData);
-    Vector3D operator-( Vector3D &v3dData);
-    bool operator==(Vector3D &v3dData) ;
-    Vector3D Scale(double dData);
-    double Dot(Vector3D v3dData);
-    Vector3D operator*(Vector3D v3dData)
-    {
-        Vector3D v3d;
-        return v3d;
-    }
-    Vector3D Cross(Vector3D &v3dData);
-    double Norm();
-    double GetVectorAngleRad(Vector3D &v3dData);
-    double GetVectorAngleDeg(Vector3D &v3dData);
-    void Clear();
-    Vector<double> &GetVectorValue();
-    std::pair<Vector3D,Vector3D> GetCoordinateExtremum(std::vector<Vector3D> &vecData);
+    Eigen::Vector3d &GetData();
+    double &X();
+    double &Y();
+    double &Z();
 
 private:
-    Vector<double> m_vecV3D;
+    Eigen::Vector3d m_v3d;
 };
-
-
-class VectorD3
-{
-    friend std::ostream &operator<<(std::ostream &os, VectorD3 &v3dData);
-public:
-    VectorD3();
-    ~VectorD3();
-    VectorD3(double dData1, double dData2, double dData3);
-    VectorD3(const VectorD3 &v3dData);
-    double &operator[](int iIndex);
-public:
-    void Clear();
-    Vector<double> &GetVectorValue();
-private:
-    Vector<double> m_vecD3;
-};
-
-#endif // NEWTRAVEL_MATH_VECTOR3D_H
+}
+#endif // NEWTRAVEL_MATH_VECTOR3D_EIGEN_H

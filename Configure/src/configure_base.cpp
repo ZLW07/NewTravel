@@ -5,6 +5,8 @@
 #include "Configure/configure_base.h"
 #include "Log/log.h"
 
+namespace zl
+{
 LoadConfigre::LoadConfigre() = default;
 
 LoadConfigre::~LoadConfigre() = default;
@@ -97,4 +99,5 @@ int32_t LoadConfigre::GetCountBrotherElement(const std::string &sNodePath)
     }
     m_pElement = m_oXMLFile.RootElement();
     return iCount;
+}
 }

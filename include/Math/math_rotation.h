@@ -1,46 +1,39 @@
 //
-// Created by wei on 2022/4/23.
+// Created by wei on 2022/7/16.
 //
 
 #ifndef NEWTRAVEL_MATH_ROTATION_H
 #define NEWTRAVEL_MATH_ROTATION_H
-
-#include "Math/math_matrix.h"
+#include "Eigen/Eigen"
 #include "Math/math_vector3d.h"
+#include <iostream>
+
+namespace zl
+{
 
 class Rotation
 {
-    friend  std::ostream &operator<<(std::ostream &os, Rotation &rotData);
+    friend std::ostream &operator<<(std::ostream &os, Rotation &rotData);
+
 public:
     Rotation();
-    Rotation(Vector3D &v3dColData_1,Vector3D &v3dColData_2,Vector3D &v3dColData_3);
-    Rotation(const Rotation &rotData);
-    ~Rotation()= default;
-    Vector3D operator*(Vector3D &v3dData);
-    Rotation operator/(double dData);
-    Rotation operator/(int dData);
-    Vector<double> &operator[](int iIndex);
-public:
-    Rotation CombinationTransformMatrix(Matrix &srcMat);
-    VectorD3 GetColVector(unsigned int iCol);
-    Vector3D GetRowVector(unsigned int iRow);
-    Vector<double> GetColVector(unsigned int uiBeginRow, unsigned int iCol);
-    Rotation Dot(VectorD3 &vd3Data, Vector3D &v3dData);
-    double  Dot(Vector3D &vd3Data, VectorD3 &v3dData);
-    Matrix &GetMatValue();
-    Rotation ConversionMatToRot(Matrix &matData);
-    Rotation Cov(std::vector<Vector3D> &vSrc_1);
-    Rotation Transpose();
-    void SetEye();
-    Rotation GetOBBDirectionVector(Rotation &rotData);
-    Rotation RotateEular(double dGamma, double dBeta, double dAlpha,int iXAxis,int iYAxis, int ZAxis);
-public:
-private:
-    Matrix Householder(Vector<double> &vecData);
-private:
-    Matrix m_matData;
-    int m_iRow;
-    int m_iCol;
-};
+    ~Rotation();
 
+    Vector3D GetCol(int iCol);
+    Rotation GetOBBDirectionVector(Rotation &rotData);
+    Rotation Inverse();
+    Eigen::Matrix3d GetData();
+    void IdentityMatrix();
+
+public:
+    Rotation operator/(double dData);
+    Vector3D operator*(Vector3D v3dData);
+    double &operator()(int iRow, int iCol);
+    Eigen::RowVector3d &operator[](int iIndex);
+
+private:
+    Eigen::Matrix3d m_mat3Rotation;
+    Eigen::RowVector3d m_vecD3;
+};
+}
 #endif // NEWTRAVEL_MATH_ROTATION_H
