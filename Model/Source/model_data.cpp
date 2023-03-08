@@ -260,4 +260,38 @@ bool ModelManager::IsColliding(OBBElement &OBB_A, OBBElement &OBB_B, Matrix4 &tr
     return true;
 }
 
+int ModelManager::IsColliding(
+    PQP_CollideResult &oResult, Matrix4 &trans_1, PQP_Model &oModel_1, Matrix4 &trans_2, PQP_Model &oModel_2)
+{
+    double aRot_1[3][3];
+    double aRot_2[3][3];
+    double aPose_1[3];
+    double aPose_2[3];
+    for (int ii = 0; ii < 3; ++ii)
+    {
+        for (int jj = 0; jj < 3; ++jj)
+        {
+//            aRot_1[ii][jj] = trans_1[ii][jj];
+//            aRot_2[ii][jj] = trans_2[ii][jj];
+        }
+//        aPose_1[ii]= trans_1[ii][3];
+//        aPose_2[ii]= trans_2[ii][3];
+    }
+    return PQP_Collide(&oResult,aRot_1,aPose_1,&oModel_1,aRot_2,aPose_2,&oModel_2);;
+}
+
+PQP_Model ModelManager::BuildPQPModel(std::vector<Vector3D> &vSrc_1)
+{
+    PQP_Model *pModel = new PQP_Model();
+    ZLOG << "Start build model";
+    pModel->BeginModel(vSrc_1.size());
+    for (int ii = 0; ii < vSrc_1.size(); ++ii)
+    {
+        pModel->AddTri(&vSrc_1[ii].X(),&vSrc_1[ii].Y(),&vSrc_1[ii].Z(),ii);
+    }
+    pModel->EndModel();
+    ZLOG << "Build model end";
+    return *pModel;
+}
+
 } // namespace zl

@@ -20,6 +20,8 @@ public:
     ~Matrix4();
 
 public:
+    Eigen::RowVector4d &operator[](int iIndex);
+public:
     Rotation GetRotation();
     Vector3D GetPose();
 

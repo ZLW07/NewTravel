@@ -75,6 +75,8 @@ TEST_F(TestModel, ModelCollisionDetectionE)
     OBBElement oOBBElement1;
     ZLOG << oMod.LoadModelData(
         "/home/wei/CLionProjects/NewTravel/Data/RobotModel/1.STL", oModelDataElement1, oOBBElement1);
+    ZLOG << oOBBElement1.v3dCenterPoint;
+    ZLOG << oOBBElement1.v3dOBBLength;
     ModelDataElement oModelDataElement2;
     OBBElement oOBBElement2;
     ZLOG << oMod.LoadModelData(
@@ -86,6 +88,23 @@ TEST_F(TestModel, ModelCollisionDetectionE)
     ZLOG << "==============: start ";
     auto bResult = oMod.IsColliding(oOBBElement1, oOBBElement2, transPose);
     ZLOG << "==============: end: " << bResult ;
+}
+
+TEST_F(TestModel, PQPModel)
+{
+    ModelDataElement oModelDataElement1;
+    OBBElement oOBBElement1;
+    ZLOG << ModelManager::LoadModelData(
+        "/home/wei/CLionProjects/NewTravel/Data/RobotModel/1.STL", oModelDataElement1, oOBBElement1);
+    auto Points = oModelDataElement1.TriangularPointCloud();
+    auto oModel = ModelManager::BuildPQPModel(Points);
+    ZLOG << "The bv size is " << oModel.num_bvs;
+    for (int ii = 0; ii < 1; ++ii)
+    {
+        ZLOG << oModel.b[ii].d[0] << "; " << oModel.b[ii].d[1] << "; " << oModel.b[ii].d[2];
+        ZLOG << oModel.b[ii].To[0] << "; " << oModel.b[ii].To[1] << "; " << oModel.b[ii].To[2];
+    }
+
 }
 }
 #endif // NEWTRAVEL_UT_MODEL_H
