@@ -51,8 +51,8 @@ struct BV
 
 #if PQP_BV_TYPE & RSS_TYPE
     PQP_REAL Tr[3]; // position of rectangle
-    PQP_REAL l[2];  // side lengths of rectangle(矩形边长)
-    PQP_REAL r;     // radius of sphere summed with rectangle to form RSS（球体半径与矩形半径之和即为RSS）
+    PQP_REAL l[2];  // side lengths of rectangle
+    PQP_REAL r;     // radius of sphere summed with rectangle to form RSS
 #endif
 
 #if PQP_BV_TYPE & OBB_TYPE

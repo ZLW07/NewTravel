@@ -38,8 +38,8 @@
 
 \**************************************************************************/
 
-#include "MatVec.h"
-#include "PQP.h"
+#include "PQP/MatVec.h"
+#include "PQP/PQP.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

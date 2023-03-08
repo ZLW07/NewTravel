@@ -38,10 +38,10 @@
 
 \**************************************************************************/
 
-#include "BV.h"
-#include "MatVec.h"
-#include "OBB_Disjoint.h"
-#include "RectDist.h"
+#include "PQP/BV.h"
+#include "PQP/MatVec.h"
+#include "PQP/OBB_Disjoint.h"
+#include "PQP/RectDist.h"
 #include <math.h>
 #include <stdlib.h>
 
@@ -63,7 +63,7 @@ void BV::FitToTris(PQP_REAL O[3][3], Tri *tris, int num_tris)
 {
     // store orientation
 
-    McM(R, O); // o to R (o为tris模型与前一个模型的转换关系)
+    McM(R, O);
 
     // project points of tris to R coordinates
 

@@ -46,7 +46,7 @@
 // segments and TriDist() for finding closest points on a pair of triangles
 //--------------------------------------------------------------------------
 
-#include "MatVec.h"
+#include "PQP/MatVec.h"
 #ifdef _WIN32
 #include <float.h>
 #define isnan _isnan

@@ -38,12 +38,12 @@
 
 \**************************************************************************/
 
-#include "PQP.h"
-#include "BVTQ.h"
-#include "Build.h"
-#include "GetTime.h"
-#include "MatVec.h"
-#include "TriDist.h"
+#include "PQP/PQP.h"
+#include "PQP/BVTQ.h"
+#include "PQP/Build.h"
+#include "PQP/GetTime.h"
+#include "PQP/MatVec.h"
+#include "PQP/TriDist.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -800,8 +800,8 @@ void DistanceRecurse(PQP_DistanceResult *res, PQP_REAL R[3][3], PQP_REAL T[3], /
     }
 }
 
-void DistanceQueueRecurse(PQP_DistanceResult *res, PQP_REAL R[3][3], PQP_REAL T[3], PQP_Model *o1, int b1,
-    PQP_Model *o2, int b2)
+void DistanceQueueRecurse(
+    PQP_DistanceResult *res, PQP_REAL R[3][3], PQP_REAL T[3], PQP_Model *o1, int b1, PQP_Model *o2, int b2)
 {
     BVTQ bvtq(res->qsize);
 
@@ -1029,8 +1029,8 @@ int PQP_Distance(PQP_DistanceResult *res, PQP_REAL R1[3][3], PQP_REAL T1[3], PQP
 // Tolerance Stuff
 //
 //---------------------------------------------------------------------------
-void ToleranceRecurse(PQP_ToleranceResult *res, PQP_REAL R[3][3], PQP_REAL T[3], PQP_Model *o1, int b1, PQP_Model *o2,
-    int b2)
+void ToleranceRecurse(
+    PQP_ToleranceResult *res, PQP_REAL R[3][3], PQP_REAL T[3], PQP_Model *o1, int b1, PQP_Model *o2, int b2)
 {
     PQP_REAL sz1 = o1->child(b1)->GetSize();
     PQP_REAL sz2 = o2->child(b2)->GetSize();
@@ -1140,8 +1140,8 @@ void ToleranceRecurse(PQP_ToleranceResult *res, PQP_REAL R[3][3], PQP_REAL T[3],
     }
 }
 
-void ToleranceQueueRecurse(PQP_ToleranceResult *res, PQP_REAL R[3][3], PQP_REAL T[3], PQP_Model *o1, int b1,
-    PQP_Model *o2, int b2)
+void ToleranceQueueRecurse(
+    PQP_ToleranceResult *res, PQP_REAL R[3][3], PQP_REAL T[3], PQP_Model *o1, int b1, PQP_Model *o2, int b2)
 {
     BVTQ bvtq(res->qsize);
     BVT min_test;
