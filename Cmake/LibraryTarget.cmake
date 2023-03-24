@@ -3,7 +3,7 @@ set(Log_DIR Log)
 build_library(Log)
 
 set(Math_DIR Math)
-build_library(Math)
+build_library(Math Log)
 
 set(Model_DIR Model)
 build_library(Model PQP Math)
@@ -16,3 +16,6 @@ build_library(Configure Log TinyXML)
 
 set(PQP_DIR PQP)
 build_library(PQP)
+
+set(RobotModel_DIR RobotModel)
+build_library(RobotModel)

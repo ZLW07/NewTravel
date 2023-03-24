@@ -1,7 +1,7 @@
 //
 // Created by wei on 2022/7/16.
 //
-
+#include "Log/log.h"
 #include "Math/math_vector3d.h"
 
 namespace zl

@@ -32,7 +32,6 @@ TEST_F(TestModel, OBB_OBBE)
     v3d = {1, 1, 0};
     vecSrc.push_back(v3d);
     v3d = {2, 1, 0};
-
     vecSrc.push_back(v3d);
     v3d = {1, 0, 3};
     vecSrc.push_back(v3d);
@@ -97,12 +96,29 @@ TEST_F(TestModel, PQPModel)
     ZLOG << ModelManager::LoadModelData(
         "/home/wei/CLionProjects/NewTravel/Data/RobotModel/1.STL", oModelDataElement1, oOBBElement1);
     auto Points = oModelDataElement1.TriangularPointCloud();
-    auto oModel = ModelManager::BuildPQPModel(Points);
+    std::vector<Vector3D> vecSrc;
+    Vector3D v3d(1, 0, 0);
+    vecSrc.push_back(v3d);
+    v3d = {2, 0, 0};
+    vecSrc.push_back(v3d);
+    v3d = {1, 1, 0};
+    vecSrc.push_back(v3d);
+    v3d = {2, 1, 0};
+    vecSrc.push_back(v3d);
+    v3d = {1, 0, 3};
+    vecSrc.push_back(v3d);
+    v3d = {2, 0, 3};
+    vecSrc.push_back(v3d);
+    v3d = {1, 1, 3};
+    vecSrc.push_back(v3d);
+    v3d = {2, 1, 3};
+    vecSrc.push_back(v3d);
+    auto oModel = ModelManager::BuildPQPModel(vecSrc);
     ZLOG << "The bv size is " << oModel.num_bvs;
-    for (int ii = 0; ii < 1; ++ii)
+    for (int ii = 0; ii < oModel.num_bvs; ++ii)
     {
-        ZLOG << oModel.b[ii].d[0] << "; " << oModel.b[ii].d[1] << "; " << oModel.b[ii].d[2];
-        ZLOG << oModel.b[ii].To[0] << "; " << oModel.b[ii].To[1] << "; " << oModel.b[ii].To[2];
+        ZLOG <<"half length: " <<  oModel.b[ii].d[0] << "; " << oModel.b[ii].d[1] << "; " << oModel.b[ii].d[2];
+        ZLOG <<"center point: " <<  oModel.b[ii].To[0] << "; " << oModel.b[ii].To[1] << "; " << oModel.b[ii].To[2];
     }
 
 }
