@@ -40,6 +40,7 @@
 
 #include "BV.h"
 #include "Tri.h"
+#include "Log/log.h"
 
 class PQP_Model
 {

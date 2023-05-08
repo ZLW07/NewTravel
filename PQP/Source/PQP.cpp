@@ -84,25 +84,22 @@ PQP_Model::~PQP_Model()
 int PQP_Model::BeginModel(int n)
 {
     // reset to initial state if necessary
-
     if (build_state != PQP_BUILD_STATE_EMPTY)
     {
         delete[] b;
         delete[] tris;
-
         num_tris = num_bvs = num_tris_alloced = num_bvs_alloced = 0;
     }
 
     // prepare model for addition of triangles
-
     if (n <= 0)
         n = 8;
     num_tris_alloced = n;
     tris = new Tri[n];
     if (!tris)
     {
-        fprintf(stderr, "PQP Error!  Out of memory for tri array on "
-                        "BeginModel() call!\n");
+        ZLOG_ERR << "PQP Error!  Out of memory for tri array on "
+                    "BeginModel() call!";
         return PQP_ERR_MODEL_OUT_OF_MEMORY;
     }
 
@@ -110,9 +107,8 @@ int PQP_Model::BeginModel(int n)
 
     if (build_state != PQP_BUILD_STATE_EMPTY)
     {
-        fprintf(stderr, "PQP Warning! Called BeginModel() on a PQP_Model that \n"
-                        "was not empty. This model was cleared and previous\n"
-                        "triangle additions were lost.\n");
+        ZLOG_ERR << "PQP Warning! Called BeginModel() on a PQP_Model that was not empty. This model was cleared and "
+                    "previous triangle additions were lost.";
         build_state = PQP_BUILD_STATE_BEGUN;
         return PQP_ERR_BUILD_OUT_OF_SEQUENCE;
     }
@@ -129,25 +125,16 @@ int PQP_Model::AddTri(const PQP_REAL *p1, const PQP_REAL *p2, const PQP_REAL *p3
     }
     else if (build_state == PQP_BUILD_STATE_PROCESSED)
     {
-        fprintf(stderr, "PQP Warning! Called AddTri() on PQP_Model \n"
-                        "object that was already ended. AddTri() was\n"
-                        "ignored.  Must do a BeginModel() to clear the\n"
-                        "model for addition of new triangles\n");
+        ZLOG_ERR << "PQP Warning! Called AddTri() on PQP_Model object that was already ended. AddTri function was "
+                    "ignored.  Must "
+                    "do a BeginModel() to clear. The model for addition of new triangles";
         return PQP_ERR_BUILD_OUT_OF_SEQUENCE;
     }
 
     // allocate for new triangles
-
     if (num_tris >= num_tris_alloced)
     {
-        Tri *temp;
-        temp = new Tri[num_tris_alloced * 2];
-        if (!temp)
-        {
-            fprintf(stderr, "PQP Error!  Out of memory for tri array on"
-                            " AddTri() call!\n");
-            return PQP_ERR_MODEL_OUT_OF_MEMORY;
-        }
+        Tri *temp = new Tri[num_tris_alloced * 2];
         memcpy(temp, tris, sizeof(Tri) * num_tris);
         delete[] tris;
         tris = temp;
@@ -179,33 +166,23 @@ int PQP_Model::EndModel()
 {
     if (build_state == PQP_BUILD_STATE_PROCESSED)
     {
-        fprintf(stderr, "PQP Warning! Called EndModel() on PQP_Model \n"
-                        "object that was already ended. EndModel() was\n"
-                        "ignored.  Must do a BeginModel() to clear the\n"
-                        "model for addition of new triangles\n");
+        ZLOG_ERR << "PQP Warning! Called EndModel() on PQP_Model object that was already ended. EndModel() was "
+                    "ignored.  Must do a BeginModel() to clear the model for addition of new triangles";
         return PQP_ERR_BUILD_OUT_OF_SEQUENCE;
     }
 
     // report error is no tris
-
     if (num_tris == 0)
     {
-        fprintf(stderr, "PQP Error! EndModel() called on model with"
-                        " no triangles\n");
+        ZLOG_ERR << "PQP Error! EndModel() called on model with"
+                    " no triangles";
         return PQP_ERR_BUILD_EMPTY_MODEL;
     }
 
     // shrink fit tris array
-
     if (num_tris_alloced > num_tris)
     {
         Tri *new_tris = new Tri[num_tris];
-        if (!new_tris)
-        {
-            fprintf(stderr, "PQP Error!  Out of memory for tri array "
-                            "in EndModel() call!\n");
-            return PQP_ERR_MODEL_OUT_OF_MEMORY;
-        }
         memcpy(new_tris, tris, sizeof(Tri) * num_tris);
         delete[] tris;
         tris = new_tris;
@@ -213,24 +190,20 @@ int PQP_Model::EndModel()
     }
 
     // create an array of BVs for the model
-
     b = new BV[2 * num_tris - 1];
     if (!b)
     {
-        fprintf(stderr, "PQP Error! out of memory for BV array "
-                        "in EndModel()\n");
+        ZLOG_ERR << "PQP Error! out of memory for BV array "
+                    "in EndModel()";
         return PQP_ERR_MODEL_OUT_OF_MEMORY;
     }
     num_bvs_alloced = 2 * num_tris - 1;
     num_bvs = 0;
 
     // we should build the model now.
-
     build_model(this);
     build_state = PQP_BUILD_STATE_PROCESSED;
-
     last_tri = tris;
-
     return PQP_OK;
 }
 

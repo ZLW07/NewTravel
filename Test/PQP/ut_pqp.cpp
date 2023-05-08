@@ -1,6 +1,8 @@
 //
-// Created by wei on 2023/3/8.
+// Created by wei on 2023/5/8.
 //
+
+#include "ut_pqp.h"
 
 #include "Log/log.h"
 #include "PQP/PQP.h"
@@ -10,7 +12,7 @@
 #define PI    3.14159265359
 #define LISTS 0
 
-int main()
+TEST_F(UTPQP, Colli)
 {
     // initialize PQP model pointers
 
@@ -19,7 +21,7 @@ int main()
 
     // Add trianges to form tori
 
-    ZLOG << "loading tris into PQP_Model objects...";
+    ZLOG_INFO << "loading tris into PQP_Model objects...";
 
     PQP_REAL a = (PQP_REAL)1.0; // major radius of the tori
     PQP_REAL b = (PQP_REAL)0.2; // minor radius of the tori
@@ -65,9 +67,9 @@ int main()
         }
     }
 
-    ZLOG << "done";
-    ZLOG << "Tori have  triangles each" << count;
-    ZLOG << "building hierarchies...";
+    ZLOG_INFO << "done";
+    ZLOG_INFO << "Tori have  triangles each" << count;
+    ZLOG_INFO << "building hierarchies...";
     b1->EndModel();
     b2->EndModel();
     b1->MemUsage(1);
@@ -104,15 +106,15 @@ int main()
     // looking at the report, we can see where all the contacts were, and
     // also how many tests were necessary:
 
-    ZLOG << "All contact collision query between overlapping tori:";
-    ZLOG << "Num BV tests: " << cres.NumBVTests();
-    ZLOG << "Num Tri tests: " << cres.NumTriTests();
-    ZLOG << "Num contact pairs: " << cres.NumPairs();
+    ZLOG_INFO << "All contact collision query between overlapping tori:";
+    ZLOG_INFO << "Num BV tests: " << cres.NumBVTests();
+    ZLOG_INFO << "Num Tri tests: " << cres.NumTriTests();
+    ZLOG_INFO << "Num contact pairs: " << cres.NumPairs();
 #if 0
     int i;
     for (i = 0; i < cres.NumPairs(); i++)
     {
-        ZLOG << "contact: " << i << ", tri: " << cres.Id1(i) << ", tri: " <<  cres.Id2(i);
+        ZLOG_INFO << "contact: " << i << ", tri: " << cres.Id1(i) << ", tri: " <<  cres.Id2(i);
     }
 #endif
 
@@ -124,14 +126,14 @@ int main()
 
     PQP_Collide(&cres, R1, T1, b1, R2, T2, b2, PQP_FIRST_CONTACT);
 
-    ZLOG << "First contact collision query between overlapping tori:";
-    ZLOG << "Num BV tests: " << cres.NumBVTests();
-    ZLOG << "Num Tri tests: " << cres.NumTriTests();
-    ZLOG << "Num contact pairs: " << cres.NumPairs();
+    ZLOG_INFO << "First contact collision query between overlapping tori:";
+    ZLOG_INFO << "Num BV tests: " << cres.NumBVTests();
+    ZLOG_INFO << "Num Tri tests: " << cres.NumTriTests();
+    ZLOG_INFO << "Num contact pairs: " << cres.NumPairs();
 #if 1
     for (int i = 0; i < cres.NumPairs(); i++)
     {
-        ZLOG << "contact: " << i << ", tri: " << cres.Id1(i) << ", tri: " << cres.Id2(i);
+        ZLOG_INFO << "contact: " << i << ", tri: " << cres.Id1(i) << ", tri: " << cres.Id2(i);
     }
 #endif
 
@@ -139,10 +141,10 @@ int main()
 
     PQP_DistanceResult dres;
     PQP_Distance(&dres, R1, T1, b1, R2, T2, b2, 0.0, 0.0);
-    ZLOG << "Distance query between overlapping tori:";
-    ZLOG << "Num BV tests: " << cres.NumBVTests();
-    ZLOG << "Num Tri tests: " << cres.NumTriTests();
-    ZLOG << "Distance " << dres.Distance();
+    ZLOG_INFO << "Distance query between overlapping tori:";
+    ZLOG_INFO << "Num BV tests: " << cres.NumBVTests();
+    ZLOG_INFO << "Num Tri tests: " << cres.NumTriTests();
+    ZLOG_INFO << "Distance " << dres.Distance();
 
     // by rotating one of them around the x-axis 90 degrees, they
     // are now interlocked, but not quite touching.
@@ -159,24 +161,24 @@ int main()
 
     PQP_Collide(&cres, R1, T1, b1, R2, T2, b2, PQP_FIRST_CONTACT);
 
-    ZLOG << "Collision query between interlocked but nontouching tori:";
-    ZLOG << "Num BV tests: " << cres.NumBVTests();
-    ZLOG << "Num Tri tests: " << cres.NumTriTests();
-    ZLOG << "Num contact pairs: " << cres.NumPairs();
+    ZLOG_INFO << "Collision query between interlocked but nontouching tori:";
+    ZLOG_INFO << "Num BV tests: " << cres.NumBVTests();
+    ZLOG_INFO << "Num Tri tests: " << cres.NumTriTests();
+    ZLOG_INFO << "Num contact pairs: " << cres.NumPairs();
 #if 1
     for (int i = 0; i < cres.NumPairs(); i++)
     {
-        ZLOG << "contact: " << i << ", tri: " << cres.Id1(i) << ", tri: " << cres.Id2(i);
+        ZLOG_INFO << "contact: " << i << ", tri: " << cres.Id1(i) << ", tri: " << cres.Id2(i);
     }
 #endif
 
     // Perform a distance query - the distance found should be greater than zero
 
     PQP_Distance(&dres, R1, T1, b1, R2, T2, b2, 0.0, 0.0);
-    ZLOG << "Distance query between interlocked but nontouching tori:";
-    ZLOG << "Num BV tests: " << cres.NumBVTests();
-    ZLOG << "Num Tri tests: " << cres.NumTriTests();
-    ZLOG << "Distance " << dres.Distance();
+    ZLOG_INFO << "Distance query between interlocked but nontouching tori:";
+    ZLOG_INFO << "Num BV tests: " << cres.NumBVTests();
+    ZLOG_INFO << "Num Tri tests: " << cres.NumTriTests();
+    ZLOG_INFO << "Distance " << dres.Distance();
 
     // Perform two tolerance queries. One tolerance setting is greater than the
     // distance between the models, and one tolerance is less than the distance.
@@ -185,17 +187,17 @@ int main()
     PQP_REAL tolerance = (PQP_REAL)0.60;
     PQP_Tolerance(&tres, R1, T1, b1, R2, T2, b2, tolerance);
 
-    ZLOG << "Tolerance query between interlocked but nontouching tori: " << tolerance << "with tolerance";
-    ZLOG << "Num BV tests: " << cres.NumBVTests();
-    ZLOG << "Num Tri tests: " << cres.NumTriTests();
-    ZLOG << "Closer than tolerance? " << tolerance;
+    ZLOG_INFO << "Tolerance query between interlocked but nontouching tori: " << tolerance << "with tolerance";
+    ZLOG_INFO << "Num BV tests: " << cres.NumBVTests();
+    ZLOG_INFO << "Num Tri tests: " << cres.NumTriTests();
+    ZLOG_INFO << "Closer than tolerance? " << tolerance;
     if (tres.CloserThanTolerance())
     {
-        ZLOG << "yes.";
+        ZLOG_INFO << "yes.";
     }
     else
     {
-        ZLOG << "no.";
+        ZLOG_INFO << "no.";
     }
 
     //
@@ -284,6 +286,4 @@ int main()
 
     delete b1;
     delete b2;
-
-    return 0;
 }
