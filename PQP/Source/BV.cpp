@@ -316,8 +316,7 @@ int BV_Overlap(PQP_REAL R[3][3], PQP_REAL T[3], BV *b1, BV *b2)
 }
 
 #if PQP_BV_TYPE & RSS_TYPE
-PQP_REAL
-BV_Distance(PQP_REAL R[3][3], PQP_REAL T[3], BV *b1, BV *b2)
+PQP_REAL BV_Distance(PQP_REAL R[3][3], PQP_REAL T[3], BV *b1, BV *b2)
 {
     PQP_REAL dist = RectDist(R, T, b1->l, b2->l);
     dist -= (b1->r + b2->r);

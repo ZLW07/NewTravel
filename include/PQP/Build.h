@@ -45,4 +45,8 @@
 
 int build_model(PQP_Model *m);
 
+int build_recurse(PQP_Model *m, int bn, int first_tri, int num_tris);
+
+void get_covariance_triverts(PQP_REAL M[3][3], Tri *tris, int num_tris);
+
 #endif

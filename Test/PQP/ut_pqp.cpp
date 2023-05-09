@@ -3,7 +3,6 @@
 //
 
 #include "ut_pqp.h"
-
 #include "Log/log.h"
 #include "PQP/PQP.h"
 #include <math.h>
@@ -286,4 +285,31 @@ TEST_F(UTPQP, Colli)
 
     delete b1;
     delete b2;
+}
+
+TEST_F(UTPQP, Get_covariance_triverts)
+{
+    Tri *pTri = new Tri();
+    double p1[3], p2[3], p3[3];
+    p1[0] = 1.5;
+    p1[1] = 0.8;
+    p1[2] = 2.5;
+
+    p2[0] = 3.4;
+    p2[1] = 2.1;
+    p2[2] = 5.2;
+
+    p3[0] = 3.5;
+    p3[1] = 7.8;
+    p3[2] = 2.6;
+    memcpy(pTri->p1, p1, sizeof(double) * 3);
+    memcpy(pTri->p2, p2, sizeof(double) * 3);
+    memcpy(pTri->p3, p3, sizeof(double) * 3);
+    pTri->id = 0;
+    PQP_REAL M[3][3];
+    get_covariance_triverts(M, pTri, 1);
+    for(int ii = 0; ii < 3; ii++)
+    {
+        ZLOG_INFO << M[ii][0] << ", " << M[ii][1] <<", " << M[ii][2];
+    }
 }
