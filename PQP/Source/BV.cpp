@@ -63,7 +63,7 @@ void BV::FitToTris(PQP_REAL O[3][3], Tri *tris, int num_tris)
 {
     // store orientation
 
-    McM(R, O);
+    McM(m_Rotation, O);
 
     // project points of tris to R coordinates
 
@@ -73,13 +73,13 @@ void BV::FitToTris(PQP_REAL O[3][3], Tri *tris, int num_tris)
     int i;
     for (i = 0; i < num_tris; i++)
     {
-        MTxV(P[point], R, tris[i].p1);
+        MTxV(P[point], m_Rotation, tris[i].p1);
         point++;
 
-        MTxV(P[point], R, tris[i].p2);
+        MTxV(P[point], m_Rotation, tris[i].p2);
         point++;
 
-        MTxV(P[point], R, tris[i].p3);
+        MTxV(P[point], m_Rotation, tris[i].p3);
         point++;
     }
 
@@ -107,7 +107,7 @@ void BV::FitToTris(PQP_REAL O[3][3], Tri *tris, int num_tris)
     c[0] = (PQP_REAL)0.5 * (maxx + minx);
     c[1] = (PQP_REAL)0.5 * (maxy + miny);
     c[2] = (PQP_REAL)0.5 * (maxz + minz);
-    MxV(To, R, c);
+    MxV(To, m_Rotation, c);
 
     d[0] = (PQP_REAL)0.5 * (maxx - minx);
     d[1] = (PQP_REAL)0.5 * (maxy - miny);
@@ -290,7 +290,7 @@ void BV::FitToTris(PQP_REAL O[3][3], Tri *tris, int num_tris)
     c[0] = minx;
     c[1] = miny;
     c[2] = cz;
-    MxV(Tr, R, c);
+    MxV(Tr, m_Rotation, c);
 
     l[0] = maxx - minx;
     if (l[0] < 0)

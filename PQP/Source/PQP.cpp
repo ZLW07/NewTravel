@@ -539,25 +539,25 @@ void CollideRecurse(PQP_CollideResult *res, PQP_REAL R[3][3], PQP_REAL T[3], // 
         int c1 = o1->child(b1)->first_child;
         int c2 = c1 + 1;
 
-        MTxM(Rc, o1->child(c1)->R, R);
+        MTxM(Rc, o1->child(c1)->m_Rotation, R);
 #if PQP_BV_TYPE & OBB_TYPE
         VmV(Ttemp, T, o1->child(c1)->To);
 #else
         VmV(Ttemp, T, o1->child(c1)->Tr);
 #endif
-        MTxV(Tc, o1->child(c1)->R, Ttemp);
+        MTxV(Tc, o1->child(c1)->m_Rotation, Ttemp);
         CollideRecurse(res, Rc, Tc, o1, c1, o2, b2, flag);
 
         if ((flag == PQP_FIRST_CONTACT) && (res->num_pairs > 0))
             return;
 
-        MTxM(Rc, o1->child(c2)->R, R);
+        MTxM(Rc, o1->child(c2)->m_Rotation, R);
 #if PQP_BV_TYPE & OBB_TYPE
         VmV(Ttemp, T, o1->child(c2)->To);
 #else
         VmV(Ttemp, T, o1->child(c2)->Tr);
 #endif
-        MTxV(Tc, o1->child(c2)->R, Ttemp);
+        MTxV(Tc, o1->child(c2)->m_Rotation, Ttemp);
         CollideRecurse(res, Rc, Tc, o1, c2, o2, b2, flag);
     }
     else
@@ -565,7 +565,7 @@ void CollideRecurse(PQP_CollideResult *res, PQP_REAL R[3][3], PQP_REAL T[3], // 
         int c1 = o2->child(b2)->first_child;
         int c2 = c1 + 1;
 
-        MxM(Rc, R, o2->child(c1)->R);
+        MxM(Rc, R, o2->child(c1)->m_Rotation);
 #if PQP_BV_TYPE & OBB_TYPE
         MxVpV(Tc, R, o2->child(c1)->To, T);
 #else
@@ -576,7 +576,7 @@ void CollideRecurse(PQP_CollideResult *res, PQP_REAL R[3][3], PQP_REAL T[3], // 
         if ((flag == PQP_FIRST_CONTACT) && (res->num_pairs > 0))
             return;
 
-        MxM(Rc, R, o2->child(c2)->R);
+        MxM(Rc, R, o2->child(c2)->m_Rotation);
 #if PQP_BV_TYPE & OBB_TYPE
         MxVpV(Tc, R, o2->child(c2)->To, T);
 #else
@@ -620,8 +620,8 @@ int PQP_Collide(PQP_CollideResult *res, PQP_REAL R1[3][3], PQP_REAL T1[3], PQP_M
 
     PQP_REAL Rtemp[3][3], R[3][3], T[3];
 
-    MxM(Rtemp, res->R, o2->child(0)->R);
-    MTxM(R, o1->child(0)->R, Rtemp);
+    MxM(Rtemp, res->R, o2->child(0)->m_Rotation);
+    MTxM(R, o1->child(0)->m_Rotation, Rtemp);
 
 #if PQP_BV_TYPE & OBB_TYPE
     MxVpV(Ttemp, res->R, o2->child(0)->To, res->T);
@@ -631,7 +631,7 @@ int PQP_Collide(PQP_CollideResult *res, PQP_REAL R1[3][3], PQP_REAL T1[3], PQP_M
     VmV(Ttemp, Ttemp, o1->child(0)->Tr);
 #endif
 
-    MTxV(T, o1->child(0)->R, Ttemp);
+    MTxV(T, o1->child(0)->m_Rotation, Ttemp);
 
     // now start with both top level BVs
 
@@ -702,21 +702,21 @@ void DistanceRecurse(PQP_DistanceResult *res, PQP_REAL R[3][3], PQP_REAL T[3], /
         c1 = o1->child(b1)->first_child + 1;
         c2 = b2;
 
-        MTxM(R1, o1->child(a1)->R, R);
+        MTxM(R1, o1->child(a1)->m_Rotation, R);
 #if PQP_BV_TYPE & RSS_TYPE
         VmV(Ttemp, T, o1->child(a1)->Tr);
 #else
         VmV(Ttemp, T, o1->child(a1)->To);
 #endif
-        MTxV(T1, o1->child(a1)->R, Ttemp);
+        MTxV(T1, o1->child(a1)->m_Rotation, Ttemp);
 
-        MTxM(R2, o1->child(c1)->R, R);
+        MTxM(R2, o1->child(c1)->m_Rotation, R);
 #if PQP_BV_TYPE & RSS_TYPE
         VmV(Ttemp, T, o1->child(c1)->Tr);
 #else
         VmV(Ttemp, T, o1->child(c1)->To);
 #endif
-        MTxV(T2, o1->child(c1)->R, Ttemp);
+        MTxV(T2, o1->child(c1)->m_Rotation, Ttemp);
     }
     else
     {
@@ -727,14 +727,14 @@ void DistanceRecurse(PQP_DistanceResult *res, PQP_REAL R[3][3], PQP_REAL T[3], /
         c1 = b1;
         c2 = o2->child(b2)->first_child + 1;
 
-        MxM(R1, R, o2->child(a2)->R);
+        MxM(R1, R, o2->child(a2)->m_Rotation);
 #if PQP_BV_TYPE & RSS_TYPE
         MxVpV(T1, R, o2->child(a2)->Tr, T);
 #else
         MxVpV(T1, R, o2->child(a2)->To, T);
 #endif
 
-        MxM(R2, R, o2->child(c2)->R);
+        MxM(R2, R, o2->child(c2)->m_Rotation);
 #if PQP_BV_TYPE & RSS_TYPE
         MxVpV(T2, R, o2->child(c2)->Tr, T);
 #else
@@ -843,26 +843,26 @@ void DistanceQueueRecurse(
 
                 bvt1.b1 = c1;
                 bvt1.b2 = min_test.b2;
-                MTxM(bvt1.R, o1->child(c1)->R, min_test.R);
+                MTxM(bvt1.R, o1->child(c1)->m_Rotation, min_test.R);
 #if PQP_BV_TYPE & RSS_TYPE
                 VmV(Ttemp, min_test.T, o1->child(c1)->Tr);
 #else
                 VmV(Ttemp, min_test.T, o1->child(c1)->To);
 #endif
-                MTxV(bvt1.T, o1->child(c1)->R, Ttemp);
+                MTxV(bvt1.T, o1->child(c1)->m_Rotation, Ttemp);
                 bvt1.d = BV_Distance(bvt1.R, bvt1.T, o1->child(bvt1.b1), o2->child(bvt1.b2));
 
                 // init bv test 2
 
                 bvt2.b1 = c2;
                 bvt2.b2 = min_test.b2;
-                MTxM(bvt2.R, o1->child(c2)->R, min_test.R);
+                MTxM(bvt2.R, o1->child(c2)->m_Rotation, min_test.R);
 #if PQP_BV_TYPE & RSS_TYPE
                 VmV(Ttemp, min_test.T, o1->child(c2)->Tr);
 #else
                 VmV(Ttemp, min_test.T, o1->child(c2)->To);
 #endif
-                MTxV(bvt2.T, o1->child(c2)->R, Ttemp);
+                MTxV(bvt2.T, o1->child(c2)->m_Rotation, Ttemp);
                 bvt2.d = BV_Distance(bvt2.R, bvt2.T, o1->child(bvt2.b1), o2->child(bvt2.b2));
             }
             else
@@ -877,7 +877,7 @@ void DistanceQueueRecurse(
 
                 bvt1.b1 = min_test.b1;
                 bvt1.b2 = c1;
-                MxM(bvt1.R, min_test.R, o2->child(c1)->R);
+                MxM(bvt1.R, min_test.R, o2->child(c1)->m_Rotation);
 #if PQP_BV_TYPE & RSS_TYPE
                 MxVpV(bvt1.T, min_test.R, o2->child(c1)->Tr, min_test.T);
 #else
@@ -889,7 +889,7 @@ void DistanceQueueRecurse(
 
                 bvt2.b1 = min_test.b1;
                 bvt2.b2 = c2;
-                MxM(bvt2.R, min_test.R, o2->child(c2)->R);
+                MxM(bvt2.R, min_test.R, o2->child(c2)->m_Rotation);
 #if PQP_BV_TYPE & RSS_TYPE
                 MxVpV(bvt2.T, min_test.R, o2->child(c2)->Tr, min_test.T);
 #else
@@ -962,8 +962,8 @@ int PQP_Distance(PQP_DistanceResult *res, PQP_REAL R1[3][3], PQP_REAL T1[3], PQP
 
     PQP_REAL Rtemp[3][3], R[3][3], T[3];
 
-    MxM(Rtemp, res->R, o2->child(0)->R);
-    MTxM(R, o1->child(0)->R, Rtemp);
+    MxM(Rtemp, res->R, o2->child(0)->m_Rotation);
+    MTxM(R, o1->child(0)->m_Rotation, Rtemp);
 
 #if PQP_BV_TYPE & RSS_TYPE
     MxVpV(Ttemp, res->R, o2->child(0)->Tr, res->T);
@@ -972,7 +972,7 @@ int PQP_Distance(PQP_DistanceResult *res, PQP_REAL R1[3][3], PQP_REAL T1[3], PQP
     MxVpV(Ttemp, res->R, o2->child(0)->To, res->T);
     VmV(Ttemp, Ttemp, o1->child(0)->To);
 #endif
-    MTxV(T, o1->child(0)->R, Ttemp);
+    MTxV(T, o1->child(0)->m_Rotation, Ttemp);
 
     // choose routine according to queue size
 
@@ -1049,21 +1049,21 @@ void ToleranceRecurse(
         c1 = o1->child(b1)->first_child + 1;
         c2 = b2;
 
-        MTxM(R1, o1->child(a1)->R, R);
+        MTxM(R1, o1->child(a1)->m_Rotation, R);
 #if PQP_BV_TYPE & RSS_TYPE
         VmV(Ttemp, T, o1->child(a1)->Tr);
 #else
         VmV(Ttemp, T, o1->child(a1)->To);
 #endif
-        MTxV(T1, o1->child(a1)->R, Ttemp);
+        MTxV(T1, o1->child(a1)->m_Rotation, Ttemp);
 
-        MTxM(R2, o1->child(c1)->R, R);
+        MTxM(R2, o1->child(c1)->m_Rotation, R);
 #if PQP_BV_TYPE & RSS_TYPE
         VmV(Ttemp, T, o1->child(c1)->Tr);
 #else
         VmV(Ttemp, T, o1->child(c1)->To);
 #endif
-        MTxV(T2, o1->child(c1)->R, Ttemp);
+        MTxV(T2, o1->child(c1)->m_Rotation, Ttemp);
     }
     else
     {
@@ -1074,13 +1074,13 @@ void ToleranceRecurse(
         c1 = b1;
         c2 = o2->child(b2)->first_child + 1;
 
-        MxM(R1, R, o2->child(a2)->R);
+        MxM(R1, R, o2->child(a2)->m_Rotation);
 #if PQP_BV_TYPE & RSS_TYPE
         MxVpV(T1, R, o2->child(a2)->Tr, T);
 #else
         MxVpV(T1, R, o2->child(a2)->To, T);
 #endif
-        MxM(R2, R, o2->child(c2)->R);
+        MxM(R2, R, o2->child(c2)->m_Rotation);
 #if PQP_BV_TYPE & RSS_TYPE
         MxVpV(T2, R, o2->child(c2)->Tr, T);
 #else
@@ -1185,26 +1185,26 @@ void ToleranceQueueRecurse(
 
                 bvt1.b1 = c1;
                 bvt1.b2 = min_test.b2;
-                MTxM(bvt1.R, o1->child(c1)->R, min_test.R);
+                MTxM(bvt1.R, o1->child(c1)->m_Rotation, min_test.R);
 #if PQP_BV_TYPE & RSS_TYPE
                 VmV(Ttemp, min_test.T, o1->child(c1)->Tr);
 #else
                 VmV(Ttemp, min_test.T, o1->child(c1)->To);
 #endif
-                MTxV(bvt1.T, o1->child(c1)->R, Ttemp);
+                MTxV(bvt1.T, o1->child(c1)->m_Rotation, Ttemp);
                 bvt1.d = BV_Distance(bvt1.R, bvt1.T, o1->child(bvt1.b1), o2->child(bvt1.b2));
 
                 // init bv test 2
 
                 bvt2.b1 = c2;
                 bvt2.b2 = min_test.b2;
-                MTxM(bvt2.R, o1->child(c2)->R, min_test.R);
+                MTxM(bvt2.R, o1->child(c2)->m_Rotation, min_test.R);
 #if PQP_BV_TYPE & RSS_TYPE
                 VmV(Ttemp, min_test.T, o1->child(c2)->Tr);
 #else
                 VmV(Ttemp, min_test.T, o1->child(c2)->To);
 #endif
-                MTxV(bvt2.T, o1->child(c2)->R, Ttemp);
+                MTxV(bvt2.T, o1->child(c2)->m_Rotation, Ttemp);
                 bvt2.d = BV_Distance(bvt2.R, bvt2.T, o1->child(bvt2.b1), o2->child(bvt2.b2));
             }
             else
@@ -1219,7 +1219,7 @@ void ToleranceQueueRecurse(
 
                 bvt1.b1 = min_test.b1;
                 bvt1.b2 = c1;
-                MxM(bvt1.R, min_test.R, o2->child(c1)->R);
+                MxM(bvt1.R, min_test.R, o2->child(c1)->m_Rotation);
 #if PQP_BV_TYPE & RSS_TYPE
                 MxVpV(bvt1.T, min_test.R, o2->child(c1)->Tr, min_test.T);
 #else
@@ -1231,7 +1231,7 @@ void ToleranceQueueRecurse(
 
                 bvt2.b1 = min_test.b1;
                 bvt2.b2 = c2;
-                MxM(bvt2.R, min_test.R, o2->child(c2)->R);
+                MxM(bvt2.R, min_test.R, o2->child(c2)->m_Rotation);
 #if PQP_BV_TYPE & RSS_TYPE
                 MxVpV(bvt2.T, min_test.R, o2->child(c2)->Tr, min_test.T);
 #else
@@ -1299,8 +1299,8 @@ int PQP_Tolerance(PQP_ToleranceResult *res, PQP_REAL R1[3][3], PQP_REAL T1[3], P
 
     PQP_REAL Rtemp[3][3], R[3][3], T[3];
 
-    MxM(Rtemp, res->R, o2->child(0)->R);
-    MTxM(R, o1->child(0)->R, Rtemp);
+    MxM(Rtemp, res->R, o2->child(0)->m_Rotation);
+    MTxM(R, o1->child(0)->m_Rotation, Rtemp);
 #if PQP_BV_TYPE & RSS_TYPE
     MxVpV(Ttemp, res->R, o2->child(0)->Tr, res->T);
     VmV(Ttemp, Ttemp, o1->child(0)->Tr);
@@ -1308,7 +1308,7 @@ int PQP_Tolerance(PQP_ToleranceResult *res, PQP_REAL R1[3][3], PQP_REAL T1[3], P
     MxVpV(Ttemp, res->R, o2->child(0)->To, res->T);
     VmV(Ttemp, Ttemp, o1->child(0)->To);
 #endif
-    MTxV(T, o1->child(0)->R, Ttemp);
+    MTxV(T, o1->child(0)->m_Rotation, Ttemp);
 
     // find a distance lower bound for trivial reject
 

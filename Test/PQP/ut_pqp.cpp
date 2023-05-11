@@ -10,7 +10,7 @@
 
 #define PI    3.14159265359
 #define LISTS 0
-
+#include "PQP/MatVec.h"
 TEST_F(UTPQP, Colli)
 {
     // initialize PQP model pointers
@@ -311,5 +311,47 @@ TEST_F(UTPQP, Get_covariance_triverts)
     for(int ii = 0; ii < 3; ii++)
     {
         ZLOG_INFO << M[ii][0] << ", " << M[ii][1] <<", " << M[ii][2];
+    }
+    PQP_REAL C[3][3], E[3][3], R[3][3], s[3], axis[3], mean[3], coord;
+    Meigen(E, s, M);
+    for(int ii = 0; ii < 3; ii++)
+    {
+        ZLOG_INFO << E[ii][0] << ", " << E[ii][1] <<", " << E[ii][2];
+    }
+    ZLOG_INFO << s[0] << ", " << s[1] <<", " <<s[2];
+
+    int min, mid, max;
+    if (s[0] > s[1])
+    {
+        max = 0;
+        min = 1;
+    }
+    else
+    {
+        min = 0;
+        max = 1;
+    }
+    if (s[2] < s[min])
+    {
+        mid = min;
+        min = 2;
+    }
+    else if (s[2] > s[max])
+    {
+        mid = max;
+        max = 2;
+    }
+    else
+    {
+        mid = 2;
+    }
+    McolcMcol(R, 0, E, max);
+    McolcMcol(R, 1, E, mid);
+    R[0][2] = E[1][max] * E[2][mid] - E[1][mid] * E[2][max];
+    R[1][2] = E[0][mid] * E[2][max] - E[0][max] * E[2][mid];
+    R[2][2] = E[0][max] * E[1][mid] - E[0][mid] * E[1][max];
+    for(int ii = 0; ii < 3; ii++)
+    {
+        ZLOG_INFO << R[ii][0] << ", " << R[ii][1] <<", " << R[ii][2];
     }
 }

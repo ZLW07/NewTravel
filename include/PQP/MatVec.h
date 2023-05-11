@@ -617,10 +617,14 @@ void inline Meigen(PQP_REAL vout[3][3], PQP_REAL dout[3], PQP_REAL a[3][3])
 
     for (i = 0; i < 50; i++)
     {
-
         sm = 0.0;
         for (ip = 0; ip < n; ip++)
-            for (iq = ip + 1; iq < n; iq++) sm += fabs(a[ip][iq]);
+        {
+            for (iq = ip + 1; iq < n; iq++)
+            {
+                sm += fabs(a[ip][iq]);
+            }
+        }
         if (sm == 0.0)
         {
             McM(vout, v);
@@ -629,16 +633,21 @@ void inline Meigen(PQP_REAL vout[3][3], PQP_REAL dout[3], PQP_REAL a[3][3])
         }
 
         if (i < 3)
+        {
             tresh = (PQP_REAL)0.2 * sm / (n * n);
+        }
         else
+        {
             tresh = 0.0;
-
+        }
         for (ip = 0; ip < n; ip++)
             for (iq = ip + 1; iq < n; iq++)
             {
                 g = (PQP_REAL)100.0 * fabs(a[ip][iq]);
                 if (i > 3 && fabs(d[ip]) + g == fabs(d[ip]) && fabs(d[iq]) + g == fabs(d[iq]))
+                {
                     a[ip][iq] = 0.0;
+                }
                 else if (fabs(a[ip][iq]) > tresh)
                 {
                     h = d[iq] - d[ip];

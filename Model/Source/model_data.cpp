@@ -80,6 +80,7 @@ bool ModelManager::LoadModelData(const char *cFileName, ModelDataElement &oModel
     oOBBData = GetOBBData(oData);
     return true;
 }
+
 #define MEAN(data_1, mean_1, data_3, mean_2) (data_1 - mean_1) * (data_3 - mean_2)
 
 Rotation ModelManager::CovarianceMatrix(std::vector<Vector3D> &vSrc_1)
@@ -140,7 +141,7 @@ OBBElement ModelManager::GetOBBData(std::vector<Vector3D> &oDataBase)
     return oOBBData;
 }
 
-bool ModelManager::IsColliding(OBBElement &OBB_A, OBBElement &OBB_B, Matrix4 &transOBB,double tolerance)
+bool ModelManager::IsColliding(OBBElement &OBB_A, OBBElement &OBB_B, Matrix4 &transOBB, double tolerance)
 {
     Matrix4 transBB1(OBB_A.rotBaseVector, OBB_A.v3dCenterPoint);
     Matrix4 transBB2(OBB_B.rotBaseVector, OBB_B.v3dCenterPoint);
@@ -171,7 +172,7 @@ bool ModelManager::IsColliding(OBBElement &OBB_A, OBBElement &OBB_B, Matrix4 &tr
                OBB_A.v3dOBBLength[2] * fabs(rotBToA[2][ij]));
         dRb = OBB_B.v3dOBBLength[ij];
         if (std::fabs(v3dBToAPose[0] * rotBToA[0][ij] + v3dBToAPose[1] * rotBToA[1][ij] +
-                      v3dBToAPose[2] * rotBToA[2][ij]) > (dRa + dRb+ tolerance))
+                      v3dBToAPose[2] * rotBToA[2][ij]) > (dRa + dRb + tolerance))
         {
             return bIsColliding;
         }
@@ -181,7 +182,7 @@ bool ModelManager::IsColliding(OBBElement &OBB_A, OBBElement &OBB_B, Matrix4 &tr
     dT = fabs(v3dBToAPose.Z() * rotBToA[1][0] - v3dBToAPose.Y() * rotBToA[2][0]);
     dRa = OBB_A.v3dOBBLength[1] * fabs(rotBToA[2][0]) + OBB_A.v3dOBBLength[2] * fabs(rotBToA[1][0]);
     dRb = OBB_B.v3dOBBLength[1] * fabs(rotBToA[0][2]) + OBB_B.v3dOBBLength[2] * fabs(rotBToA[0][1]);
-    if (dT > (dRa + dRb+ tolerance))
+    if (dT > (dRa + dRb + tolerance))
     {
         return bIsColliding;
     }
@@ -190,7 +191,7 @@ bool ModelManager::IsColliding(OBBElement &OBB_A, OBBElement &OBB_B, Matrix4 &tr
     dT = fabs(v3dBToAPose.Z() * rotBToA[1][1] - v3dBToAPose.Y() * rotBToA[2][1]);
     dRa = OBB_A.v3dOBBLength[1] * fabs(rotBToA[2][1]) + OBB_A.v3dOBBLength[2] * fabs(rotBToA[1][1]);
     dRb = OBB_B.v3dOBBLength.X() * fabs(rotBToA[0][2]) + OBB_B.v3dOBBLength.Z() * fabs(rotBToA[0][0]);
-    if (dT > (dRa + dRb+ tolerance))
+    if (dT > (dRa + dRb + tolerance))
     {
         return bIsColliding;
     }
@@ -199,7 +200,7 @@ bool ModelManager::IsColliding(OBBElement &OBB_A, OBBElement &OBB_B, Matrix4 &tr
     dT = fabs(v3dBToAPose.Z() * rotBToA[1][2] - v3dBToAPose.Y() * rotBToA[2][2]);
     dRa = OBB_A.v3dOBBLength.Y() * fabs(rotBToA[2][2]) + OBB_A.v3dOBBLength.Z() * fabs(rotBToA[1][2]);
     dRb = OBB_B.v3dOBBLength.X() * fabs(rotBToA[0][1]) + OBB_B.v3dOBBLength.Y() * fabs(rotBToA[0][0]);
-    if (dT > (dRa + dRb+ tolerance))
+    if (dT > (dRa + dRb + tolerance))
     {
         return bIsColliding;
     }
@@ -208,7 +209,7 @@ bool ModelManager::IsColliding(OBBElement &OBB_A, OBBElement &OBB_B, Matrix4 &tr
     dT = fabs(v3dBToAPose.X() * rotBToA[2][0] - v3dBToAPose.Z() * fabs(rotBToA[0][0]));
     dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[2][0]) + OBB_A.v3dOBBLength.Z() * fabs(rotBToA[0][0]);
     dRb = OBB_B.v3dOBBLength.Y() * fabs(rotBToA[1][2]) + OBB_B.v3dOBBLength.Z() * fabs(rotBToA[1][1]);
-    if (dT > (dRa + dRb+ tolerance))
+    if (dT > (dRa + dRb + tolerance))
     {
         return bIsColliding;
     }
@@ -217,7 +218,7 @@ bool ModelManager::IsColliding(OBBElement &OBB_A, OBBElement &OBB_B, Matrix4 &tr
     dT = fabs(v3dBToAPose.X() * fabs(rotBToA[2][1]) - v3dBToAPose.Z() * fabs(rotBToA[0][1]));
     dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[2][1]) + OBB_A.v3dOBBLength.Z() * fabs(rotBToA[0][1]);
     dRb = OBB_B.v3dOBBLength.X() * fabs(rotBToA[1][2]) + OBB_B.v3dOBBLength.Z() * fabs(rotBToA[1][0]);
-    if (dT > (dRa + dRb+ tolerance))
+    if (dT > (dRa + dRb + tolerance))
     {
         return bIsColliding;
     }
@@ -226,7 +227,7 @@ bool ModelManager::IsColliding(OBBElement &OBB_A, OBBElement &OBB_B, Matrix4 &tr
     dT = fabs(v3dBToAPose.X() * rotBToA[2][2] - v3dBToAPose.Z() * rotBToA[0][2]);
     dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[2][2] + OBB_A.v3dOBBLength.Z() * fabs(rotBToA[0][2]));
     dRb = OBB_B.v3dOBBLength.X() * fabs(rotBToA[1][1]) + OBB_B.v3dOBBLength.Y() * fabs(rotBToA[1][0]);
-    if (dT > (dRa + dRb+ tolerance))
+    if (dT > (dRa + dRb + tolerance))
     {
         return bIsColliding;
     }
@@ -235,7 +236,7 @@ bool ModelManager::IsColliding(OBBElement &OBB_A, OBBElement &OBB_B, Matrix4 &tr
     dT = fabs(v3dBToAPose.Y() * rotBToA[0][0] - v3dBToAPose.X() * rotBToA[1][0]);
     dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[1][0]) + OBB_A.v3dOBBLength.Y() * fabs(rotBToA[0][0]);
     dRb = OBB_B.v3dOBBLength.Y() * fabs(rotBToA[2][2]) + OBB_B.v3dOBBLength.Z() * fabs(rotBToA[2][1]);
-    if (dT > (dRa + dRb+ tolerance))
+    if (dT > (dRa + dRb + tolerance))
     {
         return bIsColliding;
     }
@@ -244,7 +245,7 @@ bool ModelManager::IsColliding(OBBElement &OBB_A, OBBElement &OBB_B, Matrix4 &tr
     dT = fabs(v3dBToAPose.Y() * rotBToA[0][2] - v3dBToAPose.X() * rotBToA[1][1]);
     dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[1][1]) + OBB_A.v3dOBBLength.Y() * fabs(rotBToA[0][1]);
     dRb = OBB_B.v3dOBBLength.X() * fabs(rotBToA[2][2]) + OBB_B.v3dOBBLength.Z() * fabs(rotBToA[2][0]);
-    if (dT > (dRa + dRb+ tolerance))
+    if (dT > (dRa + dRb + tolerance))
     {
         return bIsColliding;
     }
@@ -253,7 +254,7 @@ bool ModelManager::IsColliding(OBBElement &OBB_A, OBBElement &OBB_B, Matrix4 &tr
     dT = fabs(v3dBToAPose.Y() * rotBToA[0][2] - v3dBToAPose.X() * rotBToA[1][2]);
     dRa = OBB_A.v3dOBBLength.X() * fabs(rotBToA[1][2]) + OBB_A.v3dOBBLength.Y() * fabs(rotBToA[0][2]);
     dRb = OBB_B.v3dOBBLength.X() * fabs(rotBToA[2][1]) + OBB_B.v3dOBBLength.Y() * fabs(rotBToA[2][0]);
-    if (dT > (dRa + dRb+ tolerance))
+    if (dT > (dRa + dRb + tolerance))
     {
         return bIsColliding;
     }
@@ -271,27 +272,35 @@ int ModelManager::IsColliding(
     {
         for (int jj = 0; jj < 3; ++jj)
         {
-//            aRot_1[ii][jj] = trans_1[ii][jj];
-//            aRot_2[ii][jj] = trans_2[ii][jj];
+            //            aRot_1[ii][jj] = trans_1[ii][jj];
+            //            aRot_2[ii][jj] = trans_2[ii][jj];
         }
-//        aPose_1[ii]= trans_1[ii][3];
-//        aPose_2[ii]= trans_2[ii][3];
+        //        aPose_1[ii]= trans_1[ii][3];
+        //        aPose_2[ii]= trans_2[ii][3];
     }
-    return PQP_Collide(&oResult,aRot_1,aPose_1,&oModel_1,aRot_2,aPose_2,&oModel_2);;
+    return PQP_Collide(&oResult, aRot_1, aPose_1, &oModel_1, aRot_2, aPose_2, &oModel_2);
+    ;
 }
 
-PQP_Model ModelManager::BuildPQPModel(std::vector<Vector3D> &vSrc_1)
+bool ModelManager::BuildPQPModel(PQP_Model &vPQPModel, const char *cFileName)
 {
+    ModelDataElement oModelData;
+    if (!ReadAscllSTlFile(cFileName, oModelData))
+    {
+        return false;
+    }
+    std::vector<Vector3D> vSrc_1 = oModelData.TriangularPointCloud();
+
     PQP_Model *pModel = new PQP_Model();
     ZLOG << "Start build model";
     pModel->BeginModel(vSrc_1.size());
     for (int ii = 0; ii < vSrc_1.size(); ++ii)
     {
-        pModel->AddTri(&vSrc_1[ii].X(),&vSrc_1[ii].Y(),&vSrc_1[ii].Z(),ii);
+        pModel->AddTri(&vSrc_1[ii].X(), &vSrc_1[ii].Y(), &vSrc_1[ii].Z(), ii);
     }
     pModel->EndModel();
     ZLOG << "Build model end";
-    return *pModel;
+    return true;
 }
 
 } // namespace zl

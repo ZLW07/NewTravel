@@ -17,4 +17,7 @@ set(UT_PQP_DIR Test/PQP)
 build_execute(UT_PQP  PQP Log gtest)
 
 
+set(UT_RobotModel_DIR Test/RobotModel)
+build_execute(UT_RobotModel  RobotModel Log gtest)
+
 

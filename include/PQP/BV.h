@@ -47,7 +47,7 @@
 
 struct BV
 {
-    PQP_REAL R[3][3]; // orientation of RSS & OBB
+    PQP_REAL m_Rotation[3][3]; // orientation of RSS & OBB
 
 #if PQP_BV_TYPE & RSS_TYPE
     PQP_REAL Tr[3]; // position of rectangle

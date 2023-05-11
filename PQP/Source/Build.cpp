@@ -300,12 +300,12 @@ void get_covariance_triverts(PQP_REAL M[3][3], Tri *tris, int num_tris)
 
     // now get covariances
 
-    M[0][0] = S2[0][0] - S1[0] * S1[0] / n;
-    M[1][1] = S2[1][1] - S1[1] * S1[1] / n;
-    M[2][2] = S2[2][2] - S1[2] * S1[2] / n;
-    M[0][1] = S2[0][1] - S1[0] * S1[1] / n;
-    M[1][2] = S2[1][2] - S1[1] * S1[2] / n;
-    M[0][2] = S2[0][2] - S1[0] * S1[2] / n;
+    M[0][0] = (S2[0][0] - S1[0] * S1[0] / n) / (n - 1);
+    M[1][1] = (S2[1][1] - S1[1] * S1[1] / n) / (n - 1);
+    M[2][2] = (S2[2][2] - S1[2] * S1[2] / n) / (n - 1);
+    M[0][1] = (S2[0][1] - S1[0] * S1[1] / n) / (n - 1);
+    M[1][2] = (S2[1][2] - S1[1] * S1[2] / n) / (n - 1);
+    M[0][2] = (S2[0][2] - S1[0] * S1[2] / n) / (n - 1);
     M[1][0] = M[0][1];
     M[2][0] = M[0][2];
     M[2][1] = M[1][2];
@@ -367,7 +367,7 @@ int split_tris(Tri *tris, int num_tris, PQP_REAL a[3], PQP_REAL c)
 
 int build_recurse(PQP_Model *m, int bn, int first_tri, int num_tris)
 {
-    BV *b = m->child(bn);
+    BV *oTempBV = m->child(bn);
 
     // compute a rotation matrix
 
@@ -422,23 +422,20 @@ int build_recurse(PQP_Model *m, int bn, int first_tri, int num_tris)
 
     // fit the BV
 
-    b->FitToTris(R, &m->tris[first_tri], num_tris);
+    oTempBV->FitToTris(R, &m->tris[first_tri], num_tris);
 
     if (num_tris == 1)
     {
         // BV is a leaf BV - first_child will index a triangle
-
-        b->first_child = -(first_tri + 1);
+        oTempBV->first_child = -(first_tri + 1);
     }
     else if (num_tris > 1)
     {
         // BV not a leaf - first_child will index a BV
-
-        b->first_child = m->num_bvs;
+        oTempBV->first_child = m->num_bvs;
         m->num_bvs += 2;
 
         // choose splitting axis and splitting coord
-
         McolcV(axis, R, 0);
 
 #if RAPID2_FIT
@@ -449,11 +446,9 @@ int build_recurse(PQP_Model *m, int bn, int first_tri, int num_tris)
         coord = VdotV(axis, mean);
 
         // now split
-
         int num_first_half = split_tris(&m->tris[first_tri], num_tris, axis, coord);
 
         // recursively build the children
-
         build_recurse(m, m->child(bn)->first_child, first_tri, num_first_half);
         build_recurse(m, m->child(bn)->first_child + 1, first_tri + num_first_half, num_tris - num_first_half);
     }
@@ -480,7 +475,7 @@ void make_parent_relative(PQP_Model *m, int bn, const PQP_REAL parentR[3][3]
     {
         // make children parent-relative
 
-        make_parent_relative(m, m->child(bn)->first_child, m->child(bn)->R
+        make_parent_relative(m, m->child(bn)->first_child, m->child(bn)->m_Rotation
 #if PQP_BV_TYPE & RSS_TYPE
             ,
             m->child(bn)->Tr
@@ -490,7 +485,7 @@ void make_parent_relative(PQP_Model *m, int bn, const PQP_REAL parentR[3][3]
             m->child(bn)->To
 #endif
         );
-        make_parent_relative(m, m->child(bn)->first_child + 1, m->child(bn)->R
+        make_parent_relative(m, m->child(bn)->first_child + 1, m->child(bn)->m_Rotation
 #if PQP_BV_TYPE & RSS_TYPE
             ,
             m->child(bn)->Tr
@@ -504,8 +499,8 @@ void make_parent_relative(PQP_Model *m, int bn, const PQP_REAL parentR[3][3]
 
     // make self parent relative
 
-    MTxM(Rpc, parentR, m->child(bn)->R);
-    McM(m->child(bn)->R, Rpc);
+    MTxM(Rpc, parentR, m->child(bn)->m_Rotation);
+    McM(m->child(bn)->m_Rotation, Rpc);
 #if PQP_BV_TYPE & RSS_TYPE
     VmV(Tpc, m->child(bn)->Tr, parentTr);
     MTxV(m->child(bn)->Tr, parentR, Tpc);

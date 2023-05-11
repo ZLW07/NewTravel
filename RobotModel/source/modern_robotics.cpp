@@ -438,6 +438,7 @@ bool TestIfSE3(const Eigen::Matrix4d &T)
 {
     return std::abs(DistanceToSE3(T)) < 1e-3;
 }
+
 bool IKinBody(const Eigen::MatrixXd &Blist, const Eigen::MatrixXd &M, const Eigen::MatrixXd &T,
     Eigen::VectorXd &thetalist, double eomg, double ev)
 {

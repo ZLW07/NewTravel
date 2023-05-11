@@ -19,3 +19,6 @@ build_library(PQP)
 
 set(RobotModel_DIR RobotModel)
 build_library(RobotModel)
+
+set(CollisionDetection_DIR CollisionDetection)
+build_library(CollisionDetection)

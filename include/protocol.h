@@ -39,6 +39,8 @@ struct OBBElement
     Rotation rotBaseVector;
     Vector3D v3dOBBLength;
 };
+
+
 }
 
 #endif // NEWTRAVEL_PROTOCOL_H
