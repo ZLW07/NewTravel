@@ -2,8 +2,8 @@
 // Created by wei on 2023/5/10.
 //
 
-#include "model_cillision_detection.h"
-
+#include "CollisionDetection/model_cillision_detection.h"
+#include "RobotModel/modern_robotics.h"
 namespace zl
 {
 void CollisionDetection::BuildCollisionDetectionPair()
@@ -43,53 +43,41 @@ void CollisionDetection::BuildCollisionDetectionPair()
 
 void CollisionDetection::InitCollisionDetectionData()
 {
-    CollisionDetectionData oCollisionDetectionJoint_1;
-    if (!ModelManager::BuildPQPModel(oCollisionDetectionJoint_1.m_oPQPModel, "../../Data/RobotModel/1.STL"))
+    for (int ii = 0; ii < 7; ++ii)
     {
-        return ;
+        if (!ModelManager::BuildPQPModel(m_vecPQPModel.at(ii), "../../Data/RobotModel/" + std::to_string(ii + 1) + ".STL"))
+        {
+            return;
+        }
     }
 
-    CollisionDetectionData oCollisionDetectionJoint_2;
-    if (!ModelManager::BuildPQPModel(oCollisionDetectionJoint_1.m_oPQPModel, "../../Data/RobotModel/2.STL"))
-    {
-        return ;
-    }
+    m_mapPQPModel["Joint_1"] = m_vecPQPModel.at(0);
+    m_mapPQPModel["Joint_2"] = m_vecPQPModel.at(1);
+    m_mapPQPModel["Joint_3"] = m_vecPQPModel.at(2);
+    m_mapPQPModel["Joint_4"] = m_vecPQPModel.at(3);
+    m_mapPQPModel["Joint_5"] = m_vecPQPModel.at(4);
+    m_mapPQPModel["Joint_6"] = m_vecPQPModel.at(5);
+    m_mapPQPModel["Joint_7"] = m_vecPQPModel.at(6);
 
-    CollisionDetectionData oCollisionDetectionJoint_3;
-    if (!ModelManager::BuildPQPModel(oCollisionDetectionJoint_1.m_oPQPModel, "../../Data/RobotModel/3.STL"))
-    {
-        return ;
-    }
 
-    CollisionDetectionData oCollisionDetectionJoint_4;
-    if (!ModelManager::BuildPQPModel(oCollisionDetectionJoint_1.m_oPQPModel, "../../Data/RobotModel/4.STL"))
-    {
-        return ;
-    }
-
-    CollisionDetectionData oCollisionDetectionJoint_5;
-    if (!ModelManager::BuildPQPModel(oCollisionDetectionJoint_1.m_oPQPModel, "../../Data/RobotModel/5.STL"))
-    {
-        return ;
-    }
-
-    CollisionDetectionData oCollisionDetectionJoint_6;
-    if (!ModelManager::BuildPQPModel(oCollisionDetectionJoint_1.m_oPQPModel, "../../Data/RobotModel/6.STL"))
-    {
-        return ;
-    }
-
-    CollisionDetectionData oCollisionDetectionJoint_7;
-    if (!ModelManager::BuildPQPModel(oCollisionDetectionJoint_1.m_oPQPModel, "../../Data/RobotModel/7.STL"))
-    {
-        return ;
-    }
-    m_mapPQPModel["Joint_1"] = oCollisionDetectionJoint_1;
-    m_mapPQPModel["Joint_2"] = oCollisionDetectionJoint_2;
-    m_mapPQPModel["Joint_3"] = oCollisionDetectionJoint_3;
-    m_mapPQPModel["Joint_4"] = oCollisionDetectionJoint_4;
-    m_mapPQPModel["Joint_5"] = oCollisionDetectionJoint_5;
-    m_mapPQPModel["Joint_6"] = oCollisionDetectionJoint_6;
-    m_mapPQPModel["Joint_7"] = oCollisionDetectionJoint_7;
+}
+bool CollisionDetection::CheckCollision(std::vector<double> dTheta)
+{
+    std::vector<Eigen::Matrix4d> outJointTrans;
+    Eigen::Matrix<double,6,6> oSlist;
+    oSlist << 0, 0, 0, 0, 0, 0,
+              0, 1, 1, 0, 1, 0,
+              1, 0, 0, 1, 0, 1,
+              0, 0, 0, 0, 0, 0,
+             0, 0, 20,20,20,20,
+            0,  0,400,850,850,850;
+    Eigen::Vector<double,6> vecTheta;
+    Eigen::Matrix4d InitTransform;
+    InitTransform << 1, 0, 0, 0 ,
+        0, 1, 0, 1 ,
+        0, 0, 1,845,
+        0, 0, 0,1;
+    auto result = zl::FKinSpace(outJointTrans,InitTransform,oSlist,vecTheta);
+    return false;
 }
 } // namespace zl

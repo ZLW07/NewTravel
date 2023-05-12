@@ -2,8 +2,8 @@
 
 #include <Eigen/Dense>
 #include <vector>
-
-namespace mr
+#include "Log/log.h"
+namespace zl
 {
 
 /*
@@ -128,7 +128,7 @@ Eigen::MatrixXd MatrixLog6(const Eigen::MatrixXd &);
  *				at the specified coordinates
  * Notes: FK means Forward Kinematics
  */
-Eigen::MatrixXd FKinSpace(const Eigen::MatrixXd &, const Eigen::MatrixXd &, const Eigen::VectorXd &);
+Eigen::MatrixXd FKinSpace(std::vector<Eigen::Matrix4d> &outJointTrans, const Eigen::MatrixXd &M, const Eigen::MatrixXd &Slist, const Eigen::VectorXd &thetaList);
 
 /*
  * Function: Compute end effector frame (used for current body position calculation)

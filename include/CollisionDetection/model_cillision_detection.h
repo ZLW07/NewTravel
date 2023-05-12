@@ -20,13 +20,18 @@ struct CollisionDetectionData
 class CollisionDetection
 {
 public:
-    CollisionDetection(){}
+    CollisionDetection()
+    {
+        m_vecPQPModel.resize(7);
+    }
     ~CollisionDetection(){}
     void BuildCollisionDetectionPair();
     void InitCollisionDetectionData();
+    bool CheckCollision(std::vector<double> dTheta);
 private:
     std::map<std::string,std::vector<std::string>> m_mapCollisionDetectionPair;
-    std::map<std::string,CollisionDetectionData> m_mapPQPModel;
+    std::map<std::string,PQP_Model> m_mapPQPModel;
+    std::vector<PQP_Model> m_vecPQPModel;
 };
 
 

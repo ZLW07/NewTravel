@@ -20,4 +20,5 @@ build_execute(UT_PQP  PQP Log gtest)
 set(UT_RobotModel_DIR Test/RobotModel)
 build_execute(UT_RobotModel  RobotModel Log gtest)
 
-
+set(UT_CollisionDetection_DIR Test/CollisionDetection)
+build_execute(UT_CollisionDetection  CollisionDetection PQP Log RobotModel gtest )

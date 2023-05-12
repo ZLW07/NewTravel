@@ -282,10 +282,10 @@ int ModelManager::IsColliding(
     ;
 }
 
-bool ModelManager::BuildPQPModel(PQP_Model &vPQPModel, const char *cFileName)
+bool ModelManager::BuildPQPModel(PQP_Model &vPQPModel, std::string cFileName)
 {
     ModelDataElement oModelData;
-    if (!ReadAscllSTlFile(cFileName, oModelData))
+    if (!ReadAscllSTlFile(cFileName.c_str(), oModelData))
     {
         return false;
     }
