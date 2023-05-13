@@ -22,4 +22,6 @@ TEST_F(TestCollision, Test1)
         ZLOG_INFO << ii << "\n" << outJointTrans.at(ii);
     }
     ZLOG_INFO << "\n" << result;
+    PQP_Model pPQP_Model;
+
 }
