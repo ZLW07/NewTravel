@@ -6,26 +6,21 @@
 
 TEST_F(TestCollision, Test1)
 {
+    zl::Kinematics oKinematics;
     std::vector<Eigen::Matrix4d> outJointTrans;
-    Eigen::Matrix<double,6,6> oSlist;
-    oSlist << 0, 0, 0,  0,    0,    0,
-             0, 1, 1,   0,    1,    0,
-             1, 0, 0,   1,    0,    1,
-             0, 0,-400,  20,  -850, 20,
-             0, 0, 0,    0,  0,     0,
-             0,  0,0,    0,  0,     0;
-    Eigen::Vector<double,6> vecTheta;
-    vecTheta << M_PI*112.87/180, M_PI*(-59.79 +90)/180, M_PI*(210.65 - 90)/180, M_PI*(-160.15)/180, M_PI*64.14/180,M_PI*(-81.19)/180;
+    Eigen::Matrix<double, 6, 6> oSlist;
+    oSlist << 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, -375, -775, 20, -1225, 20, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0;
+
+    Eigen::Vector<double, 6> vecTheta;
+    vecTheta << M_PI * 112.87 / 180, M_PI * (-59.79 + 90) / 180, M_PI * (210.65 - 90) / 180, M_PI * (-160.15) / 180,
+        M_PI * 64.14 / 180, M_PI * (-81.19) / 180;
     Eigen::Matrix4d InitTransform;
-    InitTransform << 1, 0, 0, 0,
-                    0, 1, 0, 20 ,
-                    0, 0, 1,920,
-                    0, 0, 0,1;
-    auto result = zl::FKinSpace(outJointTrans,InitTransform,oSlist,vecTheta);
+    InitTransform << 1, 0, 0, 0, 0, 1, 0, 20, 0, 0, 1, 1295, 0, 0, 0, 1;
+    auto result = zl::Kinematics::FKinSpace(outJointTrans, InitTransform, oSlist, vecTheta);
     for (int ii = 0; ii < outJointTrans.size(); ++ii)
     {
-        ZLOG_INFO << "\n" << outJointTrans.at(ii);
+        ZLOG_INFO << ii << "\n" << outJointTrans.at(ii);
     }
     ZLOG_INFO << "\n" << result;
-
 }

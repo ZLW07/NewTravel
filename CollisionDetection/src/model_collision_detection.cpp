@@ -77,7 +77,7 @@ bool CollisionDetection::CheckCollision(std::vector<double> dTheta)
         0, 1, 0, 1 ,
         0, 0, 1,845,
         0, 0, 0,1;
-    auto result = zl::FKinSpace(outJointTrans,InitTransform,oSlist,vecTheta);
+    auto result = zl::Kinematics::FKinSpace(outJointTrans,InitTransform,oSlist,vecTheta);
     return false;
 }
 } // namespace zl

@@ -80,7 +80,8 @@ TEST_F(TestModel, PQPModel)
     ZLOG << ModelManager::LoadModelData(
         "/home/wei/CLionProjects/NewTravel/Data/RobotModel/1.STL", oModelDataElement1, oOBBElement1);
     auto Points = oModelDataElement1.TriangularPointCloud();
-    auto oModel = ModelManager::BuildPQPModel(Points);
+    PQP_Model oModel;
+    auto boo = ModelManager::BuildPQPModel(oModel,"/home/wei/CLionProjects/NewTravel/Data/RobotModel/1.STL");
     ZLOG << "The bv size is " << oModel.num_bvs;
     for (int ii = 0; ii < 1; ++ii)
     {

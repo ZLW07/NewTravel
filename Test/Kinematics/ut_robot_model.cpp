@@ -11,7 +11,7 @@ TEST_F(MRTest, VecToSO3Test)
     Eigen::Vector3d vec(1, 2, 3);
     Eigen::Matrix3d result(3, 3);
     result << 0, -3, 2, 3, 0, -1, -2, 1, 0;
-    EXPECT_EQ(result, zl::VecToso3(vec));
+    EXPECT_EQ(result, zl::Kinematics::Kinematics::VecToso3(vec));
 }
 
 TEST_F(MRTest, JacobianSpaceTest)
@@ -22,9 +22,9 @@ TEST_F(MRTest, JacobianSpaceTest)
     theta << 1.0472, 1.0472, 1.0472;
     Eigen::MatrixXd result(6, 3);
     result << 0, -0.866, 0.866, 0, 0.5, -0.5, 1, 0, 0, 0, -0.0355, -0.0855, 0, -0.0615, -0.1481, 0, 0, -0.1398;
-    Eigen::MatrixXd tmp_result = zl::JacobianSpace(s_list, theta);
+    Eigen::MatrixXd tmp_result = zl::Kinematics::JacobianSpace(s_list, theta);
     // std::cout << tmp_result << std::endl;
-    ASSERT_TRUE(zl::JacobianSpace(s_list, theta).isApprox(result, 4));
+    ASSERT_TRUE(zl::Kinematics::JacobianSpace(s_list, theta).isApprox(result, 4));
 }
 
 TEST_F(MRTest, JacobianBodyTest)
@@ -35,9 +35,9 @@ TEST_F(MRTest, JacobianBodyTest)
     theta << 0, 0, 1.5708;
     Eigen::MatrixXd result(6, 3);
     result << 1, 0, 0, 0, 1, -1, 0, 0, 0, 0, -0.2795, 0, 0.2795, 0, 0, -0.0425, -0.2720, 0.2720;
-    Eigen::MatrixXd tmp_result = zl::JacobianBody(b_list, theta);
+    Eigen::MatrixXd tmp_result = zl::Kinematics::JacobianBody(b_list, theta);
     // std::cout << tmp_result << std::endl;
-    ASSERT_TRUE(zl::JacobianBody(b_list, theta).isApprox(result, 4));
+    ASSERT_TRUE(zl::Kinematics::JacobianBody(b_list, theta).isApprox(result, 4));
 }
 
 TEST_F(MRTest, adTest)
@@ -49,7 +49,7 @@ TEST_F(MRTest, adTest)
     result << 0, -3, 2, 0, 0, 0, 3, 0, -1, 0, 0, 0, -2, 1, 0, 0, 0, 0, 0, -6, 5, 0, -3, 2, 6, 0, -4, 3, 0, -1, -5, 4, 0,
         -2, 1, 0;
 
-    ASSERT_TRUE(zl::ad(V).isApprox(result, 4));
+    ASSERT_TRUE(zl::Kinematics::ad(V).isApprox(result, 4));
 }
 
 TEST_F(MRTest, TransInvTest)
@@ -59,7 +59,7 @@ TEST_F(MRTest, TransInvTest)
     Eigen::MatrixXd result(4, 4);
     result << 1, 0, 0, 0, 0, 0, 1, -3, 0, -1, 0, 0, 0, 0, 0, 1;
 
-    auto inv = zl::TransInv(input);
+    auto inv = zl::Kinematics::TransInv(input);
     ASSERT_TRUE(inv.isApprox(result, 4));
 }
 
@@ -70,7 +70,7 @@ TEST_F(MRTest, RotInvTest)
     Eigen::MatrixXd result(3, 3);
     result << 0, 1, 0, 0, 0, 1, 1, 0, 0;
 
-    auto inv = zl::RotInv(input);
+    auto inv = zl::Kinematics::RotInv(input);
     ASSERT_TRUE(inv.isApprox(result, 4));
 }
 
@@ -81,7 +81,7 @@ TEST_F(MRTest, ScrewToAxisTest)
     s << 0, 0, 1;
     double h = 2;
 
-    Eigen::VectorXd axis = zl::ScrewToAxis(q, s, h);
+    Eigen::VectorXd axis = zl::Kinematics::ScrewToAxis(q, s, h);
     Eigen::VectorXd result(6);
     result << 0, 0, 1, 0, -3, 2;
 
@@ -111,7 +111,7 @@ TEST_F(MRTest, FKInBodyTest)
         1, 0, 0, 4,
         0, 0, -1, 1.68584073,
         0, 0, 0, 1;
-    Eigen::MatrixXd FKCal = zl::FKinBody(M, Blist, thetaList);
+    Eigen::MatrixXd FKCal = zl::Kinematics::FKinBody(M, Blist, thetaList);
 
     ASSERT_TRUE(FKCal.isApprox(result, 4));
 }
@@ -127,7 +127,7 @@ TEST_F(MRTest, FKInSpaceTest)
 
     Eigen::MatrixXd result(4, 4);
     result << 0, 1, 0, -5, 1, 0, 0, 4, 0, 0, -1, 1.68584073, 0, 0, 0, 1;
-    Eigen::MatrixXd FKCal = zl::FKinBody(M, Slist, thetaList);
+    Eigen::MatrixXd FKCal = zl::Kinematics::FKinBody(M, Slist, thetaList);
     ASSERT_TRUE(FKCal.isApprox(result, 4));
 }
 
@@ -138,7 +138,7 @@ TEST_F(MRTest, AxisAng6Test)
     input << 1.0, 0.0, 0.0, 1.0, 2.0, 3.0;
     result << 1.0, 0.0, 0.0, 1.0, 2.0, 3.0, 1.0;
 
-    Eigen::VectorXd output = zl::AxisAng6(input);
+    Eigen::VectorXd output = zl::Kinematics::AxisAng6(input);
     ASSERT_TRUE(output.isApprox(result, 4));
 }
 
@@ -150,7 +150,7 @@ TEST_F(MRTest, MatrixLog6Test)
 
     result << 0, 0, 0, 0, 0, 0, -1.57079633, 2.35619449, 0, 1.57079633, 0, 2.35619449, 0, 0, 0, 0;
 
-    Eigen::MatrixXd Toutput = zl::MatrixLog6(Tinput);
+    Eigen::MatrixXd Toutput = zl::Kinematics::MatrixLog6(Tinput);
     ASSERT_TRUE(Toutput.isApprox(result, 4));
 }
 
@@ -159,7 +159,7 @@ TEST_F(MRTest, DistanceToSO3Test)
     Eigen::Matrix3d input;
     double result = 0.088353;
     input << 1.0, 0.0, 0.0, 0.0, 0.1, -0.95, 0.0, 1.0, 0.1;
-    EXPECT_NEAR(result, zl::DistanceToSO3(input), 3);
+    EXPECT_NEAR(result, zl::Kinematics::DistanceToSO3(input), 3);
 }
 
 TEST_F(MRTest, DistanceToSE3Test)
@@ -167,7 +167,7 @@ TEST_F(MRTest, DistanceToSE3Test)
     Eigen::Matrix4d input;
     double result = 0.134931;
     input << 1.0, 0.0, 0.0, 1.2, 0.0, 0.1, -0.95, 1.5, 0.0, 1.0, 0.1, -0.9, 0.0, 0.0, 0.1, 0.98;
-    EXPECT_NEAR(result, zl::DistanceToSE3(input), 3);
+    EXPECT_NEAR(result, zl::Kinematics::DistanceToSE3(input), 3);
 }
 
 TEST_F(MRTest, TestIfSO3Test)
@@ -175,7 +175,7 @@ TEST_F(MRTest, TestIfSO3Test)
     Eigen::Matrix3d input;
     bool result = false;
     input << 1.0, 0.0, 0.0, 0.0, 0.1, -0.95, 0.0, 1.0, 0.1;
-    ASSERT_EQ(result, zl::TestIfSO3(input));
+    ASSERT_EQ(result, zl::Kinematics::TestIfSO3(input));
 }
 
 TEST_F(MRTest, TestIfSE3Test)
@@ -183,7 +183,7 @@ TEST_F(MRTest, TestIfSE3Test)
     Eigen::Matrix4d input;
     bool result = false;
     input << 1.0, 0.0, 0.0, 1.2, 0.0, 0.1, -0.95, 1.5, 0.0, 1.0, 0.1, -0.9, 0.0, 0.0, 0.1, 0.98;
-    ASSERT_EQ(result, zl::TestIfSE3(input));
+    ASSERT_EQ(result, zl::Kinematics::TestIfSE3(input));
 }
 
 TEST_F(MRTest, IKinBodyTest)
@@ -202,7 +202,7 @@ TEST_F(MRTest, IKinBodyTest)
     bool b_result = true;
     Eigen::VectorXd theta_result(3);
     theta_result << 1.57073819, 2.999667, 3.14153913;
-    bool iRet = zl::IKinBody(Blist, M, T, thetalist, eomg, ev);
+    bool iRet = zl::Kinematics::IKinBody(Blist, M, T, thetalist, eomg, ev);
     ASSERT_EQ(b_result, iRet);
     ASSERT_TRUE(thetalist.isApprox(theta_result, 4));
 }
@@ -223,7 +223,7 @@ TEST_F(MRTest, IKinSpaceTest)
     bool b_result = true;
     Eigen::VectorXd theta_result(3);
     theta_result << 1.57073783, 2.99966384, 3.1415342;
-    bool iRet = zl::IKinSpace(Slist, M, T, thetalist, eomg, ev);
+    bool iRet = zl::Kinematics::IKinSpace(Slist, M, T, thetalist, eomg, ev);
     ASSERT_EQ(b_result, iRet);
     ASSERT_TRUE(thetalist.isApprox(theta_result, 4));
 }
@@ -236,7 +236,7 @@ TEST_F(MRTest, AdjointTest)
     result << 1, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 3, 1, 0, 0, 3, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1,
         0;
 
-    ASSERT_TRUE(zl::Adjoint(T).isApprox(result, 4));
+    ASSERT_TRUE(zl::Kinematics::Adjoint(T).isApprox(result, 4));
 }
 
 TEST_F(MRTest, InverseDynamicsTest)
@@ -284,7 +284,7 @@ TEST_F(MRTest, InverseDynamicsTest)
     SlistT << 1, 0, 1, 0, 1, 0, 0, 1, 0, -0.089, 0, 0, 0, 1, 0, -0.089, 0, 0.425;
     Eigen::MatrixXd Slist = SlistT.transpose();
 
-    Eigen::VectorXd taulist = zl::InverseDynamics(thetalist, dthetalist, ddthetalist, g, Ftip, Mlist, Glist, Slist);
+    Eigen::VectorXd taulist = zl::Kinematics::InverseDynamics(thetalist, dthetalist, ddthetalist, g, Ftip, Mlist, Glist, Slist);
 
     Eigen::VectorXd result(3);
     result << 74.6962, -33.0677, -3.23057;
@@ -331,7 +331,7 @@ TEST_F(MRTest, GravityForcesTest)
     SlistT << 1, 0, 1, 0, 1, 0, 0, 1, 0, -0.089, 0, 0, 0, 1, 0, -0.089, 0, 0.425;
     Eigen::MatrixXd Slist = SlistT.transpose();
 
-    Eigen::VectorXd grav = zl::GravityForces(thetalist, g, Mlist, Glist, Slist);
+    Eigen::VectorXd grav = zl::Kinematics::GravityForces(thetalist, g, Mlist, Glist, Slist);
 
     Eigen::VectorXd result(3);
     result << 28.4033, -37.6409, -5.4416;
@@ -376,7 +376,7 @@ TEST_F(MRTest, MassMatrixTest)
     SlistT << 1, 0, 1, 0, 1, 0, 0, 1, 0, -0.089, 0, 0, 0, 1, 0, -0.089, 0, 0.425;
     Eigen::MatrixXd Slist = SlistT.transpose();
 
-    Eigen::MatrixXd M = zl::MassMatrix(thetalist, Mlist, Glist, Slist);
+    Eigen::MatrixXd M = zl::Kinematics::MassMatrix(thetalist, Mlist, Glist, Slist);
 
     Eigen::MatrixXd result(3, 3);
     result << 22.5433, -0.3071, -0.0072, -0.3071, 1.9685, 0.4322, -0.0072, 0.4322, 0.1916;
@@ -423,7 +423,7 @@ TEST_F(MRTest, VelQuadraticForcesTest)
     SlistT << 1, 0, 1, 0, 1, 0, 0, 1, 0, -0.089, 0, 0, 0, 1, 0, -0.089, 0, 0.425;
     Eigen::MatrixXd Slist = SlistT.transpose();
 
-    Eigen::VectorXd c = zl::VelQuadraticForces(thetalist, dthetalist, Mlist, Glist, Slist);
+    Eigen::VectorXd c = zl::Kinematics::VelQuadraticForces(thetalist, dthetalist, Mlist, Glist, Slist);
 
     Eigen::VectorXd result(3);
     result << 0.2645, -0.0551, -0.0069;
@@ -470,7 +470,7 @@ TEST_F(MRTest, EndEffectorForcesTest)
     SlistT << 1, 0, 1, 0, 1, 0, 0, 1, 0, -0.089, 0, 0, 0, 1, 0, -0.089, 0, 0.425;
     Eigen::MatrixXd Slist = SlistT.transpose();
 
-    Eigen::VectorXd JTFtip = zl::EndEffectorForces(thetalist, Ftip, Mlist, Glist, Slist);
+    Eigen::VectorXd JTFtip = zl::Kinematics::EndEffectorForces(thetalist, Ftip, Mlist, Glist, Slist);
 
     Eigen::VectorXd result(3);
     result << 1.4095, 1.8577, 1.3924;
@@ -523,7 +523,7 @@ TEST_F(MRTest, ForwardDynamicsTest)
     SlistT << 1, 0, 1, 0, 1, 0, 0, 1, 0, -0.089, 0, 0, 0, 1, 0, -0.089, 0, 0.425;
     Eigen::MatrixXd Slist = SlistT.transpose();
 
-    Eigen::VectorXd ddthetalist = zl::ForwardDynamics(thetalist, dthetalist, taulist, g, Ftip, Mlist, Glist, Slist);
+    Eigen::VectorXd ddthetalist = zl::Kinematics::ForwardDynamics(thetalist, dthetalist, taulist, g, Ftip, Mlist, Glist, Slist);
 
     Eigen::VectorXd result(3);
     result << -0.9739, 25.5847, -32.9150;
@@ -541,7 +541,7 @@ TEST_F(MRTest, EulerStepTest)
     ddthetalist << 2, 1.5, 1;
     double dt = 0.1;
 
-    zl::EulerStep(thetalist, dthetalist, ddthetalist, dt);
+    zl::Kinematics::EulerStep(thetalist, dthetalist, ddthetalist, dt);
 
     Eigen::VectorXd result_thetalistNext(3);
     result_thetalistNext << 0.11, 0.12, 0.13;
@@ -605,7 +605,7 @@ TEST_F(MRTest, ComputedTorqueTest)
     double Ki = 1.2;
     double Kd = 1.1;
 
-    Eigen::VectorXd taulist = zl::ComputedTorque(
+    Eigen::VectorXd taulist = zl::Kinematics::ComputedTorque(
         thetalist, dthetalist, eint, g, Mlist, Glist, Slist, thetalistd, dthetalistd, ddthetalistd, Kp, Ki, Kd);
 
     Eigen::VectorXd result(3);
@@ -620,7 +620,7 @@ TEST_F(MRTest, CubicTimeScalingTest)
     double t = 0.6;
     double result = 0.216;
 
-    EXPECT_NEAR(result, zl::CubicTimeScaling(Tf, t), 3);
+    EXPECT_NEAR(result, zl::Kinematics::CubicTimeScaling(Tf, t), 3);
 }
 
 TEST_F(MRTest, QuinticTimeScalingTest)
@@ -629,7 +629,7 @@ TEST_F(MRTest, QuinticTimeScalingTest)
     double t = 0.6;
     double result = 0.16308;
 
-    EXPECT_NEAR(result, zl::QuinticTimeScaling(Tf, t), 3);
+    EXPECT_NEAR(result, zl::Kinematics::QuinticTimeScaling(Tf, t), 3);
 }
 
 TEST_F(MRTest, JointTrajectoryTest)
@@ -648,7 +648,7 @@ TEST_F(MRTest, JointTrajectoryTest)
         1.0352, 1.352, 0.8336, 0.3168, 1, 1.1296, 0.324, 0.3888, 1.0648, 1.648, 1.3664, 0.5832, 1, 1.1792, 0.448,
         0.5376, 1.0896, 1.896, 1.8128, 0.8064, 1, 1.2, 0.5, 0.6, 1.1, 2, 2, 0.9, 1;
 
-    Eigen::MatrixXd traj = zl::JointTrajectory(thetastart, thetaend, Tf, N, method);
+    Eigen::MatrixXd traj = zl::Kinematics::JointTrajectory(thetastart, thetaend, Tf, N, method);
     ASSERT_TRUE(traj.isApprox(result, 4));
 }
 
@@ -672,7 +672,7 @@ TEST_F(MRTest, ScrewTrajectoryTest)
     result[2] = X23;
     result[3] = Xend;
 
-    std::vector<Eigen::MatrixXd> traj = zl::ScrewTrajectory(Xstart, Xend, Tf, N, method);
+    std::vector<Eigen::MatrixXd> traj = zl::Kinematics::ScrewTrajectory(Xstart, Xend, Tf, N, method);
 
     for (int i = 0; i < N; ++i)
     {
@@ -700,7 +700,7 @@ TEST_F(MRTest, CartesianTrajectoryTest)
     result[2] = X23;
     result[3] = Xend;
 
-    std::vector<Eigen::MatrixXd> traj = zl::CartesianTrajectory(Xstart, Xend, Tf, N, method);
+    std::vector<Eigen::MatrixXd> traj = zl::Kinematics::CartesianTrajectory(Xstart, Xend, Tf, N, method);
 
     for (int i = 0; i < N; ++i)
     {
@@ -719,7 +719,7 @@ TEST_F(MRTest, InverseDynamicsTrajectoryTest)
     int N = 1000;
     int method = 5;
 
-    Eigen::MatrixXd traj = zl::JointTrajectory(thetastart, thetaend, Tf, N, method);
+    Eigen::MatrixXd traj = zl::Kinematics::JointTrajectory(thetastart, thetaend, Tf, N, method);
     Eigen::MatrixXd thetamat = traj;
     Eigen::MatrixXd dthetamat = Eigen::MatrixXd::Zero(N, dof);
     Eigen::MatrixXd ddthetamat = Eigen::MatrixXd::Zero(N, dof);
@@ -773,7 +773,7 @@ TEST_F(MRTest, InverseDynamicsTrajectoryTest)
     result << tau_timestep_beg.transpose(), tau_timestep_mid.transpose(), tau_timestep_end.transpose();
 
     Eigen::MatrixXd taumat =
-        zl::InverseDynamicsTrajectory(thetamat, dthetamat, ddthetamat, g, Ftipmat, Mlist, Glist, Slist);
+        zl::Kinematics::InverseDynamicsTrajectory(thetamat, dthetamat, ddthetamat, g, Ftipmat, Mlist, Glist, Slist);
     Eigen::MatrixXd taumat_timestep(numTest, dof);
     taumat_timestep << taumat.row(0), taumat.row(int(N / 2) - 1), taumat.row(N - 1);
     ASSERT_TRUE(taumat_timestep.isApprox(result, 4));
@@ -836,7 +836,7 @@ TEST_F(MRTest, ForwardDynamicsTrajectoryTest)
         -8.16067131, -0.1455669, -4.57149985, -3.43135114;
 
     std::vector<Eigen::MatrixXd> traj =
-        zl::ForwardDynamicsTrajectory(thetalist, dthetalist, taumat, g, Ftipmat, Mlist, Glist, Slist, dt, intRes);
+        zl::Kinematics::ForwardDynamicsTrajectory(thetalist, dthetalist, taumat, g, Ftipmat, Mlist, Glist, Slist, dt, intRes);
     Eigen::MatrixXd traj_theta = traj.at(0);
     Eigen::MatrixXd traj_dtheta = traj.at(1);
 
@@ -888,7 +888,7 @@ TEST_F(MRTest, SimulateControlTest)
     int N = int(1.0 * Tf / dt);
     int method = 5;
 
-    Eigen::MatrixXd traj = zl::JointTrajectory(thetalist, thetaend, Tf, N, method);
+    Eigen::MatrixXd traj = zl::Kinematics::JointTrajectory(thetalist, thetaend, Tf, N, method);
     Eigen::MatrixXd thetamatd = traj;
     Eigen::MatrixXd dthetamatd = Eigen::MatrixXd::Zero(N, 3);
     Eigen::MatrixXd ddthetamatd = Eigen::MatrixXd::Zero(N, 3);
@@ -952,7 +952,7 @@ TEST_F(MRTest, SimulateControlTest)
     theta_timestep_end << 1.56344023, 3.07994906, 4.52269971;
     result_thetamat << theta_timestep_beg.transpose(), theta_timestep_mid.transpose(), theta_timestep_end.transpose();
 
-    std::vector<Eigen::MatrixXd> controlTraj = zl::SimulateControl(thetalist, dthetalist, g, Ftipmat, Mlist, Glist,
+    std::vector<Eigen::MatrixXd> controlTraj = zl::Kinematics::SimulateControl(thetalist, dthetalist, g, Ftipmat, Mlist, Glist,
         Slist, thetamatd, dthetamatd, ddthetamatd, gtilde, Mtildelist, Gtildelist, Kp, Ki, Kd, dt, intRes);
     Eigen::MatrixXd traj_tau = controlTraj.at(0);
     Eigen::MatrixXd traj_theta = controlTraj.at(1);

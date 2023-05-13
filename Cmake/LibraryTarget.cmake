@@ -17,8 +17,8 @@ build_library(Configure Log TinyXML)
 set(PQP_DIR PQP)
 build_library(PQP)
 
-set(RobotModel_DIR RobotModel)
-build_library(RobotModel)
+set(Kinematics_DIR Kinematics)
+build_library(Kinematics)
 
 set(CollisionDetection_DIR CollisionDetection)
 build_library(CollisionDetection)

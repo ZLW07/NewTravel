@@ -11,7 +11,10 @@ namespace zl
  * Inputs: value to be checked as a double
  * Returns: Boolean of true-ignore or false-can't ignore
  */
-bool NearZero(const double);
+class Kinematics
+{
+public:
+    static bool NearZero(const double);
 
 /*
  * Function: Calculate the 6x6 matrix [adV] of the given 6-vector
@@ -19,7 +22,7 @@ bool NearZero(const double);
  * Output: Eigen::MatrixXd (6x6)
  * Note: Can be used to calculate the Lie bracket [V1, V2] = [adV1]V2
  */
-Eigen::MatrixXd ad(Eigen::VectorXd);
+    static Eigen::MatrixXd ad(Eigen::VectorXd);
 
 /*
  * Function: Returns a normalized version of the input vector
@@ -29,21 +32,21 @@ Eigen::MatrixXd ad(Eigen::VectorXd);
  * 		Requires a copy
  *		Useful because of the MatrixXd casting
  */
-Eigen::MatrixXd Normalize(Eigen::MatrixXd);
+    static Eigen::MatrixXd Normalize(Eigen::MatrixXd);
 
 /*
  * Function: Returns the skew symmetric matrix representation of an angular velocity vector
  * Input: Eigen::Vector3d 3x1 angular velocity vector
  * Returns: Eigen::MatrixXd 3x3 skew symmetric matrix
  */
-Eigen::Matrix3d VecToso3(const Eigen::Vector3d &);
+    static Eigen::Matrix3d VecToso3(const Eigen::Vector3d &);
 
 /*
  * Function: Returns angular velocity vector represented by the skew symmetric matrix
  * Inputs: Eigen::MatrixXd 3x3 skew symmetric matrix
  * Returns: Eigen::Vector3d 3x1 angular velocity
  */
-Eigen::Vector3d so3ToVec(const Eigen::MatrixXd &);
+    static Eigen::Vector3d so3ToVec(const Eigen::MatrixXd &);
 
 /*
  * Function: Tranlates an exponential rotation into it's individual components
@@ -51,20 +54,20 @@ Eigen::Vector3d so3ToVec(const Eigen::MatrixXd &);
  *				and the angle of rotation)
  * Returns: The axis and angle of rotation as [x, y, z, theta]
  */
-Eigen::Vector4d AxisAng3(const Eigen::Vector3d &);
+    static Eigen::Vector4d AxisAng3(const Eigen::Vector3d &);
 
 /*
  * Function: Translates an exponential rotation into a rotation matrix
  * Inputs: exponenential representation of a rotation
  * Returns: Rotation matrix
  */
-Eigen::Matrix3d MatrixExp3(const Eigen::Matrix3d &);
+    static Eigen::Matrix3d MatrixExp3(const Eigen::Matrix3d &);
 
 /* Function: Computes the matrix logarithm of a rotation matrix
  * Inputs: Rotation matrix
  * Returns: matrix logarithm of a rotation
  */
-Eigen::Matrix3d MatrixLog3(const Eigen::Matrix3d &);
+    static Eigen::Matrix3d MatrixLog3(const Eigen::Matrix3d &);
 
 /*
  * Function: Combines a rotation matrix and position vector into a single
@@ -73,7 +76,7 @@ Eigen::Matrix3d MatrixLog3(const Eigen::Matrix3d &);
  * Returns: Matrix of T = [ [R, p],
  *						    [0, 1] ]
  */
-Eigen::MatrixXd RpToTrans(const Eigen::Matrix3d &, const Eigen::Vector3d &);
+    static Eigen::MatrixXd RpToTrans(const Eigen::Matrix3d &, const Eigen::Vector3d &);
 
 /*
  * Function: Separates the rotation matrix and position vector from
@@ -81,20 +84,20 @@ Eigen::MatrixXd RpToTrans(const Eigen::Matrix3d &, const Eigen::Vector3d &);
  * Inputs: Homogeneous transformation matrix
  * Returns: std::vector of [rotation matrix, position vector]
  */
-std::vector<Eigen::MatrixXd> TransToRp(const Eigen::MatrixXd &);
+    static std::vector<Eigen::MatrixXd> TransToRp(const Eigen::MatrixXd &);
 
 /*
  * Function: Translates a spatial velocity vector into a transformation matrix
  * Inputs: Spatial velocity vector [angular velocity, linear velocity]
  * Returns: Transformation matrix
  */
-Eigen::MatrixXd VecTose3(const Eigen::VectorXd &);
+    static Eigen::MatrixXd VecTose3(const Eigen::VectorXd &);
 
 /* Function: Translates a transformation matrix into a spatial velocity vector
  * Inputs: Transformation matrix
  * Returns: Spatial velocity vector [angular velocity, linear velocity]
  */
-Eigen::VectorXd se3ToVec(const Eigen::MatrixXd &);
+    static Eigen::VectorXd se3ToVec(const Eigen::MatrixXd &);
 
 /*
  * Function: Provides the adjoint representation of a transformation matrix
@@ -102,21 +105,21 @@ Eigen::VectorXd se3ToVec(const Eigen::MatrixXd &);
  * Inputs: 4x4 Transformation matrix SE(3)
  * Returns: 6x6 Adjoint Representation of the matrix
  */
-Eigen::MatrixXd Adjoint(const Eigen::MatrixXd &);
+    static Eigen::MatrixXd Adjoint(const Eigen::MatrixXd &);
 
 /*
  * Function: Rotation expanded for screw axis
  * Inputs: se3 matrix representation of exponential coordinates (transformation matrix)
  * Returns: 6x6 Matrix representing the rotation
  */
-Eigen::MatrixXd MatrixExp6(const Eigen::MatrixXd &);
+    static Eigen::MatrixXd MatrixExp6(const Eigen::MatrixXd &);
 
 /*
  * Function: Computes the matrix logarithm of a homogeneous transformation matrix
  * Inputs: R: Transformation matrix in SE3
  * Returns: The matrix logarithm of R
  */
-Eigen::MatrixXd MatrixLog6(const Eigen::MatrixXd &);
+    static Eigen::MatrixXd MatrixLog6(const Eigen::MatrixXd &);
 
 /*
  * Function: Compute end effector frame (used for current spatial position calculation)
@@ -128,7 +131,7 @@ Eigen::MatrixXd MatrixLog6(const Eigen::MatrixXd &);
  *				at the specified coordinates
  * Notes: FK means Forward Kinematics
  */
-Eigen::MatrixXd FKinSpace(std::vector<Eigen::Matrix4d> &outJointTrans, const Eigen::MatrixXd &M, const Eigen::MatrixXd &Slist, const Eigen::VectorXd &thetaList);
+    static Eigen::MatrixXd FKinSpace(std::vector<Eigen::Matrix4d> &outJointTrans, const Eigen::MatrixXd &M, const Eigen::MatrixXd &Slist, const Eigen::VectorXd &thetaList);
 
 /*
  * Function: Compute end effector frame (used for current body position calculation)
@@ -140,35 +143,35 @@ Eigen::MatrixXd FKinSpace(std::vector<Eigen::Matrix4d> &outJointTrans, const Eig
  *				at the specified coordinates
  * Notes: FK means Forward Kinematics
  */
-Eigen::MatrixXd FKinBody(const Eigen::MatrixXd &, const Eigen::MatrixXd &, const Eigen::VectorXd &);
+    static Eigen::MatrixXd FKinBody(const Eigen::MatrixXd &, const Eigen::MatrixXd &, const Eigen::VectorXd &);
 
 /*
  * Function: Gives the space Jacobian
  * Inputs: Screw axis in home position, joint configuration
  * Returns: 6xn Spatial Jacobian
  */
-Eigen::MatrixXd JacobianSpace(const Eigen::MatrixXd &, const Eigen::MatrixXd &);
+    static Eigen::MatrixXd JacobianSpace(const Eigen::MatrixXd &, const Eigen::MatrixXd &);
 
 /*
  * Function: Gives the body Jacobian
  * Inputs: Screw axis in BODY position, joint configuration
  * Returns: 6xn Bobdy Jacobian
  */
-Eigen::MatrixXd JacobianBody(const Eigen::MatrixXd &, const Eigen::MatrixXd &);
+    static Eigen::MatrixXd JacobianBody(const Eigen::MatrixXd &, const Eigen::MatrixXd &);
 
 /*
  * Inverts a homogeneous transformation matrix
  * Inputs: A homogeneous transformation Matrix T
  * Returns: The inverse of T
  */
-Eigen::MatrixXd TransInv(const Eigen::MatrixXd &);
+    static Eigen::MatrixXd TransInv(const Eigen::MatrixXd &);
 
 /*
  * Inverts a rotation matrix
  * Inputs: A rotation matrix  R
  * Returns: The inverse of R
  */
-Eigen::MatrixXd RotInv(const Eigen::MatrixXd &);
+    static Eigen::MatrixXd RotInv(const Eigen::MatrixXd &);
 
 /*
  * Takes a parametric description of a screw axis and converts it to a
@@ -179,7 +182,7 @@ Eigen::MatrixXd RotInv(const Eigen::MatrixXd &);
  * h: The pitch of the screw axis
  * Returns: A normalized screw axis described by the inputs
  */
-Eigen::VectorXd ScrewToAxis(Eigen::Vector3d q, Eigen::Vector3d s, double h);
+    static Eigen::VectorXd ScrewToAxis(Eigen::Vector3d q, Eigen::Vector3d s, double h);
 
 /*
  * Function: Translates a 6-vector of exponential coordinates into screw
@@ -191,7 +194,7 @@ Eigen::VectorXd ScrewToAxis(Eigen::Vector3d q, Eigen::Vector3d s, double h);
  * along/about S in form [S, theta]
  * Note: Is it better to return std::map<S, theta>?
  */
-Eigen::VectorXd AxisAng6(const Eigen::VectorXd &);
+    static Eigen::VectorXd AxisAng6(const Eigen::VectorXd &);
 
 /*
  * Function: Returns projection of one matrix into SO(3)
@@ -202,7 +205,7 @@ Eigen::VectorXd AxisAng6(const Eigen::VectorXd &);
  * (see http://hades.mech.northwestern.edu/index.php/Modern_Robotics_Linear_Algebra_Review).
  * This function is only appropriate for matrices close to SO(3).
  */
-Eigen::MatrixXd ProjectToSO3(const Eigen::MatrixXd &);
+    static Eigen::MatrixXd ProjectToSO3(const Eigen::MatrixXd &);
 
 /*
  * Function: Returns projection of one matrix into SE(3)
@@ -213,7 +216,7 @@ Eigen::MatrixXd ProjectToSO3(const Eigen::MatrixXd &);
  * (see http://hades.mech.northwestern.edu/index.php/Modern_Robotics_Linear_Algebra_Review).
  * This function is only appropriate for matrices close to SE(3).
  */
-Eigen::MatrixXd ProjectToSE3(const Eigen::MatrixXd &);
+    static Eigen::MatrixXd ProjectToSE3(const Eigen::MatrixXd &);
 
 /*
  * Function: Returns the Frobenius norm to describe the distance of M from the SO(3) manifold
@@ -225,7 +228,7 @@ Eigen::MatrixXd ProjectToSE3(const Eigen::MatrixXd &);
  *  If det(M) <= 0, return a large number.
  *  If det(M) > 0, return norm(M^T*M - I).
  */
-double DistanceToSO3(const Eigen::Matrix3d &);
+    static double DistanceToSO3(const Eigen::Matrix3d &);
 
 /*
  * Function: Returns the Frobenius norm to describe the distance of mat from the SE(3) manifold
@@ -240,7 +243,7 @@ double DistanceToSO3(const Eigen::Matrix3d &);
  *  and set the first three entries of the fourth column of mat to zero. Then
  *  return norm(T - I).
  */
-double DistanceToSE3(const Eigen::Matrix4d &);
+    static double DistanceToSE3(const Eigen::Matrix4d &);
 
 /*
  * Function: Returns true if M is close to or on the manifold SO(3)
@@ -249,7 +252,7 @@ double DistanceToSE3(const Eigen::Matrix4d &);
  * Outputs:
  *	 true if M is very close to or in SO(3), false otherwise
  */
-bool TestIfSO3(const Eigen::Matrix3d &);
+    static bool TestIfSO3(const Eigen::Matrix3d &);
 
 /*
  * Function: Returns true if T is close to or on the manifold SE(3)
@@ -258,7 +261,7 @@ bool TestIfSO3(const Eigen::Matrix3d &);
  * Outputs:
  *	 true if T is very close to or in SE(3), false otherwise
  */
-bool TestIfSE3(const Eigen::Matrix4d &);
+    static bool TestIfSE3(const Eigen::Matrix4d &);
 
 /*
  * Function: Computes inverse kinematics in the body frame for an open chain robot
@@ -283,8 +286,8 @@ bool TestIfSE3(const Eigen::Matrix4d &);
  *           within the tolerances eomg and ev.
  *	thetalist[in][out]: Joint angles that achieve T within the specified tolerances,
  */
-bool IKinBody(
-    const Eigen::MatrixXd &, const Eigen::MatrixXd &, const Eigen::MatrixXd &, Eigen::VectorXd &, double, double);
+    static bool IKinBody(
+        const Eigen::MatrixXd &, const Eigen::MatrixXd &, const Eigen::MatrixXd &, Eigen::VectorXd &, double, double);
 
 /*
  * Function: Computes inverse kinematics in the space frame for an open chain robot
@@ -309,8 +312,8 @@ bool IKinBody(
  *           within the tolerances eomg and ev.
  *	thetalist[in][out]: Joint angles that achieve T within the specified tolerances,
  */
-bool IKinSpace(
-    const Eigen::MatrixXd &, const Eigen::MatrixXd &, const Eigen::MatrixXd &, Eigen::VectorXd &, double, double);
+    static bool IKinSpace(
+        const Eigen::MatrixXd &, const Eigen::MatrixXd &, const Eigen::MatrixXd &, Eigen::VectorXd &, double, double);
 
 /*
  * Function: This function uses forward-backward Newton-Euler iterations to solve the
@@ -332,9 +335,9 @@ bool IKinSpace(
  *  taulist: The n-vector of required joint forces/torques
  *
  */
-Eigen::VectorXd InverseDynamics(const Eigen::VectorXd &, const Eigen::VectorXd &, const Eigen::VectorXd &,
-    const Eigen::VectorXd &, const Eigen::VectorXd &, const std::vector<Eigen::MatrixXd> &,
-    const std::vector<Eigen::MatrixXd> &, const Eigen::MatrixXd &);
+    static Eigen::VectorXd InverseDynamics(const Eigen::VectorXd &, const Eigen::VectorXd &, const Eigen::VectorXd &,
+                                    const Eigen::VectorXd &, const Eigen::VectorXd &, const std::vector<Eigen::MatrixXd> &,
+                                    const std::vector<Eigen::MatrixXd> &, const Eigen::MatrixXd &);
 
 /*
  * Function: This function calls InverseDynamics with Ftip = 0, dthetalist = 0, and
@@ -351,8 +354,8 @@ Eigen::VectorXd InverseDynamics(const Eigen::VectorXd &, const Eigen::VectorXd &
  *  grav: The 3-vector showing the effect force of gravity to the dynamics
  *
  */
-Eigen::VectorXd GravityForces(const Eigen::VectorXd &, const Eigen::VectorXd &, const std::vector<Eigen::MatrixXd> &,
-    const std::vector<Eigen::MatrixXd> &, const Eigen::MatrixXd &);
+    static Eigen::VectorXd GravityForces(const Eigen::VectorXd &, const Eigen::VectorXd &, const std::vector<Eigen::MatrixXd> &,
+                                  const std::vector<Eigen::MatrixXd> &, const Eigen::MatrixXd &);
 
 /*
  * Function: This function calls InverseDynamics n times, each time passing a
@@ -371,8 +374,8 @@ Eigen::VectorXd GravityForces(const Eigen::VectorXd &, const Eigen::VectorXd &, 
  *  M: The numerical inertia matrix M(thetalist) of an n-joint serial
  *     chain at the given configuration thetalist.
  */
-Eigen::MatrixXd MassMatrix(const Eigen::VectorXd &, const std::vector<Eigen::MatrixXd> &,
-    const std::vector<Eigen::MatrixXd> &, const Eigen::MatrixXd &);
+    static Eigen::MatrixXd MassMatrix(const Eigen::VectorXd &, const std::vector<Eigen::MatrixXd> &,
+                               const std::vector<Eigen::MatrixXd> &, const Eigen::MatrixXd &);
 
 /*
  * Function: This function calls InverseDynamics with g = 0, Ftip = 0, and
@@ -390,8 +393,8 @@ Eigen::MatrixXd MassMatrix(const Eigen::VectorXd &, const std::vector<Eigen::Mat
  *  c: The vector c(thetalist,dthetalist) of Coriolis and centripetal
  *     terms for a given thetalist and dthetalist.
  */
-Eigen::VectorXd VelQuadraticForces(const Eigen::VectorXd &, const Eigen::VectorXd &,
-    const std::vector<Eigen::MatrixXd> &, const std::vector<Eigen::MatrixXd> &, const Eigen::MatrixXd &);
+    static Eigen::VectorXd VelQuadraticForces(const Eigen::VectorXd &, const Eigen::VectorXd &,
+                                       const std::vector<Eigen::MatrixXd> &, const std::vector<Eigen::MatrixXd> &, const Eigen::MatrixXd &);
 
 /*
  * Function: This function calls InverseDynamics with g = 0, dthetalist = 0, and
@@ -409,8 +412,8 @@ Eigen::VectorXd VelQuadraticForces(const Eigen::VectorXd &, const Eigen::VectorX
  *  JTFtip: The joint forces and torques required only to create the
  *     end-effector force Ftip.
  */
-Eigen::VectorXd EndEffectorForces(const Eigen::VectorXd &, const Eigen::VectorXd &,
-    const std::vector<Eigen::MatrixXd> &, const std::vector<Eigen::MatrixXd> &, const Eigen::MatrixXd &);
+    static Eigen::VectorXd EndEffectorForces(const Eigen::VectorXd &, const Eigen::VectorXd &,
+                                      const std::vector<Eigen::MatrixXd> &, const std::vector<Eigen::MatrixXd> &, const Eigen::MatrixXd &);
 
 /*
  * Function: This function computes ddthetalist by solving:
@@ -431,9 +434,9 @@ Eigen::VectorXd EndEffectorForces(const Eigen::VectorXd &, const Eigen::VectorXd
  *  ddthetalist: The resulting joint accelerations
  *
  */
-Eigen::VectorXd ForwardDynamics(const Eigen::VectorXd &, const Eigen::VectorXd &, const Eigen::VectorXd &,
-    const Eigen::VectorXd &, const Eigen::VectorXd &, const std::vector<Eigen::MatrixXd> &,
-    const std::vector<Eigen::MatrixXd> &, const Eigen::MatrixXd &);
+    static Eigen::VectorXd ForwardDynamics(const Eigen::VectorXd &, const Eigen::VectorXd &, const Eigen::VectorXd &,
+                                    const Eigen::VectorXd &, const Eigen::VectorXd &, const std::vector<Eigen::MatrixXd> &,
+                                    const std::vector<Eigen::MatrixXd> &, const Eigen::MatrixXd &);
 
 /*
  * Function: Compute the joint angles and velocities at the next timestep using
@@ -448,7 +451,7 @@ Eigen::VectorXd ForwardDynamics(const Eigen::VectorXd &, const Eigen::VectorXd &
  *  thetalist[out]: Vector of joint variables after dt from first order Euler integration
  *  dthetalist[out]: Vector of joint rates after dt from first order Euler integration
  */
-void EulerStep(Eigen::VectorXd &, Eigen::VectorXd &, const Eigen::VectorXd &, double);
+    static void EulerStep(Eigen::VectorXd &, Eigen::VectorXd &, const Eigen::VectorXd &, double);
 
 /*
  * Function: Compute the joint forces/torques required to move the serial chain along the given
@@ -469,9 +472,9 @@ void EulerStep(Eigen::VectorXd &, Eigen::VectorXd &, const Eigen::VectorXd &, do
  *  taumat: The N x n matrix of joint forces/torques for the specified trajectory, where each of the N rows is the
  *vector of joint forces/torques at each time step
  */
-Eigen::MatrixXd InverseDynamicsTrajectory(const Eigen::MatrixXd &, const Eigen::MatrixXd &, const Eigen::MatrixXd &,
-    const Eigen::VectorXd &, const Eigen::MatrixXd &, const std::vector<Eigen::MatrixXd> &,
-    const std::vector<Eigen::MatrixXd> &, const Eigen::MatrixXd &);
+    static Eigen::MatrixXd InverseDynamicsTrajectory(const Eigen::MatrixXd &, const Eigen::MatrixXd &, const Eigen::MatrixXd &,
+                                              const Eigen::VectorXd &, const Eigen::MatrixXd &, const std::vector<Eigen::MatrixXd> &,
+                                              const std::vector<Eigen::MatrixXd> &, const Eigen::MatrixXd &);
 
 /*
  * Function: Compute the motion of a serial chain given an open-loop history of joint forces/torques
@@ -494,9 +497,9 @@ Eigen::MatrixXd InverseDynamicsTrajectory(const Eigen::MatrixXd &, const Eigen::
  *  thetamat: The N x n matrix of joint angles resulting from the specified joint forces/torques
  *  dthetamat: The N x n matrix of joint velocities
  */
-std::vector<Eigen::MatrixXd> ForwardDynamicsTrajectory(const Eigen::VectorXd &, const Eigen::VectorXd &,
-    const Eigen::MatrixXd &, const Eigen::VectorXd &, const Eigen::MatrixXd &, const std::vector<Eigen::MatrixXd> &,
-    const std::vector<Eigen::MatrixXd> &, const Eigen::MatrixXd &, double, int);
+    static std::vector<Eigen::MatrixXd> ForwardDynamicsTrajectory(const Eigen::VectorXd &, const Eigen::VectorXd &,
+                                                           const Eigen::MatrixXd &, const Eigen::VectorXd &, const Eigen::MatrixXd &, const std::vector<Eigen::MatrixXd> &,
+                                                           const std::vector<Eigen::MatrixXd> &, const Eigen::MatrixXd &, double, int);
 
 /*
  * Function: Compute the joint control torques at a particular time instant
@@ -520,10 +523,10 @@ std::vector<Eigen::MatrixXd> ForwardDynamicsTrajectory(const Eigen::VectorXd &, 
  *  tau_computed: The vector of joint forces/torques computed by the feedback
  *				  linearizing controller at the current instant
  */
-Eigen::VectorXd ComputedTorque(const Eigen::VectorXd &, const Eigen::VectorXd &, const Eigen::VectorXd &,
-    const Eigen::VectorXd &, const std::vector<Eigen::MatrixXd> &, const std::vector<Eigen::MatrixXd> &,
-    const Eigen::MatrixXd &, const Eigen::VectorXd &, const Eigen::VectorXd &, const Eigen::VectorXd &, double, double,
-    double);
+    static Eigen::VectorXd ComputedTorque(const Eigen::VectorXd &, const Eigen::VectorXd &, const Eigen::VectorXd &,
+                                   const Eigen::VectorXd &, const std::vector<Eigen::MatrixXd> &, const std::vector<Eigen::MatrixXd> &,
+                                   const Eigen::MatrixXd &, const Eigen::VectorXd &, const Eigen::VectorXd &, const Eigen::VectorXd &, double, double,
+                                   double);
 
 /*
  * Function: Compute s(t) for a cubic time scaling
@@ -535,7 +538,7 @@ Eigen::VectorXd ComputedTorque(const Eigen::VectorXd &, const Eigen::VectorXd &,
  *  st: The path parameter corresponding to a third-order
  *      polynomial motion that begins and ends at zero velocity
  */
-double CubicTimeScaling(double, double);
+    static double CubicTimeScaling(double, double);
 
 /*
  * Function: Compute s(t) for a quintic time scaling
@@ -548,7 +551,7 @@ double CubicTimeScaling(double, double);
  *      polynomial motion that begins and ends at zero velocity
  *	    and zero acceleration
  */
-double QuinticTimeScaling(double, double);
+    static double QuinticTimeScaling(double, double);
 
 /*
  * Function: Compute a straight-line trajectory in joint space
@@ -568,7 +571,7 @@ double QuinticTimeScaling(double, double);
  *        thetastart and the Nth row is thetaend . The elapsed time
  *        between each row is Tf / (N - 1)
  */
-Eigen::MatrixXd JointTrajectory(const Eigen::VectorXd &, const Eigen::VectorXd &, double, int, int);
+    static Eigen::MatrixXd JointTrajectory(const Eigen::VectorXd &, const Eigen::VectorXd &, double, int, int);
 
 /*
  * Function: Compute a trajectory as a list of N SE(3) matrices corresponding to
@@ -588,7 +591,7 @@ Eigen::MatrixXd JointTrajectory(const Eigen::VectorXd &, const Eigen::VectorXd &
  *        separated in time by Tf/(N-1). The first in the list is Xstart
  *        and the Nth is Xend
  */
-std::vector<Eigen::MatrixXd> ScrewTrajectory(const Eigen::MatrixXd &, const Eigen::MatrixXd &, double, int, int);
+    static std::vector<Eigen::MatrixXd> ScrewTrajectory(const Eigen::MatrixXd &, const Eigen::MatrixXd &, double, int, int);
 
 /*
  * Function: Compute a trajectory as a list of N SE(3) matrices corresponding to
@@ -612,7 +615,7 @@ std::vector<Eigen::MatrixXd> ScrewTrajectory(const Eigen::MatrixXd &, const Eige
  *  end-effector frame follows a straight line, decoupled from the rotational
  *  motion.
  */
-std::vector<Eigen::MatrixXd> CartesianTrajectory(const Eigen::MatrixXd &, const Eigen::MatrixXd &, double, int, int);
+    static std::vector<Eigen::MatrixXd> CartesianTrajectory(const Eigen::MatrixXd &, const Eigen::MatrixXd &, double, int, int);
 
 /*
  * Function: Compute the motion of a serial chain given an open-loop history of joint forces/torques
@@ -644,10 +647,12 @@ std::vector<Eigen::MatrixXd> CartesianTrajectory(const Eigen::MatrixXd &, const 
  *			  corresponds to a single time instant
  *  thetamat: The N x n matrix of actual joint angles
  */
-std::vector<Eigen::MatrixXd> SimulateControl(const Eigen::VectorXd &, const Eigen::VectorXd &, const Eigen::VectorXd &,
-    const Eigen::MatrixXd &, const std::vector<Eigen::MatrixXd> &, const std::vector<Eigen::MatrixXd> &,
-    const Eigen::MatrixXd &, const Eigen::MatrixXd &, const Eigen::MatrixXd &, const Eigen::MatrixXd &,
-    const Eigen::VectorXd &, const std::vector<Eigen::MatrixXd> &, const std::vector<Eigen::MatrixXd> &, double, double,
-    double, double, int);
+    static std::vector<Eigen::MatrixXd> SimulateControl(const Eigen::VectorXd &, const Eigen::VectorXd &, const Eigen::VectorXd &,
+                                                 const Eigen::MatrixXd &, const std::vector<Eigen::MatrixXd> &, const std::vector<Eigen::MatrixXd> &,
+                                                 const Eigen::MatrixXd &, const Eigen::MatrixXd &, const Eigen::MatrixXd &, const Eigen::MatrixXd &,
+                                                 const Eigen::VectorXd &, const std::vector<Eigen::MatrixXd> &, const std::vector<Eigen::MatrixXd> &, double, double,
+                                                 double, double, int);
+
+};
 
 } // namespace mr

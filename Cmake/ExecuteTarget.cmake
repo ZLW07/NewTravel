@@ -16,9 +16,8 @@ build_execute(UT_Configure  Configure Log TinyXML gtest)
 set(UT_PQP_DIR Test/PQP)
 build_execute(UT_PQP  PQP Log gtest)
 
-
-set(UT_RobotModel_DIR Test/RobotModel)
-build_execute(UT_RobotModel  RobotModel Log gtest)
+set(UT_Kinematics_DIR Test/Kinematics)
+build_execute(UT_Kinematics  Kinematics Log gtest)
 
 set(UT_CollisionDetection_DIR Test/CollisionDetection)
 build_execute(UT_CollisionDetection  CollisionDetection PQP Log RobotModel gtest )
