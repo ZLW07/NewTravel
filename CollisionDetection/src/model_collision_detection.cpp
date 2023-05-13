@@ -3,7 +3,7 @@
 //
 
 #include "CollisionDetection/model_cillision_detection.h"
-#include "RobotModel/modern_robotics.h"
+#include "Kinematics//modern_robotics.h"
 namespace zl
 {
 void CollisionDetection::BuildCollisionDetectionPair()

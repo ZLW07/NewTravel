@@ -6,7 +6,6 @@
 
 TEST_F(TestCollision, Test1)
 {
-    zl::Kinematics oKinematics;
     std::vector<Eigen::Matrix4d> outJointTrans;
     Eigen::Matrix<double, 6, 6> oSlist;
     oSlist << 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, -375, -775, 20, -1225, 20, 0, 0, 0, 0, 0, 0, 0,

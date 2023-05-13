@@ -1,5 +1,5 @@
 #include "ut_robot_model.h"
-#include "RobotModel/modern_robotics.h"
+#include "Kinematics//modern_robotics.h"
 #include "Log/log.h"
 #include <Eigen/Dense>
 #include <iostream>

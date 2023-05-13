@@ -20,4 +20,4 @@ set(UT_Kinematics_DIR Test/Kinematics)
 build_execute(UT_Kinematics  Kinematics Log gtest)
 
 set(UT_CollisionDetection_DIR Test/CollisionDetection)
-build_execute(UT_CollisionDetection  CollisionDetection PQP Log RobotModel gtest )
+build_execute(UT_CollisionDetection  CollisionDetection PQP Log Kinematics gtest )
