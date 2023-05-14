@@ -23,5 +23,13 @@ TEST_F(TestCollision, Test1)
     }
     ZLOG_INFO << "\n" << result;
     PQP_Model pPQP_Model;
+}
 
+TEST_F(TestCollision, IsCollision)
+{
+    zl::CollisionDetection oCollisionDetection;
+    Eigen::Vector<double, 6> vecTheta;
+    vecTheta << M_PI * 112.87 / 180, M_PI * (-59.79 + 90) / 180, M_PI * (210.65 - 90) / 180, M_PI * (-160.15) / 180,
+        M_PI * 64.14 / 180, M_PI * (-81.19) / 180;
+    ZLOG << oCollisionDetection.IsCollision(vecTheta);
 }

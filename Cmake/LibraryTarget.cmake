@@ -21,4 +21,4 @@ set(Kinematics_DIR Kinematics)
 build_library(Kinematics)
 
 set(CollisionDetection_DIR CollisionDetection)
-build_library(CollisionDetection)
+build_library(CollisionDetection Model)

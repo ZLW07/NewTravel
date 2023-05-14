@@ -292,16 +292,19 @@ Eigen::MatrixXd Kinematics::FKinSpace(std::vector<Eigen::Matrix4d> &outJointTran
 //        outJointTrans.at(i) = T;
 //    }
 //    return T;
+    outJointTrans.resize(thetaList.size() + 1);
+    Eigen::Matrix4d oMat;
+    oMat.setIdentity();
+    outJointTrans.at(0) = oMat;
     Eigen::MatrixXd T = MatrixExp6(VecTose3(Slist.col(0) * thetaList(0)));
-    outJointTrans.resize(thetaList.size());
-    outJointTrans.at(0) = T;
+    outJointTrans.at(1) = T;
     for (int ii = 1; ii < thetaList.size(); ++ii)
     {
         T = T * MatrixExp6(VecTose3(Slist.col(ii) * thetaList(ii)));
         outJointTrans.at(ii) = T;
     }
     T = T*M;
-    outJointTrans.at(thetaList.size()-1) = T;
+    outJointTrans.at(thetaList.size()) = T;
     return T;
 }
 
