@@ -637,6 +637,10 @@ int PQP_Collide(PQP_CollideResult *res, PQP_REAL R1[3][3], PQP_REAL T1[3], PQP_M
 
     CollideRecurse(res, R, T, o1, 0, o2, 0, flag);
 
+        ZLOG_INFO <<"---------------------" <<  res->T[0] << ", " << res->T[1] << ", " << res->T[2];
+
+
+
     double t2 = GetTime();
     res->query_time_secs = t2 - t1;
 

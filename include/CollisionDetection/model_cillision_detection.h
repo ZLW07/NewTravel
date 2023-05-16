@@ -30,9 +30,10 @@ private:
     void Matrix4dToTranslate(Eigen::Matrix4d &oMat, double *dResult);
 private:
     std::map<std::string,std::vector<std::string>> m_mapCollisionDetectionPair;
-    std::map<std::string,PQP_Model> m_mapPQPModel;
+    std::map<std::string,PQP_Model*> m_mapPQPModel;
     std::map<std::string,int> m_mapLinkData;
-    std::vector<PQP_Model> m_vecPQPModel;
+    std::vector<PQP_Model*> m_vecPQPModel;
+    std::map<std::string,Eigen::Matrix4d> m_mInitTrans;
 };
 
 

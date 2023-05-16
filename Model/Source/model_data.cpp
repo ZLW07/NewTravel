@@ -282,7 +282,7 @@ int ModelManager::IsColliding(
     ;
 }
 
-bool ModelManager::BuildPQPModel(PQP_Model &vPQPModel, std::string cFileName)
+bool ModelManager::BuildPQPModel(PQP_Model *pPQPModel, std::string cFileName)
 {
     ModelDataElement oModelData;
     if (!ReadAscllSTlFile(cFileName.c_str(), oModelData))
@@ -291,14 +291,13 @@ bool ModelManager::BuildPQPModel(PQP_Model &vPQPModel, std::string cFileName)
     }
     std::vector<Vector3D> vSrc_1 = oModelData.TriangularPointCloud();
 
-    PQP_Model *pModel = new PQP_Model();
     ZLOG << "Start build model";
-    pModel->BeginModel(vSrc_1.size());
+    pPQPModel->BeginModel(vSrc_1.size());
     for (int ii = 0; ii < vSrc_1.size(); ++ii)
     {
-        pModel->AddTri(&vSrc_1[ii].X(), &vSrc_1[ii].Y(), &vSrc_1[ii].Z(), ii);
+        pPQPModel->AddTri(&vSrc_1[ii].X(), &vSrc_1[ii].Y(), &vSrc_1[ii].Z(), ii);
     }
-    pModel->EndModel();
+    pPQPModel->EndModel();
     ZLOG << "Build model end";
     return true;
 }

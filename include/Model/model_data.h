@@ -27,7 +27,7 @@ public:
     static int IsColliding(PQP_CollideResult &oResult,Matrix4 &trans_1,PQP_Model &oModel_1,Matrix4 &trans_2,PQP_Model &oModel_2);
     static OBBElement GetOBBData(std::vector<Vector3D> &oDataBase);
     static Rotation CovarianceMatrix(std::vector<Vector3D> &vSrc_1);
-    static bool BuildPQPModel(PQP_Model &vPQPModel, std::string cFileName);
+    static bool BuildPQPModel(PQP_Model *vPQPModel, std::string cFileName);
 private:
     static bool ReadAscllSTlFile(const char *cFileName, ModelDataElement &oModelData);
 private:

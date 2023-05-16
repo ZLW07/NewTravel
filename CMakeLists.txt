@@ -36,6 +36,8 @@ set(BUILD_SHARED_LIBS ON)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/Cmake)
 
+find_package(ompl REQUIRED)
+
 function(build_library MODULE_NAME)
     message("")
     message("[LIBRARY] [${MODULE_NAME}]------------")

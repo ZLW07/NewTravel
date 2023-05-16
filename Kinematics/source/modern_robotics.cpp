@@ -301,10 +301,9 @@ Eigen::MatrixXd Kinematics::FKinSpace(std::vector<Eigen::Matrix4d> &outJointTran
     for (int ii = 1; ii < thetaList.size(); ++ii)
     {
         T = T * MatrixExp6(VecTose3(Slist.col(ii) * thetaList(ii)));
-        outJointTrans.at(ii) = T;
+        outJointTrans.at(ii + 1) = T;
     }
     T = T*M;
-    outJointTrans.at(thetaList.size()) = T;
     return T;
 }
 
