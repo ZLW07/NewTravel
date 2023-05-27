@@ -477,7 +477,6 @@ void CollideRecurse(PQP_CollideResult *res, PQP_REAL R[3][3], PQP_REAL T[3], // 
     PQP_Model *o1, int b1, PQP_Model *o2, int b2, int flag)
 {
     // first thing, see if we're overlapping
-
     res->num_bv_tests++;
 
     if (!BV_Overlap(R, T, o1->child(b1), o2->child(b2)))
@@ -630,17 +629,11 @@ int PQP_Collide(PQP_CollideResult *res, PQP_REAL R1[3][3], PQP_REAL T1[3], PQP_M
     MxVpV(Ttemp, res->R, o2->child(0)->Tr, res->T);
     VmV(Ttemp, Ttemp, o1->child(0)->Tr);
 #endif
-
     MTxV(T, o1->child(0)->m_Rotation, Ttemp);
 
     // now start with both top level BVs
-
+    ZLOG_INFO << "=============: " << T[0] << "; " << T[1] << "; " << T[2];
     CollideRecurse(res, R, T, o1, 0, o2, 0, flag);
-
-        ZLOG_INFO <<"---------------------" <<  res->T[0] << ", " << res->T[1] << ", " << res->T[2];
-
-
-
     double t2 = GetTime();
     res->query_time_secs = t2 - t1;
 

@@ -5,8 +5,8 @@
 #ifndef NEWTRAVEL_PROTOCOL_H
 #define NEWTRAVEL_PROTOCOL_H
 
-#include "Math/math_vector3d.h"
 #include "Math/math_rotation.h"
+#include "Math/math_vector3d.h"
 
 namespace zl
 {
@@ -26,6 +26,8 @@ struct ModelDataElement
         {
             for (int jj = 0; jj < TRIANGLULAT_POINT_COUNT; ++jj)
             {
+//                vecData.push_back(Vector3D(vecPoint[ii].avPoint[jj][0] * 1000, vecPoint[ii].avPoint[jj][1] * 1000,
+//                    vecPoint[ii].avPoint[jj][2] * 1000));
                 vecData.push_back(vecPoint[ii].avPoint[jj]);
             }
         }
@@ -40,7 +42,6 @@ struct OBBElement
     Vector3D v3dOBBLength;
 };
 
-
-}
+} // namespace zl
 
 #endif // NEWTRAVEL_PROTOCOL_H

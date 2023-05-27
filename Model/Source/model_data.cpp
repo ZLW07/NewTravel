@@ -293,12 +293,19 @@ bool ModelManager::BuildPQPModel(PQP_Model *pPQPModel, std::string cFileName)
 
     ZLOG << "Start build model";
     pPQPModel->BeginModel(vSrc_1.size());
+    int iIndex = 0;
+    ZLOG_INFO << cFileName << " ================point size is " << vSrc_1.size()/3;
     for (int ii = 0; ii < vSrc_1.size(); ++ii)
     {
-        pPQPModel->AddTri(&vSrc_1[ii].X(), &vSrc_1[ii].Y(), &vSrc_1[ii].Z(), ii);
+        double p1[3] ={vSrc_1[ii].X(),vSrc_1[ii].Y(),vSrc_1[ii].Z()};
+        double p2[3] ={vSrc_1[ii + 1].X(),vSrc_1[ii + 1].Y(),vSrc_1[ii + 1].Z()};
+        double p3[3] ={vSrc_1[ii + 2].X(),vSrc_1[ii + 2].Y(),vSrc_1[ii + 2].Z()};
+        pPQPModel->AddTri(p1, p2, p3, iIndex);
+        ii = ii + 2;
+        iIndex = iIndex + 1;
     }
     pPQPModel->EndModel();
-    ZLOG << "Build model end";
+    ZLOG_INFO << "============ pPQPModel->num_tris=============: " << pPQPModel->num_tris;
     return true;
 }
 

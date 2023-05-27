@@ -33,6 +33,26 @@ TEST_F(UTPQP, Colli)
 
     b1->BeginModel();
     b2->BeginModel();
+    PQP_REAL p1[3] = {0,0,0};
+    PQP_REAL p2[3] = {20,0,0};
+    PQP_REAL p3[3] = {0,20,0};
+    PQP_REAL p4[3] = {0,0,20};
+
+    PQP_REAL p11[3] = {5,5,5};
+    PQP_REAL p21[3] = {10,5,5};
+    PQP_REAL p31[3] = {5,10,5};
+    PQP_REAL p41[3] = {5,5,6};
+
+    b1->AddTri(p1, p2, p3, 0);
+    b1->AddTri(p1, p4, p2, 1);
+    b1->AddTri(p1, p4, p3, 2);
+    b1->AddTri(p4, p2, p3, 3);
+
+    b2->AddTri(p11, p21, p31, 0);
+    b2->AddTri(p11, p41, p21, 1);
+    b2->AddTri(p11, p41, p31, 2);
+    b2->AddTri(p41, p21, p31, 3);
+    /*
     for (uc = 0; uc < n1; uc++)
     {
         for (vc = 0; vc < n2; vc++)
@@ -65,7 +85,7 @@ TEST_F(UTPQP, Colli)
             count += 2;
         }
     }
-
+*/
     ZLOG_INFO << "done";
     ZLOG_INFO << "Tori have  triangles each" << count;
     ZLOG_INFO << "building hierarchies...";
@@ -90,12 +110,12 @@ TEST_F(UTPQP, Colli)
     R2[0][1] = R2[1][0] = R2[2][0] = 0.0;
     R2[0][2] = R2[1][2] = R2[2][1] = 0.0;
 
-    T1[0] = 1.0;
+    T1[0] = 0.0;
     T1[1] = 0.0;
     T1[2] = 0.0;
     T2[0] = 0.0;
     T2[1] = 0.0;
-    T2[2] = 0.0;
+    T2[2] = -6.1;
 
     // perform a collision query
 
@@ -109,6 +129,9 @@ TEST_F(UTPQP, Colli)
     ZLOG_INFO << "Num BV tests: " << cres.NumBVTests();
     ZLOG_INFO << "Num Tri tests: " << cres.NumTriTests();
     ZLOG_INFO << "Num contact pairs: " << cres.NumPairs();
+    ZLOG_INFO << "b1  tri: " << b1->num_tris;
+    ZLOG_INFO << cres.Colliding();
+    /*
 #if 0
     int i;
     for (i = 0; i < cres.NumPairs(); i++)
@@ -198,7 +221,7 @@ TEST_F(UTPQP, Colli)
     {
         ZLOG_INFO << "no.";
     }
-
+*/
     //
     //    printf("\nTolerance query between interlocked but nontouching tori\n"
     //           "with tolerance %lf\n",
