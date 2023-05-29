@@ -279,7 +279,6 @@ int ModelManager::IsColliding(
         //        aPose_2[ii]= trans_2[ii][3];
     }
     return PQP_Collide(&oResult, aRot_1, aPose_1, &oModel_1, aRot_2, aPose_2, &oModel_2);
-    ;
 }
 
 bool ModelManager::BuildPQPModel(PQP_Model *pPQPModel, std::string cFileName)
@@ -290,11 +289,9 @@ bool ModelManager::BuildPQPModel(PQP_Model *pPQPModel, std::string cFileName)
         return false;
     }
     std::vector<Vector3D> vSrc_1 = oModelData.TriangularPointCloud();
-
     ZLOG << "Start build model";
     pPQPModel->BeginModel(vSrc_1.size());
     int iIndex = 0;
-    ZLOG_INFO << cFileName << " ================point size is " << vSrc_1.size()/3;
     for (int ii = 0; ii < vSrc_1.size(); ++ii)
     {
         double p1[3] ={vSrc_1[ii].X(),vSrc_1[ii].Y(),vSrc_1[ii].Z()};
@@ -305,7 +302,6 @@ bool ModelManager::BuildPQPModel(PQP_Model *pPQPModel, std::string cFileName)
         iIndex = iIndex + 1;
     }
     pPQPModel->EndModel();
-    ZLOG_INFO << "============ pPQPModel->num_tris=============: " << pPQPModel->num_tris;
     return true;
 }
 

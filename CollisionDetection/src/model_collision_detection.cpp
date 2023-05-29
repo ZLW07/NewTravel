@@ -6,7 +6,6 @@
 #include "Kinematics//modern_robotics.h"
 namespace zl
 {
-
 CollisionDetection::CollisionDetection()
 {
     m_vecPQPModel.resize(7);
@@ -53,8 +52,8 @@ void CollisionDetection::BuildCollisionDetectionPair()
     m_mInitTrans["Link_2"] = Joint11;
     Eigen::Matrix4d Joint2;
     Joint2 << 1,0,0,0,
-        0,0,-1,0,
-        0,1,0,0.375,
+        0,0,1,0,
+        0,-1,0,0.375,
         0,0,0,1;
     m_mInitTrans["Link_3"] = Joint2;
     Eigen::Matrix4d Joint3;
@@ -73,8 +72,8 @@ void CollisionDetection::BuildCollisionDetectionPair()
 
     Eigen::Matrix4d Joint5;
     Joint5 << 1,0,0,0,
-              0,0,1,0.020,
-              0,-1,0,1.225,
+              0,0,-1,0.020,
+              0,1,0,1.225,
               0,0,0,1;
     m_mInitTrans["Link_6"] = Joint5;
 
@@ -137,14 +136,12 @@ bool CollisionDetection::IsCollision(Eigen::Vector<double, 6> &vecTheta)
               0, -0.375, -0.775, 0.020, -1.225, 0.020,
               0, 0, 0, 0, 0, 0,
                0, 0, 0, 0, 0, 0;
-    //    Eigen::Vector<double,6> vecTheta;
     Eigen::Matrix4d InitTransform;
     InitTransform << 1, 0, 0, 0,
                   0, 1, 0, 0.020,
                   0, 0, 1, 1.295,
                   0, 0, 0, 1;
     auto result = zl::Kinematics::FKinSpace(outJointTrans, InitTransform, oSlist, vecTheta);
-    ZLOG_INFO << "result: is \n" << result;
     for (const auto &iter : m_mapCollisionDetectionPair)
     {
         std::string sLinkName = iter.first;
@@ -162,20 +159,13 @@ bool CollisionDetection::IsCollision(Eigen::Vector<double, 6> &vecTheta)
             Matrix4dToRotation(oTrans2, R2);
             double T2[3];
             Matrix4dToTranslate(oTrans2, T2);
-            ZLOG <<sOtherLinkName << ": " << T2[0] << ", " << T2[1] << ", " << T2[2];
-            ZLOG <<sLinkName << ": " << dT1[0] << ", " << dT1[1] << ", " << dT1[2];
-            ZLOG_INFO <<sLinkName <<" tris : " << m_mapPQPModel[sLinkName]->num_tris;
-            ZLOG_INFO <<sOtherLinkName << " tris is: " <<  m_mapPQPModel[sOtherLinkName]->num_tris;
             PQP_CollideResult cres;
             PQP_Collide(
                 &cres, R1, dT1, m_mapPQPModel[sLinkName], R2, T2, m_mapPQPModel[sOtherLinkName], PQP_FIRST_CONTACT);
-            PQP_DistanceResult dres;
-            PQP_Distance(&dres, R1, dT1, m_mapPQPModel[sLinkName], R2, T2, m_mapPQPModel[sOtherLinkName], 0.0, 0.0);
-            ZLOG_INFO <<"======================"<< sLinkName <<": "<< sOtherLinkName <<": " << dres.Distance();
             if (cres.Colliding())
             {
                 ZLOG_ERR << "The pose is collision" <<sLinkName << " and " << sOtherLinkName;
-//                return true;
+                return true;
             }
         }
     }

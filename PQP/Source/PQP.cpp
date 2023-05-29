@@ -632,7 +632,6 @@ int PQP_Collide(PQP_CollideResult *res, PQP_REAL R1[3][3], PQP_REAL T1[3], PQP_M
     MTxV(T, o1->child(0)->m_Rotation, Ttemp);
 
     // now start with both top level BVs
-    ZLOG_INFO << "=============: " << T[0] << "; " << T[1] << "; " << T[2];
     CollideRecurse(res, R, T, o1, 0, o2, 0, flag);
     double t2 = GetTime();
     res->query_time_secs = t2 - t1;

@@ -38,7 +38,7 @@ TEST_F(TestCollision, IsCollision)
     Eigen::Vector<double, 6> vecTheta;
 /*    vecTheta << M_PI * 0 / 180, M_PI * (0 + 90) / 180, M_PI * (166.08 - 90) / 180, M_PI * (0) / 180,
         M_PI * 108.4 / 180, M_PI * (0) / 180;*/
-    vecTheta << 0, 0, M_PI , 0, 0, 0;
+    vecTheta << 0, 0, M_PI * 169/180 , 0, M_PI * (-32)/180, 0;
     ZLOG << oCollisionDetection.IsCollision(vecTheta);
 }
 
@@ -50,39 +50,53 @@ TEST_F(TestCollision, IsCollision1)
     PQP_Model *p3 = new PQP_Model();
 
     zl::ModelManager::BuildPQPModel(
-        p3, "../../Data/RobotModel/7.STL");
+        p3, "../../Data/RobotModel/6.STL");
 
     PQP_REAL R1[3][3], R2[3][3], T1[3], T2[3];
 
-    R1[0][0] = 1.0;
-    R1[0][1] =R1[0][2] = 0.0;
+/*    R1[0][0] = 1.0;
+    R1[0][1] = R1[0][2] = 0.0;
 
     R1[1][0] = R1[1][1] = 0.0;
-    R1[1][2] = -1;
+    R1[1][2] = -1.0;
 
-    R1[2][0] = R2[2][2] = 0.0;
+    R1[2][0] = R1[2][2] = 0.0;
     R1[2][1] = 1.0;
 
+
+    R2[0][0] = -1.0;
+    R2[0][1] = R2[0][2] =0.0;
+
+    R2[1][1] = 1.0;
+    R2[1][0] = R2[1][2] = 0.0;
+    R2[2][2] = -1.0;
+     R2[2][0] =  R2[2][1] =0.0;
+
+
+    T1[0] = 0.0;
+    T1[1] = 0.0;
+    T1[2] = 0.375;
+
+    T2[0] = 0.0;
+    T2[1] = 0.020;
+    T2[2] = 0.375;*/
+    R1[0][0] = R1[1][1] = R1[2][2] = 1.0;
+    R1[0][1] = R1[1][0] = R1[2][0] = 0.0;
+    R1[0][2] = R1[1][2] = R1[2][1] = 0.0;
 
     R2[0][0] = R2[1][1] = R2[2][2] = 1.0;
     R2[0][1] = R2[1][0] = R2[2][0] = 0.0;
     R2[0][2] = R2[1][2] = R2[2][1] = 0.0;
 
     T1[0] = 0.0;
-    T1[1] = 375;
+    T1[1] = 0.0;
     T1[2] = 0.0;
-
     T2[0] = 0.0;
-    T2[1] = 255.0;
+    T2[1] = 0.0;
     T2[2] = 0.0;
 
     PQP_CollideResult cres;
     PQP_Collide(
-        &cres, R1, T1, p2, R2, T2, p3, PQP_FIRST_CONTACT);
-
-    PQP_ToleranceResult tres;
-    PQP_REAL tolerance = (PQP_REAL)0.01;
-    PQP_Tolerance(&tres, R1, T1, p2, R2, T2, p3, tolerance);
+        &cres, R1, T1, p2, R1, T1, p3, PQP_ALL_CONTACTS);
     ZLOG_INFO << cres.Colliding();
-    ZLOG_INFO << tres.Distance();
 }
