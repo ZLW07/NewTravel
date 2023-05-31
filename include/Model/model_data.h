@@ -28,7 +28,6 @@ public:
     static OBBElement GetOBBData(std::vector<Vector3D> &oDataBase);
     static Rotation CovarianceMatrix(std::vector<Vector3D> &vSrc_1);
     static bool BuildPQPModel(PQP_Model *vPQPModel, std::string cFileName);
-private:
     static bool ReadAscllSTlFile(const char *cFileName, ModelDataElement &oModelData);
 private:
 };
