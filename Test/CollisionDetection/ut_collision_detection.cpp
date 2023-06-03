@@ -100,3 +100,12 @@ TEST_F(TestCollision, IsCollision1)
         &cres, R1, T1, p2, R1, T1, p3, PQP_ALL_CONTACTS);
     ZLOG_INFO << cres.Colliding();
 }
+TEST_F(TestCollision, Change)
+{
+    zl::ModelDataElement oModelData;
+    if (!zl::ModelManager::ReadAscllSTlFile("../../Data/RobotModel/球R100mm.STL", oModelData))
+    {
+        return ;
+    }
+    Save("球R100mm.stl",oModelData);
+}
