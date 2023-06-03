@@ -34,6 +34,9 @@ private:
     std::map<std::string,int> m_mapLinkData;
     std::vector<PQP_Model*> m_vecPQPModel;
     std::map<std::string,Eigen::Matrix4d> m_mInitTrans;
+    Eigen::Matrix<double, 6, 6> m_matSlist;
+    Eigen::Matrix4d   m_matInitM;
+
 };
 
 

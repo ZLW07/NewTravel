@@ -9,6 +9,16 @@ namespace zl
 CollisionDetection::CollisionDetection()
 {
     m_vecPQPModel.resize(7);
+    m_matSlist <<0, 0, 0, 0, 0, 0,
+        0, 1, 1, 0, 1, 0,
+        1, 0, 0, 1, 0, 1,
+        0, -0.375, -0.775, 0.020, -1.225, 0.020,
+        0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0;
+    m_matInitM << 1, 0, 0, 0,
+        0, 1, 0, 0.020,
+        0, 0, 1, 1.295,
+        0, 0, 0, 1;
     BuildCollisionDetectionPair();
     InitCollisionDetectionData();
 }
@@ -129,19 +139,7 @@ void CollisionDetection::InitCollisionDetectionData()
 bool CollisionDetection::IsCollision(Eigen::Vector<double, 6> &vecTheta)
 {
     std::vector<Eigen::Matrix4d> outJointTrans;
-    Eigen::Matrix<double, 6, 6> oSlist;
-    oSlist << 0, 0, 0, 0, 0, 0,
-              0, 1, 1, 0, 1, 0,
-              1, 0, 0, 1, 0, 1,
-              0, -0.375, -0.775, 0.020, -1.225, 0.020,
-              0, 0, 0, 0, 0, 0,
-               0, 0, 0, 0, 0, 0;
-    Eigen::Matrix4d InitTransform;
-    InitTransform << 1, 0, 0, 0,
-                  0, 1, 0, 0.020,
-                  0, 0, 1, 1.295,
-                  0, 0, 0, 1;
-    auto result = zl::Kinematics::FKinSpace(outJointTrans, InitTransform, oSlist, vecTheta);
+    auto result = zl::Kinematics::FKinSpace(outJointTrans, m_matInitM, m_matSlist, vecTheta);
     for (const auto &iter : m_mapCollisionDetectionPair)
     {
         std::string sLinkName = iter.first;
