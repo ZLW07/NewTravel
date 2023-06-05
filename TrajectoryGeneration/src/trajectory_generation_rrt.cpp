@@ -98,6 +98,7 @@ RobotPose RRTPlanner::GetRandomNode()
     {
         pose.dAngle[i] = RandAngle(i);
     }
+    ZLOG_INFO << "Generate pose is "<< pose;
     return pose;
 }
 
@@ -106,7 +107,8 @@ double RRTPlanner::RandAngle(int i)
     double angle_min[6] = {-2.35619, -1.5708, -2.35619, -2.35619, -2.35619, -6.28319};
     double angle_max[6] = {2.35619, 1.39626, 2.0944, 2.35619, 2.35619, 6.28319};
     double r = (double)rand() / RAND_MAX;
-    return angle_min[i] + r * (angle_max[i] - angle_min[i]);
+    double dAngel = angle_min[i] + r * (angle_max[i] - angle_min[i]);
+    return dAngel;
 }
 
 void RRTPlanner::ClearNode(RRTNode *oNode)

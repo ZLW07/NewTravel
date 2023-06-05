@@ -15,6 +15,13 @@ public:
     double dAngle[6];
     RobotPose() = default;
     ~RobotPose() = default;
+    friend std::ostream &operator<<(std::ostream &os, const RobotPose &oRobotPose)
+    {
+        return os << "Joint_0: " << oRobotPose.dAngle[0] << " Joint_1: " << oRobotPose.dAngle[1]
+           << " Joint_2: " << oRobotPose.dAngle[2] << " Joint_3: " << oRobotPose.dAngle[3]
+           << " Joint_4: " << oRobotPose.dAngle[4] << " Joint_5: " << oRobotPose.dAngle[5];
+
+    }
 };
 
 class RRTNode
@@ -31,7 +38,7 @@ public:
     {
         for (int i = 0; i < 6; ++i)
         {
-            if (fabs(m_oCurrentPose.dAngle[i] - other.dAngle[i]) > 0.001)
+            if (fabs(m_oCurrentPose.dAngle[i] - other.dAngle[i]) > 0.1)
             {
                 return false;
             }
@@ -47,6 +54,7 @@ public:
     ~RRTPlanner();
 
     bool Plan();
+
 private:
     RobotPose GetRandomNode();
     bool IsValid(const RobotPose &oPose);
