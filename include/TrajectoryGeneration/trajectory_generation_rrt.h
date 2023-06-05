@@ -38,7 +38,7 @@ public:
     {
         for (int i = 0; i < 6; ++i)
         {
-            if (fabs(m_oCurrentPose.dAngle[i] - other.dAngle[i]) > 0.1)
+            if (fabs(m_oCurrentPose.dAngle[i] - other.dAngle[i]) > 1)
             {
                 return false;
             }
