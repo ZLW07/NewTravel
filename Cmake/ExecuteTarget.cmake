@@ -21,3 +21,7 @@ build_execute(UT_Kinematics  Kinematics Log gtest)
 
 set(UT_CollisionDetection_DIR Test/CollisionDetection)
 build_execute(UT_CollisionDetection  CollisionDetection PQP Log Kinematics Model  Math gtest )
+
+
+set(UT_TrajectoryGeneration_DIR Test/TrajectoryGeneration)
+build_execute(UT_TrajectoryGeneration TrajectoryGeneration CollisionDetection PQP Log Kinematics Model  Math gtest )

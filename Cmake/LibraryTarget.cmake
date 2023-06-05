@@ -22,3 +22,6 @@ build_library(Kinematics)
 
 set(CollisionDetection_DIR CollisionDetection)
 build_library(CollisionDetection Model)
+
+set(TrajectoryGeneration_DIR TrajectoryGeneration)
+build_library(TrajectoryGeneration CollisionDetection)
