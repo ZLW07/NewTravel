@@ -15,7 +15,6 @@ class UTTrajectoryGeneration : public ::testing::Test
 public:
     UTTrajectoryGeneration() = default;
     ~UTTrajectoryGeneration() = default;
-
 private:
 };
 } // namespace zl

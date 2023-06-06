@@ -7,7 +7,8 @@
 namespace zl
 {
 RRTPlanner::RRTPlanner(const RobotPose &oStartPose, const RobotPose &oTargetPose, double dStepSize, int iMaxIterations)
-    : m_oStartPose(oStartPose), m_oTargetPose(oTargetPose), m_dStepSize(dStepSize), m_iMaxIterations(iMaxIterations)
+    : m_oStartPose(oStartPose), m_oTargetPose(oTargetPose), m_dStepSize(dStepSize), m_iMaxIterations(iMaxIterations),
+      m_oCollisionDetection(CollisionDetection())
 {
     m_pRootNode = new RRTNode();
     m_pRootNode->m_oCurrentPose = oStartPose;
@@ -20,37 +21,27 @@ RRTPlanner::~RRTPlanner()
     Clear();
 }
 
-bool RRTPlanner::IsValid(const RobotPose &oPose)
+bool RRTPlanner::IsValid(const RobotPose &a, const RobotPose &b)
 {
-    const double pi = M_PI;
-    // 判断每个关节的角度是否在 [-pi, pi] 的范围内
-    for (int ii = 0; ii < 6; ++ii)
-    {
-        if (oPose.dAngle[ii] < -pi || oPose.dAngle[ii] > pi)
-        {
-            return false;
-        }
-    }
-    // 如果所有关节角度都在 [-pi, pi] 的范围内，则该姿态有效
-    return true;
+    return IsReachAble(a,b);
 }
 
 RRTNode *RRTPlanner::GetNearestNode(const RobotPose &pPose)
 {
-    RRTNode *nearest_node = m_pRootNode;
-    double min_distance = GetDistance(nearest_node->m_oCurrentPose, pPose);
+    RRTNode *pNode = new RRTNode();
+    double min_distance = GetDistance(m_pRootNode->m_oCurrentPose, pPose);
     double cur_distance = 0.0;
     // 递归地寻找距离目标姿态最近的树节点
-    for (RRTNode *node : nearest_node->m_vecChildrenNode)
+    for (RRTNode *node : m_pRootNode->m_vecChildrenNode)
     {
         cur_distance = GetDistance(node->m_oCurrentPose, pPose);
         if (cur_distance < min_distance)
         {
             min_distance = cur_distance;
-            nearest_node = node;
+            pNode = node;
         }
     }
-    return nearest_node;
+    return pNode;
 }
 
 RobotPose RRTPlanner::NewConfig(const RRTNode &oA, const RobotPose &oB, const double &dStepSize)
@@ -87,6 +78,7 @@ RobotPose RRTPlanner::NewConfig(const RRTNode &oA, const RobotPose &oB, const do
     pose.dAngle[3] = aa.axis()(1) * aa.angle();
     pose.dAngle[4] = aa.axis()(2) * aa.angle();
     pose.dAngle[5] = aa.axis()(1) * aa.angle();
+    ZLOG_INFO << "=================: " << pose;
     return pose;
 }
 
@@ -94,20 +86,33 @@ RobotPose RRTPlanner::GetRandomNode()
 {
     RobotPose pose;
     // 随机生成关节角度
-    for (int i = 0; i < 6; ++i)
+    bool bStatus = true;
+    while (bStatus)
     {
-        pose.dAngle[i] = RandAngle(i);
+        for (int i = 0; i < 6; ++i)
+        {
+            pose.dAngle[i] = RandAngle(i);
+        }
+        for (int ii = 0; ii < 6; ++ii)
+        {
+            if (pose.dAngle[ii] > -M_PI && pose.dAngle[ii] < M_PI)
+            {
+                bStatus = false;
+            }
+        }
     }
-    ZLOG_INFO << "Generate pose is "<< pose;
     return pose;
 }
 
 double RRTPlanner::RandAngle(int i)
 {
-    double angle_min[6] = {-2.35619, -1.5708, -2.35619, -2.35619, -2.35619, -6.28319};
-    double angle_max[6] = {2.35619, 1.39626, 2.0944, 2.35619, 2.35619, 6.28319};
-    double r = (double)rand() / RAND_MAX;
-    double dAngel = angle_min[i] + r * (angle_max[i] - angle_min[i]);
+    double angle_min[6] = {-M_PI, -M_PI, -M_PI, -M_PI, -M_PI, -M_PI};
+    double angle_max[6] = {M_PI, M_PI, M_PI, M_PI, M_PI, M_PI};
+    std::random_device oRdNumber;
+    std::mt19937 oGenerate(oRdNumber());
+    std::uniform_real_distribution<> oDis(0, 1);
+    double dRandNum = oDis(oGenerate);
+    double dAngel = angle_min[i] + dRandNum * (angle_max[i] - angle_min[i]);
     return dAngel;
 }
 
@@ -156,7 +161,7 @@ bool RRTPlanner::Extend(RRTNode *pNode)
         nearest_node->m_dDistanceToRootNode + GetDistance(new_node->m_oCurrentPose, nearest_node->m_oCurrentPose);
 
     // 若新节点无效，则删除该节点
-    if (!IsValid(new_node->m_oCurrentPose))
+    if (!IsReachAble(nearest_node->m_oCurrentPose,new_node->m_oCurrentPose))
     {
         delete new_node;
         return false;
@@ -210,15 +215,11 @@ bool RRTPlanner::Plan()
     {
         // 随机采样一个姿态
         rand_pose = GetRandomNode();
-        // 若随机姿态无效，则重新采样
-        if (!IsValid(rand_pose))
-        {
-            continue;
-        }
         // 寻找距离随机姿态最近的树节点
         nearest_node = GetNearestNode(rand_pose);
         // 在两个节点之间插入新节点
-        new_pose = NewConfig(*nearest_node, rand_pose, m_dStepSize);
+//        new_pose = NewConfig(*nearest_node, rand_pose, m_dStepSize);
+        new_pose = rand_pose;
         new_node = new RRTNode();
         new_node->m_oCurrentPose = new_pose;
         new_node->m_pParentNode = nearest_node;
@@ -226,7 +227,7 @@ bool RRTPlanner::Plan()
             nearest_node->m_dDistanceToRootNode + GetDistance(new_node->m_oCurrentPose, nearest_node->m_oCurrentPose);
 
         // 若新节点无效，则删除该节点，重新采样随机姿态
-        if (!IsValid(new_node->m_oCurrentPose))
+        if (!IsReachAble(nearest_node->m_oCurrentPose,new_node->m_oCurrentPose))
         {
             delete new_node;
             continue;
@@ -248,6 +249,60 @@ bool RRTPlanner::Plan()
     ZLOG_ERR << "Failed to plan a trajectory";
     return false;
 }
+double RRTPlanner::GetGoalDistanceCost(const RobotPose &oRobotPose)
+{
+    double dDistance = 0.0;
+    for (int ii = 0; ii < 6; ++ii)
+    {
+        double dTmp = oRobotPose.dAngle[ii] - m_oTargetPose.dAngle[ii];
+        dDistance += dTmp * dTmp;
+    }
+    return dDistance;
+}
 
+bool RRTPlanner::IsReachAble(const RobotPose &a, const RobotPose &b)
+{
+    double dDistance = GetDistance(a,b);
+    int iStep = dDistance/0.1;
+    std::vector<Eigen::Vector<double,6>> vecTheta;
+    Eigen::Vector<double,6> Joints;
+    for (int ij = 0; ij < iStep; ++ij)
+    {
+        for (int ii = 0; ii < 6; ++ii)
+        {
+            Joints[ii] = b.dAngle[ii] - 0.1 * ij;
+        }
+        vecTheta.push_back(Joints);
+    }
+
+    if ((b.dAngle[0] - a.dAngle[0] - 0.1 * iStep) > 1e-5)
+    {
+        for (int ii = 0; ii < 6; ++ii)
+        {
+            Joints[ii] = a.dAngle[ii] ;
+        }
+    }
+    vecTheta.push_back(Joints);
+
+/*    for (int ii = 0; ii < 6; ++ii)
+    {
+        ZLOG_INFO << "---------------: " << b.dAngle[ii] ;
+    }
+    for (int jj = vecTheta.size() -1 ; jj >= 0; jj--)
+    {
+        ZLOG_INFO << "---------------------: \n" << vecTheta.at(jj);
+    }*/
+
+    for (int jj = vecTheta.size() -1 ; jj >= 0; jj--)
+    {
+//        ZLOG_INFO << "---------------------: \n" <<vecTheta.at(jj);
+        if(m_oCollisionDetection.IsCollision(vecTheta.at(jj)))
+        {
+            return false;
+        }
+    }
+    ZLOG_INFO << " Is ok pose: " << b;
+    return true;
+}
 
 } // namespace zl

@@ -6,6 +6,20 @@
 
 namespace zl
 {
+TEST_F(UTTrajectoryGeneration, RandAngle)
+{
+    RobotPose start_pose, goal_pose;
+    RRTPlanner planner(start_pose, goal_pose, 0.1, 1000);
+    for (int ii = 0; ii < 100; ++ii)
+    {
+        for (int jj = 0; jj < 6; ++jj)
+        {
+            ZLOG_INFO <<jj << ": " << planner.RandAngle(jj);
+        }
+    }
+
+}
+
 TEST_F(UTTrajectoryGeneration, VecToSO3Test)
 {
     RobotPose start_pose, goal_pose;
@@ -22,7 +36,7 @@ TEST_F(UTTrajectoryGeneration, VecToSO3Test)
     goal_pose.dAngle[4] = 1.0;
     goal_pose.dAngle[5] = 1.0;
     // 定义RRTPlanner实例
-    RRTPlanner planner(start_pose, goal_pose, 0.1, 1000);
+    RRTPlanner planner(start_pose, goal_pose, 0.0017, 100);
     // 进行规划
     bool success = planner.Plan();
     ZLOG_INFO << "The result is " << success;

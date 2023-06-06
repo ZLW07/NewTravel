@@ -162,7 +162,8 @@ bool CollisionDetection::IsCollision(Eigen::Vector<double, 6> &vecTheta)
                 &cres, R1, dT1, m_mapPQPModel[sLinkName], R2, T2, m_mapPQPModel[sOtherLinkName], PQP_FIRST_CONTACT);
             if (cres.Colliding())
             {
-                ZLOG_ERR << "The pose is collision" <<sLinkName << " and " << sOtherLinkName;
+//                ZLOG_ERR << "The pose is collision" <<sLinkName << " and " << sOtherLinkName ;
+//                ZLOG_ERR << "The pose is " << vecTheta;
                 return true;
             }
         }

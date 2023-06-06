@@ -6,6 +6,7 @@
 #define NEWTRAVEL_TRAJECTORY_GENERATION_RRT_H
 
 #include "CollisionDetection/model_cillision_detection.h"
+#include <random>
 
 namespace zl
 {
@@ -38,7 +39,7 @@ public:
     {
         for (int i = 0; i < 6; ++i)
         {
-            if (fabs(m_oCurrentPose.dAngle[i] - other.dAngle[i]) > 1)
+            if (fabs(m_oCurrentPose.dAngle[i] - other.dAngle[i]) > 0.1)
             {
                 return false;
             }
@@ -55,9 +56,9 @@ public:
 
     bool Plan();
 
-private:
+//private:
     RobotPose GetRandomNode();
-    bool IsValid(const RobotPose &oPose);
+    bool IsValid(const RobotPose &a, const RobotPose &b);
     RRTNode *GetNearestNode(const RobotPose &pPose);
     RobotPose NewConfig(const RRTNode &oA, const RobotPose &oB, const double &dStepSize);
     bool Extend(RRTNode *pNode);
@@ -67,12 +68,16 @@ private:
     void ClearNode(RRTNode *oNode);
     double RandAngle(int i);
 
-protected:
+    double GetGoalDistanceCost(const RobotPose &oRobotPose);
+    bool IsReachAble(const RobotPose &a, const RobotPose &b);
+
+private:
     RRTNode *m_pRootNode;
     RobotPose m_oStartPose;
     RobotPose m_oTargetPose;
     double m_dStepSize;
     int m_iMaxIterations;
+    CollisionDetection m_oCollisionDetection;
 };
 } // namespace zl
 #endif // NEWTRAVEL_TRAJECTORY_GENERATION_RRT_H
