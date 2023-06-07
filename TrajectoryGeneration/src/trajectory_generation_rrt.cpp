@@ -95,7 +95,7 @@ RobotPose RRTPlanner::GetRandomNode()
         }
         for (int ii = 0; ii < 6; ++ii)
         {
-            if (pose.dAngle[ii] > -M_PI && pose.dAngle[ii] < M_PI)
+            if (pose.dAngle[ii] < m_oTargetPose.dAngle[ii] && pose.dAngle[ii] > m_oStartPose.dAngle[ii])
             {
                 bStatus = false;
             }
@@ -112,7 +112,7 @@ double RRTPlanner::RandAngle(int i)
     std::mt19937 oGenerate(oRdNumber());
     std::uniform_real_distribution<> oDis(0, 1);
     double dRandNum = oDis(oGenerate);
-    double dAngel = angle_min[i] + dRandNum * (angle_max[i] - angle_min[i]);
+    double dAngel = m_oStartPose.dAngle[i] + dRandNum * (m_oTargetPose.dAngle[i] - m_oStartPose.dAngle[i]);
     return dAngel;
 }
 
