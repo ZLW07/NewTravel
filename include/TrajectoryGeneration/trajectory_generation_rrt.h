@@ -18,10 +18,19 @@ public:
     ~RobotPose() = default;
     friend std::ostream &operator<<(std::ostream &os, const RobotPose &oRobotPose)
     {
-        return os << "Joint_0: " << oRobotPose.dAngle[0] << " Joint_1: " << oRobotPose.dAngle[1]
-           << " Joint_2: " << oRobotPose.dAngle[2] << " Joint_3: " << oRobotPose.dAngle[3]
-           << " Joint_4: " << oRobotPose.dAngle[4] << " Joint_5: " << oRobotPose.dAngle[5];
+        return os << " { " << oRobotPose.dAngle[0] << " " << oRobotPose.dAngle[1]
+           << " " << oRobotPose.dAngle[2] << " " << oRobotPose.dAngle[3]
+           << " " << oRobotPose.dAngle[4] << " " << oRobotPose.dAngle[5] << " }";
 
+    }
+    Eigen::Vector<double, 6> ToEigenVector()
+    {
+        Eigen::Vector<double, 6> oVec;
+        for (int ii = 0; ii < 6; ++ii)
+        {
+            oVec[ii] = dAngle[ii];
+        }
+        return oVec;
     }
 };
 
@@ -35,16 +44,18 @@ public:
     RRTNode() = default;
     ~RRTNode() = default;
     // 判断两个姿态是否相等
-    bool isEqual(const RobotPose &other) const
+    bool isEqual(const RobotPose &other) const;
+    RRTNode *operator=(const RobotPose &oRobotPose)
     {
-        for (int i = 0; i < 6; ++i)
+        RRTNode *pRRTNode = new RRTNode();
+        pRRTNode->m_pParentNode = m_pParentNode;
+        pRRTNode->m_oCurrentPose = m_oCurrentPose;
+        pRRTNode->m_dDistanceToRootNode = m_dDistanceToRootNode;
+        for (int ii = 0; ii < m_vecChildrenNode.size(); ++ii)
         {
-            if (fabs(m_oCurrentPose.dAngle[i] - other.dAngle[i]) > 0.1)
-            {
-                return false;
-            }
+            pRRTNode->m_vecChildrenNode.push_back(m_vecChildrenNode.at(ii));
         }
-        return true;
+        return pRRTNode;
     }
 };
 
@@ -54,10 +65,10 @@ public:
     RRTPlanner(const RobotPose &oStartPose, const RobotPose &oTargetPose, double dStepSize, int iMaxIterations);
     ~RRTPlanner();
 
-    bool Plan();
+    bool Plan(std::vector<Eigen::Vector<double, 6>> &vecPath);
 
 //private:
-    RobotPose GetRandomNode();
+    RobotPose GetRandomNode(const RobotPose &oReferencePose);
     bool IsValid(const RobotPose &a, const RobotPose &b);
     RRTNode *GetNearestNode(const RobotPose &pPose);
     RobotPose NewConfig(const RRTNode &oA, const RobotPose &oB, const double &dStepSize);
@@ -66,11 +77,14 @@ public:
     double GetDistance(const RobotPose &a, const RobotPose &b);
     void Clear();
     void ClearNode(RRTNode *oNode);
-    double RandAngle(int i);
+    double RandAngle(int i, double dJointValue);
 
     double GetGoalDistanceCost(const RobotPose &oRobotPose);
     bool IsReachAble(const RobotPose &a, const RobotPose &b);
-
+    void GetNearestChileNode(RRTNode *pRRTNode,const RobotPose &oPose, double &dDistance,RRTNode *outRRTNode);
+    void RewireChildrenNode(std::vector<RRTNode *> &vecRRTNode, RRTNode *pNode);
+    void GePath(RRTNode *pRRTNode, std::vector<Eigen::Vector<double, 6>> &vecPath);
+    void SmoothPath(std::vector<Eigen::Vector<double, 6>> &vecPath);
 private:
     RRTNode *m_pRootNode;
     RobotPose m_oStartPose;

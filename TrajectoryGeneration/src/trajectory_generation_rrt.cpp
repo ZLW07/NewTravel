@@ -6,6 +6,20 @@
 
 namespace zl
 {
+bool RRTNode::isEqual(const RobotPose &other) const
+{
+    {
+        for (int i = 0; i < 6; ++i)
+        {
+            if (fabs(m_oCurrentPose.dAngle[i] - other.dAngle[i]) > 0.1)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
 RRTPlanner::RRTPlanner(const RobotPose &oStartPose, const RobotPose &oTargetPose, double dStepSize, int iMaxIterations)
     : m_oStartPose(oStartPose), m_oTargetPose(oTargetPose), m_dStepSize(dStepSize), m_iMaxIterations(iMaxIterations),
       m_oCollisionDetection(CollisionDetection())
@@ -13,7 +27,7 @@ RRTPlanner::RRTPlanner(const RobotPose &oStartPose, const RobotPose &oTargetPose
     m_pRootNode = new RRTNode();
     m_pRootNode->m_oCurrentPose = oStartPose;
     m_pRootNode->m_pParentNode = nullptr;
-    m_pRootNode->m_dDistanceToRootNode = 0.0;
+    m_pRootNode->m_dDistanceToRootNode = 0;
 }
 
 RRTPlanner::~RRTPlanner()
@@ -23,25 +37,36 @@ RRTPlanner::~RRTPlanner()
 
 bool RRTPlanner::IsValid(const RobotPose &a, const RobotPose &b)
 {
-    return IsReachAble(a,b);
+    return IsReachAble(a, b);
 }
 
 RRTNode *RRTPlanner::GetNearestNode(const RobotPose &pPose)
 {
-    RRTNode *pNode = new RRTNode();
-    double min_distance = GetDistance(m_pRootNode->m_oCurrentPose, pPose);
-    double cur_distance = 0.0;
-    // 递归地寻找距离目标姿态最近的树节点
-    for (RRTNode *node : m_pRootNode->m_vecChildrenNode)
+    RRTNode *pRRTNode = new RRTNode();
+    if (m_pRootNode->m_vecChildrenNode.empty())
     {
-        cur_distance = GetDistance(node->m_oCurrentPose, pPose);
-        if (cur_distance < min_distance)
+        pRRTNode = m_pRootNode;
+        return pRRTNode;
+    }
+
+    double cur_distance = std::numeric_limits<double>::infinity();
+    double min_distance = GetDistance(m_pRootNode->m_oCurrentPose, pPose);
+    if (cur_distance > min_distance)
+    {
+        cur_distance = min_distance;
+        pRRTNode = m_pRootNode;
+    }
+    for (int i = 0; i < m_pRootNode->m_vecChildrenNode.size(); ++i)
+    {
+        GetNearestChileNode(m_pRootNode->m_vecChildrenNode.at(i), pPose, cur_distance, pRRTNode);
+        min_distance = GetDistance(pRRTNode->m_vecChildrenNode.at(i)->m_oCurrentPose, pPose);
+        if (cur_distance > min_distance)
         {
-            min_distance = cur_distance;
-            pNode = node;
+            cur_distance = min_distance;
+            pRRTNode = pRRTNode->m_vecChildrenNode.at(i);
         }
     }
-    return pNode;
+    return pRRTNode;
 }
 
 RobotPose RRTPlanner::NewConfig(const RRTNode &oA, const RobotPose &oB, const double &dStepSize)
@@ -82,7 +107,7 @@ RobotPose RRTPlanner::NewConfig(const RRTNode &oA, const RobotPose &oB, const do
     return pose;
 }
 
-RobotPose RRTPlanner::GetRandomNode()
+RobotPose RRTPlanner::GetRandomNode(const RobotPose &oReferencePose)
 {
     RobotPose pose;
     // 随机生成关节角度
@@ -91,7 +116,7 @@ RobotPose RRTPlanner::GetRandomNode()
     {
         for (int i = 0; i < 6; ++i)
         {
-            pose.dAngle[i] = RandAngle(i);
+            pose.dAngle[i] = RandAngle(i, oReferencePose.dAngle[i]);
         }
         for (int ii = 0; ii < 6; ++ii)
         {
@@ -104,7 +129,7 @@ RobotPose RRTPlanner::GetRandomNode()
     return pose;
 }
 
-double RRTPlanner::RandAngle(int i)
+double RRTPlanner::RandAngle(int i, double dJointValue)
 {
     double angle_min[6] = {-M_PI, -M_PI, -M_PI, -M_PI, -M_PI, -M_PI};
     double angle_max[6] = {M_PI, M_PI, M_PI, M_PI, M_PI, M_PI};
@@ -112,7 +137,7 @@ double RRTPlanner::RandAngle(int i)
     std::mt19937 oGenerate(oRdNumber());
     std::uniform_real_distribution<> oDis(0, 1);
     double dRandNum = oDis(oGenerate);
-    double dAngel = m_oStartPose.dAngle[i] + dRandNum * (m_oTargetPose.dAngle[i] - m_oStartPose.dAngle[i]);
+    double dAngel = dJointValue + dRandNum * (m_oTargetPose.dAngle[i] - dJointValue);
     return dAngel;
 }
 
@@ -147,7 +172,7 @@ bool RRTPlanner::Extend(RRTNode *pNode)
     RobotPose new_pose;
 
     // 随机采样一个姿态
-    new_pose = GetRandomNode();
+    new_pose = GetRandomNode(pNode->m_oCurrentPose);
 
     // 寻找距离随机姿态最近的树节点
     nearest_node = GetNearestNode(new_pose);
@@ -161,7 +186,7 @@ bool RRTPlanner::Extend(RRTNode *pNode)
         nearest_node->m_dDistanceToRootNode + GetDistance(new_node->m_oCurrentPose, nearest_node->m_oCurrentPose);
 
     // 若新节点无效，则删除该节点
-    if (!IsReachAble(nearest_node->m_oCurrentPose,new_node->m_oCurrentPose))
+    if (!IsReachAble(nearest_node->m_oCurrentPose, new_node->m_oCurrentPose))
     {
         delete new_node;
         return false;
@@ -181,27 +206,44 @@ bool RRTPlanner::Extend(RRTNode *pNode)
     return false;
 }
 
-void RRTPlanner::Rewire(RRTNode *pNode)
+void RRTPlanner::RewireChildrenNode(std::vector<RRTNode *> &vecRRTNode, RRTNode *pNode)
 {
-    for (RRTNode *node : pNode->m_vecChildrenNode)
+    for (int ii = 0; ii < vecRRTNode.size(); ++ii)
     {
-        node->m_dDistanceToRootNode =
-            pNode->m_dDistanceToRootNode + GetDistance(node->m_oCurrentPose, pNode->m_oCurrentPose);
-
-        // 如果当前节点到新节点的路径更短，则更新父节点
-        if (node->m_dDistanceToRootNode >
-            pNode->m_dDistanceToRootNode + GetDistance(node->m_oCurrentPose, pNode->m_oCurrentPose))
+        if (vecRRTNode.at(ii)->isEqual(pNode->m_oCurrentPose))
         {
-            node->m_pParentNode = pNode;
-            node->m_dDistanceToRootNode =
-                pNode->m_dDistanceToRootNode + GetDistance(node->m_oCurrentPose, pNode->m_oCurrentPose);
+            return;
+        }
+        double dDistance = GetDistance(vecRRTNode.at(ii)->m_oCurrentPose, pNode->m_oCurrentPose);
+        if (dDistance < pNode->m_dDistanceToRootNode)
+        {
+            if (IsReachAble(vecRRTNode.at(ii)->m_oCurrentPose, pNode->m_oCurrentPose))
+            {
+                if (pNode->m_pParentNode != nullptr)
+                {
+                    ZLOG_INFO << "Current parent node pose is " << pNode->m_pParentNode->m_oCurrentPose;
+                    pNode->m_pParentNode = vecRRTNode.at(ii);
+                    pNode->m_dDistanceToRootNode = dDistance;
+                    ZLOG_INFO << "Change the parent node, the parent node pose is  "
+                              << m_pRootNode->m_vecChildrenNode.at(ii)->m_oCurrentPose;
+                }
+            }
         }
         // 递归地计算子树内节点的代价函数
-        Rewire(node);
+        if (!vecRRTNode.at(ii)->m_vecChildrenNode.empty())
+        {
+            RewireChildrenNode(vecRRTNode.at(ii)->m_vecChildrenNode, pNode);
+        }
     }
 }
 
-bool RRTPlanner::Plan()
+void RRTPlanner::Rewire(RRTNode *pNode)
+{
+    ZLOG_INFO << "Enter rewire: " << pNode->m_oCurrentPose;
+    RewireChildrenNode(m_pRootNode->m_vecChildrenNode, pNode);
+}
+
+bool RRTPlanner::Plan(std::vector<Eigen::Vector<double, 6>> &vecPath)
 {
     srand(time(NULL));
 
@@ -214,11 +256,21 @@ bool RRTPlanner::Plan()
     while (i < m_iMaxIterations)
     {
         // 随机采样一个姿态
-        rand_pose = GetRandomNode();
+        //        if (m_pRootNode->m_vecChildrenNode.empty())
+        if (0 == i)
+        {
+            rand_pose = GetRandomNode(m_oStartPose);
+        }
+        else
+        {
+            rand_pose = GetRandomNode(new_node->m_oCurrentPose);
+        }
+
         // 寻找距离随机姿态最近的树节点
         nearest_node = GetNearestNode(rand_pose);
+        ZLOG_INFO << " The nearest is:  " << nearest_node->m_oCurrentPose;
         // 在两个节点之间插入新节点
-//        new_pose = NewConfig(*nearest_node, rand_pose, m_dStepSize);
+        //        new_pose = NewConfig(*nearest_node, rand_pose, m_dStepSize);
         new_pose = rand_pose;
         new_node = new RRTNode();
         new_node->m_oCurrentPose = new_pose;
@@ -227,22 +279,37 @@ bool RRTPlanner::Plan()
             nearest_node->m_dDistanceToRootNode + GetDistance(new_node->m_oCurrentPose, nearest_node->m_oCurrentPose);
 
         // 若新节点无效，则删除该节点，重新采样随机姿态
-        if (!IsReachAble(nearest_node->m_oCurrentPose,new_node->m_oCurrentPose))
+        if (!IsReachAble(nearest_node->m_oCurrentPose, new_node->m_oCurrentPose))
         {
             delete new_node;
             continue;
         }
-
-        // 将新节点添加到树中
-        nearest_node->m_vecChildrenNode.push_back(new_node);
-
-        // 从新节点重新向根节点回溯，并递归计算子树内节点的代价函数
-        Rewire(new_node);
-        // 如果当前节点已经在目标节点附近，则生成最短路径
+        ZLOG_INFO << " the pose is reachable: " << new_node->m_oCurrentPose;
         if (new_node->isEqual(m_oTargetPose))
         {
+            nearest_node->m_vecChildrenNode.push_back(new_node);
+            RRTNode *pTargetNode = new RRTNode();
+            pTargetNode->m_pParentNode = new_node;
+            pTargetNode->m_oCurrentPose = m_oTargetPose;
+            // 从新节点重新向根节点回溯，并递归计算子树内节点的代价函数
+            Rewire(pTargetNode);
+            nearest_node->m_vecChildrenNode.at(nearest_node->m_vecChildrenNode.size() - 1)
+                ->m_vecChildrenNode.push_back(pTargetNode);
+
+            ZLOG_INFO << " Add ok: " << pTargetNode->m_oCurrentPose << "; " << nearest_node->m_vecChildrenNode.at(nearest_node->m_vecChildrenNode.size() - 1)
+                ->m_oCurrentPose;
+            vecPath.push_back(m_oTargetPose.ToEigenVector());
+            GePath(pTargetNode, vecPath);
+            // 如果当前节点已经在目标节点附近，则生成最短路径
+            SmoothPath(vecPath);
             return true;
         }
+        // 将新节点添加到树中
+        Rewire(new_node);
+        nearest_node->m_vecChildrenNode.push_back(new_node);
+
+        ZLOG_INFO << " Add ok: " << new_node->m_oCurrentPose << "; " << new_node->m_pParentNode->m_oCurrentPose;
+        // 从新节点重新向根节点回溯，并递归计算子树内节点的代价函数
         i++;
     }
     // 迭代次数达到最大值，无法规划出路径
@@ -262,10 +329,10 @@ double RRTPlanner::GetGoalDistanceCost(const RobotPose &oRobotPose)
 
 bool RRTPlanner::IsReachAble(const RobotPose &a, const RobotPose &b)
 {
-    double dDistance = GetDistance(a,b);
-    int iStep = dDistance/0.1;
-    std::vector<Eigen::Vector<double,6>> vecTheta;
-    Eigen::Vector<double,6> Joints;
+    double dDistance = GetDistance(a, b);
+    int iStep = dDistance / 0.1;
+    std::vector<Eigen::Vector<double, 6>> vecTheta;
+    Eigen::Vector<double, 6> Joints;
     for (int ij = 0; ij < iStep; ++ij)
     {
         for (int ii = 0; ii < 6; ++ii)
@@ -279,30 +346,97 @@ bool RRTPlanner::IsReachAble(const RobotPose &a, const RobotPose &b)
     {
         for (int ii = 0; ii < 6; ++ii)
         {
-            Joints[ii] = a.dAngle[ii] ;
+            Joints[ii] = a.dAngle[ii];
         }
     }
     vecTheta.push_back(Joints);
 
-/*    for (int ii = 0; ii < 6; ++ii)
+    for (int jj = vecTheta.size() - 1; jj >= 0; jj--)
     {
-        ZLOG_INFO << "---------------: " << b.dAngle[ii] ;
-    }
-    for (int jj = vecTheta.size() -1 ; jj >= 0; jj--)
-    {
-        ZLOG_INFO << "---------------------: \n" << vecTheta.at(jj);
-    }*/
-
-    for (int jj = vecTheta.size() -1 ; jj >= 0; jj--)
-    {
-//        ZLOG_INFO << "---------------------: \n" <<vecTheta.at(jj);
-        if(m_oCollisionDetection.IsCollision(vecTheta.at(jj)))
+        if (m_oCollisionDetection.IsCollision(vecTheta.at(jj)))
         {
             return false;
         }
     }
     ZLOG_INFO << " Is ok pose: " << b;
     return true;
+}
+
+void RRTPlanner::GetNearestChileNode(RRTNode *pRRTNode, const RobotPose &oPose, double &dDistance, RRTNode *outRRTNode)
+{
+    for (int ii = 0; ii < pRRTNode->m_vecChildrenNode.size(); ++ii)
+    {
+        GetNearestChileNode(pRRTNode->m_vecChildrenNode.at(ii), oPose, dDistance, outRRTNode);
+        double min_distance = GetDistance(pRRTNode->m_vecChildrenNode.at(ii)->m_oCurrentPose, oPose);
+        if (min_distance < dDistance)
+        {
+            dDistance = min_distance;
+            outRRTNode = pRRTNode->m_vecChildrenNode.at(ii);
+        }
+    }
+}
+void RRTPlanner::GePath(RRTNode *pRRTNode, std::vector<Eigen::Vector<double, 6>> &vecPath)
+{
+    ZLOG_INFO << "====================dddd==============";
+    if (pRRTNode->m_pParentNode == nullptr)
+    {
+        vecPath.push_back(m_oStartPose.ToEigenVector());
+        return;
+    }
+    Eigen::Vector<double, 6> vecJoint = pRRTNode->m_pParentNode->m_oCurrentPose.ToEigenVector();
+    vecPath.push_back(vecJoint);
+    if (pRRTNode->m_pParentNode->m_pParentNode == nullptr)
+    {
+        vecPath.push_back(m_oStartPose.ToEigenVector());
+        return;
+    }
+    GePath(pRRTNode->m_pParentNode->m_pParentNode, vecPath);
+}
+
+void RRTPlanner::SmoothPath(std::vector<Eigen::Vector<double, 6>> &vecPath)
+{
+    std::vector<Eigen::Vector<double, 6>> Path;
+    double dDistance = 0.0;
+    ZLOG_INFO << "======================:------------: " << vecPath.size();
+    for (int ii = vecPath.size() - 1; ii > 0; ii--)
+    {
+
+        Eigen::Vector<double, 6> vecDistance = vecPath.at(ii) - vecPath.at(ii - 1);
+
+        for (int jj = 0; jj < 6; ++jj)
+        {
+            if (std::fabs(vecDistance[jj]) > 0.1)
+            {
+                if (dDistance < std::fabs(vecDistance[jj]))
+                {
+                    dDistance = std::fabs(vecDistance[jj]);
+                }
+            }
+        }
+        if (dDistance > 0.1)
+        {
+            int iStep = dDistance / 0.02;
+            for (int ji = 0; ji < iStep; ++ji)
+            {
+                Eigen::Vector<double, 6> oJoint;
+                for (int ij = 0; ij < 6; ++ij)
+                {
+                    double dStepDistance = vecDistance[ij] / iStep;
+                    oJoint[ij] = vecPath.at(ii)[ij] - ji * dStepDistance;
+                }
+                Path.push_back(oJoint);
+            }
+        }
+        else
+        {
+            Path = vecPath;
+        }
+    }
+    if (dDistance > 0.1)
+    {
+        Path.push_back(m_oTargetPose.ToEigenVector());
+    }
+    vecPath = Path;
 }
 
 } // namespace zl

@@ -14,10 +14,9 @@ TEST_F(UTTrajectoryGeneration, RandAngle)
     {
         for (int jj = 0; jj < 6; ++jj)
         {
-            ZLOG_INFO <<jj << ": " << planner.RandAngle(jj);
+            ZLOG_INFO << jj << ": " << planner.RandAngle(jj, start_pose.dAngle[jj]);
         }
     }
-
 }
 
 TEST_F(UTTrajectoryGeneration, VecToSO3Test)
@@ -36,9 +35,15 @@ TEST_F(UTTrajectoryGeneration, VecToSO3Test)
     goal_pose.dAngle[4] = 1.0;
     goal_pose.dAngle[5] = 1.0;
     // 定义RRTPlanner实例
-    RRTPlanner planner(start_pose, goal_pose, 0.0017, 1000);
+    RRTPlanner planner(start_pose, goal_pose, 0.0017, 100);
     // 进行规划
-    bool success = planner.Plan();
+    std::vector<Eigen::Vector<double, 6>> vecPath;
+    bool success = planner.Plan(vecPath);
     ZLOG_INFO << "The result is " << success;
+    for (int ii = 0; ii < vecPath.size(); ++ii)
+    {
+        ZLOG_INFO << vecPath.at(ii)[0] << ", " << vecPath.at(ii)[1] << ", " << vecPath.at(ii)[2] << ", "
+                  << vecPath.at(ii)[3] << ", " << vecPath.at(ii)[4] << ", " <<vecPath.at(ii)[5]  ;
+    }
 }
-}
+} // namespace zl
