@@ -225,7 +225,7 @@ void RRTPlanner::RewireChildrenNode(std::vector<RRTNode *> &vecRRTNode, RRTNode 
                     pNode->m_pParentNode = vecRRTNode.at(ii);
                     pNode->m_dDistanceToRootNode = dDistance;
                     ZLOG_INFO << "Change the parent node, the parent node pose is  "
-                              << m_pRootNode->m_vecChildrenNode.at(ii)->m_oCurrentPose;
+                              << vecRRTNode.at(ii);
                 }
             }
         }
@@ -285,6 +285,7 @@ bool RRTPlanner::Plan(std::vector<Eigen::Vector<double, 6>> &vecPath)
             continue;
         }
         ZLOG_INFO << " the pose is reachable: " << new_node->m_oCurrentPose;
+        Rewire(new_node);
         if (new_node->isEqual(m_oTargetPose))
         {
             nearest_node->m_vecChildrenNode.push_back(new_node);
@@ -295,17 +296,14 @@ bool RRTPlanner::Plan(std::vector<Eigen::Vector<double, 6>> &vecPath)
             Rewire(pTargetNode);
             nearest_node->m_vecChildrenNode.at(nearest_node->m_vecChildrenNode.size() - 1)
                 ->m_vecChildrenNode.push_back(pTargetNode);
-
             ZLOG_INFO << " Add ok: " << pTargetNode->m_oCurrentPose << "; " << nearest_node->m_vecChildrenNode.at(nearest_node->m_vecChildrenNode.size() - 1)
                 ->m_oCurrentPose;
-            vecPath.push_back(m_oTargetPose.ToEigenVector());
             GePath(pTargetNode, vecPath);
             // 如果当前节点已经在目标节点附近，则生成最短路径
             SmoothPath(vecPath);
             return true;
         }
         // 将新节点添加到树中
-        Rewire(new_node);
         nearest_node->m_vecChildrenNode.push_back(new_node);
 
         ZLOG_INFO << " Add ok: " << new_node->m_oCurrentPose << "; " << new_node->m_pParentNode->m_oCurrentPose;
@@ -377,27 +375,19 @@ void RRTPlanner::GetNearestChileNode(RRTNode *pRRTNode, const RobotPose &oPose, 
 }
 void RRTPlanner::GePath(RRTNode *pRRTNode, std::vector<Eigen::Vector<double, 6>> &vecPath)
 {
-    ZLOG_INFO << "====================dddd==============";
+    Eigen::Vector<double, 6> vecJoint = pRRTNode->m_oCurrentPose.ToEigenVector();
+    vecPath.push_back(vecJoint);
     if (pRRTNode->m_pParentNode == nullptr)
     {
-        vecPath.push_back(m_oStartPose.ToEigenVector());
         return;
     }
-    Eigen::Vector<double, 6> vecJoint = pRRTNode->m_pParentNode->m_oCurrentPose.ToEigenVector();
-    vecPath.push_back(vecJoint);
-    if (pRRTNode->m_pParentNode->m_pParentNode == nullptr)
-    {
-        vecPath.push_back(m_oStartPose.ToEigenVector());
-        return;
-    }
-    GePath(pRRTNode->m_pParentNode->m_pParentNode, vecPath);
+    GePath(pRRTNode->m_pParentNode, vecPath);
 }
 
 void RRTPlanner::SmoothPath(std::vector<Eigen::Vector<double, 6>> &vecPath)
 {
     std::vector<Eigen::Vector<double, 6>> Path;
     double dDistance = 0.0;
-    ZLOG_INFO << "======================:------------: " << vecPath.size();
     for (int ii = vecPath.size() - 1; ii > 0; ii--)
     {
 
