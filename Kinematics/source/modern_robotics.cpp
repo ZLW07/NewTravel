@@ -282,16 +282,17 @@ Eigen::MatrixXd Kinematics::MatrixLog6(const Eigen::MatrixXd &T)
  *				at the specified coordinates
  * Notes: FK means Forward Kinematics
  */
-Eigen::MatrixXd Kinematics::FKinSpace(std::vector<Eigen::Matrix4d> &outJointTrans, const Eigen::MatrixXd &M, const Eigen::MatrixXd &Slist, const Eigen::VectorXd &thetaList)
+Eigen::MatrixXd Kinematics::FKinSpace(std::vector<Eigen::Matrix4d> &outJointTrans, const Eigen::MatrixXd &M,
+    const Eigen::MatrixXd &Slist, const Eigen::VectorXd &thetaList)
 {
-//    Eigen::MatrixXd T = M;
-//    outJointTrans.resize(thetaList.size());
-//    for (int i = (thetaList.size() - 1); i > -1; i--)
-//    {
-//        T = MatrixExp6(VecTose3(Slist.col(i) * thetaList(i))) * T;
-//        outJointTrans.at(i) = T;
-//    }
-//    return T;
+    //    Eigen::MatrixXd T = M;
+    //    outJointTrans.resize(thetaList.size());
+    //    for (int i = (thetaList.size() - 1); i > -1; i--)
+    //    {
+    //        T = MatrixExp6(VecTose3(Slist.col(i) * thetaList(i))) * T;
+    //        outJointTrans.at(i) = T;
+    //    }
+    //    return T;
     outJointTrans.resize(thetaList.size() + 1);
     Eigen::Matrix4d oMat;
     oMat.setIdentity();
@@ -303,7 +304,7 @@ Eigen::MatrixXd Kinematics::FKinSpace(std::vector<Eigen::Matrix4d> &outJointTran
         T = T * MatrixExp6(VecTose3(Slist.col(ii) * thetaList(ii)));
         outJointTrans.at(ii + 1) = T;
     }
-    T = T*M;
+    T = T * M;
     return T;
 }
 
@@ -317,7 +318,8 @@ Eigen::MatrixXd Kinematics::FKinSpace(std::vector<Eigen::Matrix4d> &outJointTran
  *				at the specified coordinates
  * Notes: FK means Forward Kinematics
  */
-Eigen::MatrixXd Kinematics::FKinBody(const Eigen::MatrixXd &M, const Eigen::MatrixXd &Blist, const Eigen::VectorXd &thetaList)
+Eigen::MatrixXd Kinematics::FKinBody(const Eigen::MatrixXd &M, const Eigen::MatrixXd &Blist,
+    const Eigen::VectorXd &thetaList)
 {
     Eigen::MatrixXd T = M;
     for (int i = 0; i < thetaList.size(); i++)
@@ -503,7 +505,7 @@ bool Kinematics::IKinSpace(const Eigen::MatrixXd &Slist, const Eigen::MatrixXd &
         i += 1;
         // iterate
         std::vector<Eigen::Matrix4d> outJointTrans;
-        Tfk = FKinSpace(outJointTrans,M, Slist, thetalist);
+        Tfk = FKinSpace(outJointTrans, M, Slist, thetalist);
         Tdiff = TransInv(Tfk) * T;
         Vs = Adjoint(Tfk) * se3ToVec(MatrixLog6(Tdiff));
         angular = Eigen::Vector3d(Vs(0), Vs(1), Vs(2));
@@ -728,7 +730,8 @@ Eigen::VectorXd Kinematics::ForwardDynamics(const Eigen::VectorXd &thetalist, co
     return ddthetalist;
 }
 
-void Kinematics::EulerStep(Eigen::VectorXd &thetalist, Eigen::VectorXd &dthetalist, const Eigen::VectorXd &ddthetalist, double dt)
+void Kinematics::EulerStep(Eigen::VectorXd &thetalist, Eigen::VectorXd &dthetalist, const Eigen::VectorXd &ddthetalist,
+    double dt)
 {
     thetalist += dthetalist * dt;
     dthetalist += ddthetalist * dt;
@@ -749,8 +752,8 @@ Eigen::MatrixXd Kinematics::InverseDynamicsTrajectory(const Eigen::MatrixXd &the
     Eigen::MatrixXd taumatT = Eigen::MatrixXd::Zero(dof, N);
     for (int i = 0; i < N; ++i)
     {
-        taumatT.col(i) = InverseDynamics(
-            thetamatT.col(i), dthetamatT.col(i), ddthetamatT.col(i), g, FtipmatT.col(i), Mlist, Glist, Slist);
+        taumatT.col(i) = InverseDynamics(thetamatT.col(i), dthetamatT.col(i), ddthetamatT.col(i), g, FtipmatT.col(i),
+            Mlist, Glist, Slist);
     }
     Eigen::MatrixXd taumat = taumatT.transpose();
     return taumat;
@@ -820,8 +823,8 @@ double Kinematics::QuinticTimeScaling(double Tf, double t)
     return st;
 }
 
-Eigen::MatrixXd Kinematics::JointTrajectory(
-    const Eigen::VectorXd &thetastart, const Eigen::VectorXd &thetaend, double Tf, int N, int method)
+Eigen::MatrixXd Kinematics::JointTrajectory(const Eigen::VectorXd &thetastart, const Eigen::VectorXd &thetaend,
+    double Tf, int N, int method)
 {
     double timegap = Tf / (N - 1);
     Eigen::MatrixXd trajT = Eigen::MatrixXd::Zero(thetastart.size(), N);
@@ -837,8 +840,8 @@ Eigen::MatrixXd Kinematics::JointTrajectory(
     Eigen::MatrixXd traj = trajT.transpose();
     return traj;
 }
-std::vector<Eigen::MatrixXd> Kinematics::ScrewTrajectory(
-    const Eigen::MatrixXd &Xstart, const Eigen::MatrixXd &Xend, double Tf, int N, int method)
+std::vector<Eigen::MatrixXd> Kinematics::ScrewTrajectory(const Eigen::MatrixXd &Xstart, const Eigen::MatrixXd &Xend,
+    double Tf, int N, int method)
 {
     double timegap = Tf / (N - 1);
     std::vector<Eigen::MatrixXd> traj(N);
@@ -855,8 +858,8 @@ std::vector<Eigen::MatrixXd> Kinematics::ScrewTrajectory(
     return traj;
 }
 
-std::vector<Eigen::MatrixXd> Kinematics::CartesianTrajectory(
-    const Eigen::MatrixXd &Xstart, const Eigen::MatrixXd &Xend, double Tf, int N, int method)
+std::vector<Eigen::MatrixXd> Kinematics::CartesianTrajectory(const Eigen::MatrixXd &Xstart, const Eigen::MatrixXd &Xend,
+    double Tf, int N, int method)
 {
     double timegap = Tf / (N - 1);
     std::vector<Eigen::MatrixXd> traj(N);
@@ -881,12 +884,12 @@ std::vector<Eigen::MatrixXd> Kinematics::CartesianTrajectory(
     }
     return traj;
 }
-std::vector<Eigen::MatrixXd> Kinematics::SimulateControl(const Eigen::VectorXd &thetalist, const Eigen::VectorXd &dthetalist,
-    const Eigen::VectorXd &g, const Eigen::MatrixXd &Ftipmat, const std::vector<Eigen::MatrixXd> &Mlist,
-    const std::vector<Eigen::MatrixXd> &Glist, const Eigen::MatrixXd &Slist, const Eigen::MatrixXd &thetamatd,
-    const Eigen::MatrixXd &dthetamatd, const Eigen::MatrixXd &ddthetamatd, const Eigen::VectorXd &gtilde,
-    const std::vector<Eigen::MatrixXd> &Mtildelist, const std::vector<Eigen::MatrixXd> &Gtildelist, double Kp,
-    double Ki, double Kd, double dt, int intRes)
+std::vector<Eigen::MatrixXd> Kinematics::SimulateControl(const Eigen::VectorXd &thetalist,
+    const Eigen::VectorXd &dthetalist, const Eigen::VectorXd &g, const Eigen::MatrixXd &Ftipmat,
+    const std::vector<Eigen::MatrixXd> &Mlist, const std::vector<Eigen::MatrixXd> &Glist, const Eigen::MatrixXd &Slist,
+    const Eigen::MatrixXd &thetamatd, const Eigen::MatrixXd &dthetamatd, const Eigen::MatrixXd &ddthetamatd,
+    const Eigen::VectorXd &gtilde, const std::vector<Eigen::MatrixXd> &Mtildelist,
+    const std::vector<Eigen::MatrixXd> &Gtildelist, double Kp, double Ki, double Kd, double dt, int intRes)
 {
     Eigen::MatrixXd FtipmatT = Ftipmat.transpose();
     Eigen::MatrixXd thetamatdT = thetamatd.transpose();
@@ -920,4 +923,4 @@ std::vector<Eigen::MatrixXd> Kinematics::SimulateControl(const Eigen::VectorXd &
     ControlTauTraj_ret.push_back(thetamatT.transpose());
     return ControlTauTraj_ret;
 }
-} // namespace mr
+} // namespace zl
