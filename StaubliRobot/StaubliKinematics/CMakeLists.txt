@@ -1,0 +1,3 @@
+set(MODULE_SOURCE_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+set(StubilRobotKinematics_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+build_library(StubilRobotKinematics Kinematics)

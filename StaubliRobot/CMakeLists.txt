@@ -1,0 +1,3 @@
+add_subdirectory(CollisionDetection)
+add_subdirectory(StaubliKinematics)
+add_subdirectory(TrajectoryGeneration)

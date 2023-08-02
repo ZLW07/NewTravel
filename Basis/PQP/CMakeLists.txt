@@ -1,0 +1,7 @@
+set(MODULE_SOURCE_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+
+set(PQP_DIR ${MODULE_SOURCE_ROOT})
+build_library(PQP)
+
+set(UT_PQP_DIR ${MODULE_SOURCE_ROOT}/Test)
+build_execute(UT_PQP  PQP Log gtest)
