@@ -6,90 +6,85 @@
 #define NEWTRAVEL_TRAJECTORY_GENERATION_RRT_H
 
 #include "CollisionDetection/model_cillision_detection.h"
+
 #include <random>
+#include <memory>
 
 namespace zl
 {
-class RobotPose
+class RobotJoints
 {
 public:
-    double dAngle[6];
-    RobotPose() = default;
-    ~RobotPose() = default;
-    friend std::ostream &operator<<(std::ostream &os, const RobotPose &oRobotPose)
+    double m_dAngle[6]{};
+    ~RobotJoints() = default;
+    friend std::ostream &operator<<(std::ostream &os, const RobotJoints &oRobotPose)
     {
-        return os << " { " << oRobotPose.dAngle[0] << " " << oRobotPose.dAngle[1]
-           << " " << oRobotPose.dAngle[2] << " " << oRobotPose.dAngle[3]
-           << " " << oRobotPose.dAngle[4] << " " << oRobotPose.dAngle[5] << " }";
+        return os << " { " << oRobotPose.m_dAngle[0] << " " << oRobotPose.m_dAngle[1]
+           << " " << oRobotPose.m_dAngle[2] << " " << oRobotPose.m_dAngle[3]
+           << " " << oRobotPose.m_dAngle[4] << " " << oRobotPose.m_dAngle[5] << " }";
 
     }
+
+
     Eigen::Vector<double, 6> ToEigenVector()
     {
         Eigen::Vector<double, 6> oVec;
         for (int ii = 0; ii < 6; ++ii)
         {
-            oVec[ii] = dAngle[ii];
+            oVec[ii] = m_dAngle[ii];
         }
         return oVec;
+    }
+
+    RobotJoints()
+    {
+        for (double & ii : m_dAngle)
+        {
+            ii = 0.0;
+        }
     }
 };
 
 class RRTNode
 {
 public:
-    RobotPose m_oCurrentPose;
-    RRTNode *m_pParentNode;
-    std::vector<RRTNode *> m_vecChildrenNode;
+    RobotJoints m_oCurrentPose;
+    std::shared_ptr<RRTNode> m_pParentNode;
+    std::vector<std::shared_ptr<RRTNode> > m_vecChildrenNode;
     double m_dDistanceToRootNode;
     RRTNode() = default;
     ~RRTNode() = default;
     // 判断两个姿态是否相等
-    bool isEqual(const RobotPose &other) const;
-    RRTNode *operator=(const RobotPose &oRobotPose)
-    {
-        RRTNode *pRRTNode = new RRTNode();
-        pRRTNode->m_pParentNode = m_pParentNode;
-        pRRTNode->m_oCurrentPose = m_oCurrentPose;
-        pRRTNode->m_dDistanceToRootNode = m_dDistanceToRootNode;
-        for (int ii = 0; ii < m_vecChildrenNode.size(); ++ii)
-        {
-            pRRTNode->m_vecChildrenNode.push_back(m_vecChildrenNode.at(ii));
-        }
-        return pRRTNode;
-    }
+    bool IsEqual(const RobotJoints &other) const;
 };
 
 class RRTPlanner
 {
 public:
-    RRTPlanner(const RobotPose &oStartPose, const RobotPose &oTargetPose, double dStepSize, int iMaxIterations);
+    RRTPlanner(const RobotJoints &oStartPose, const RobotJoints &oTargetPose, double dStepSize, int iMaxIterations);
     ~RRTPlanner();
 
     bool Plan(std::vector<Eigen::Vector<double, 6>> &vecPath);
 
-//private:
-    RobotPose GetRandomNode(const RobotPose &oReferencePose);
-    bool IsValid(const RobotPose &a, const RobotPose &b);
-    RRTNode *GetNearestNode(const RobotPose &pPose);
-    RobotPose NewConfig(const RRTNode &oA, const RobotPose &oB, const double &dStepSize);
-    bool Extend(RRTNode *pNode);
-    void Rewire(RRTNode *pNode);
-    double GetDistance(const RobotPose &a, const RobotPose &b);
-    void Clear();
-    void ClearNode(RRTNode *oNode);
-    double RandAngle(int i, double dJointValue);
+public:
+    static double GetDistance(const RobotJoints &a, const RobotJoints &b);
+private:
+    RobotJoints GetRandomNode(const RobotJoints &oReferencePose);
+    std::shared_ptr<RRTNode>  GetNearestNode(const RobotJoints &pPose);
+    void Rewire(std::shared_ptr<RRTNode> pNode);
 
-    double GetGoalDistanceCost(const RobotPose &oRobotPose);
-    bool IsReachAble(const RobotPose &a, const RobotPose &b);
-    void GetNearestChileNode(RRTNode *pRRTNode,const RobotPose &oPose, double &dDistance,RRTNode *outRRTNode);
-    void RewireChildrenNode(std::vector<RRTNode *> &vecRRTNode, RRTNode *pNode);
-    void GePath(RRTNode *pRRTNode, std::vector<Eigen::Vector<double, 6>> &vecPath);
+    void Clear();
+    void ClearNode(std::shared_ptr<RRTNode> oNode);
+    double RandAngle(int i, double dJointValue);
+    bool IsReachAble(const RobotJoints &a, const RobotJoints &b);
+    void GetNearestChileNode(std::shared_ptr<RRTNode> &pRRTNode,const RobotJoints &oPose, double &dDistance,std::shared_ptr<RRTNode> &outRRTNode);
+    void RewireChildrenNode(std::vector<std::shared_ptr<RRTNode> > &vecRRTNode, std::shared_ptr<RRTNode> pNode);
+    void GePath(std::shared_ptr<RRTNode> pRRTNode, std::vector<Eigen::Vector<double, 6>> &vecPath);
     void SmoothPath(std::vector<Eigen::Vector<double, 6>> &vecPath);
 private:
-    RRTNode *m_pRootNode;
-    RobotPose m_oStartPose;
-    RobotPose m_oTargetPose;
-    double m_dStepSize;
+    std::shared_ptr<RRTNode> m_pRootNode;
+    RobotJoints m_oStartPose;
+    RobotJoints m_oTargetPose;
     int m_iMaxIterations;
     CollisionDetection m_oCollisionDetection;
 };
