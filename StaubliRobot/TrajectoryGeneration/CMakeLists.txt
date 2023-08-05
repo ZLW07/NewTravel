@@ -4,4 +4,4 @@ set(TrajectoryGeneration_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 build_library(TrajectoryGeneration CollisionDetection)
 
 set(UT_TrajectoryGeneration_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Test)
-build_execute(UT_TrajectoryGeneration TrajectoryGeneration CollisionDetection PQP Log Kinematics Model  Math gtest )
+build_execute(UT_TrajectoryGeneration TrajectoryGeneration CollisionDetection PQP Log  StaubilRobotKinematics Kinematics Model  Math gtest )

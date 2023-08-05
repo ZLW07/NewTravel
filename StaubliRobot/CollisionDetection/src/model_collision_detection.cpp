@@ -9,16 +9,7 @@ namespace zl
 CollisionDetection::CollisionDetection()
 {
     m_vecPQPModel.resize(7);
-    m_matSlist <<0, 0, 0, 0, 0, 0,
-                 0, 1, 1, 0, 1, 0,
-                 1, 0, 0, 1, 0, 1,
-                 0, 0,-0.4, 0.020, -0.85, 0.020,
-                 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0;
-    m_matInitM << 1, 0, 0, 0,
-                 0, 1, 0, 0.020,
-                0, 0, 1, 920,
-                0, 0, 0, 1;
+    m_pStuabilKine = std::make_shared<StuRobotKinematics>();
     BuildCollisionDetectionPair();
     InitCollisionDetectionData();
 }
@@ -51,48 +42,54 @@ void CollisionDetection::BuildCollisionDetectionPair()
     vecCollisionLink_7.emplace_back("Link_1");
     vecCollisionLink_7.emplace_back("Link_2");
     m_mapCollisionDetectionPair.insert(std::pair<std::string, std::vector<std::string>>("Link_7", vecCollisionLink_7));
-    Eigen::Matrix4d Joint1;
-    Joint1.setIdentity();
-    m_mInitTrans["Link_1"] = Joint1;
-    Eigen::Matrix4d Joint11;
-    Joint11 << 1,0,0,0,
+    Eigen::Matrix4d matLink1;
+    matLink1 <<
+        1,0,0,0,
         0,0,1,0,
-        0,-1,0,0.375,
+        0,-1,0,-0.375,
         0,0,0,1;
-    m_mInitTrans["Link_2"] = Joint11;
-    Eigen::Matrix4d Joint2;
-    Joint2 << 1,0,0,0,
+
+    m_mInitTrans["Link_1"] = matLink1;
+    Eigen::Matrix4d matLink2;
+    matLink2 <<
+             1,0,0,0,
         0,0,1,0,
-        0,-1,0,0.375,
+        0,-1,0,0,
         0,0,0,1;
-    m_mInitTrans["Link_3"] = Joint2;
-    Eigen::Matrix4d Joint3;
-    Joint3 << 1,0,0,0,
+    m_mInitTrans["Link_2"] = matLink2;
+    Eigen::Matrix4d matLink3;
+    matLink3 << 1,0,0,0,
+        0,0,1,0,
+        0,-1,0,0,
+        0,0,0,1;
+    m_mInitTrans["Link_3"] = matLink3;
+    Eigen::Matrix4d matLink4;
+    matLink4 << 1,0,0,0,
         0,0,1,0.020,
-        0,-1,0,0.775,
+        0,-1,0,0.4,
         0,0,0,1;
-    m_mInitTrans["Link_4"] = Joint3;
+    m_mInitTrans["Link_4"] = matLink4;
 
-    Eigen::Matrix4d Joint4;
-    Joint4 << 1,0,0,0,
-              0,1,0,0.020,
-              0,0,1,0.775,
-              0,0,0,1;
-    m_mInitTrans["Link_5"] = Joint4;
+    Eigen::Matrix4d matLink5;
+    matLink5 << 1,0,0,0,
+        0,1,0,0.020,
+        0,0,1,0.4,
+        0,0,0,1;
+    m_mInitTrans["Link_5"] = matLink5;
 
-    Eigen::Matrix4d Joint5;
-    Joint5 << 1,0,0,0,
-              0,0,-1,0.020,
-              0,1,0,1.225,
-              0,0,0,1;
-    m_mInitTrans["Link_6"] = Joint5;
+    Eigen::Matrix4d matLink6;
+    matLink6 << 1,0,0,0,
+        0,0,-1,0.020,
+        0,1,0,0.85,
+        0,0,0,1;
+    m_mInitTrans["Link_6"] = matLink6;
 
-    Eigen::Matrix4d Joint6;
-    Joint6 << 1, 0, 0, 0,
-             0, 1, 0, 0.020,
-             0, 0, 1, 1.295,
-             0, 0, 0, 1;
-    m_mInitTrans["Link_7"] = Joint6;
+    Eigen::Matrix4d matLink7;
+    matLink7 << 1, 0, 0, 0,
+        0, 1, 0, 0.020,
+        0, 0, 1, 0.92,
+        0, 0, 0, 1;
+    m_mInitTrans["Link_7"] = matLink7;
 }
 
 void CollisionDetection::InitCollisionDetectionData()
@@ -101,8 +98,9 @@ void CollisionDetection::InitCollisionDetectionData()
     {
         m_vecPQPModel.at(ii) = new PQP_Model();
         if (!ModelManager::BuildPQPModel(
-                m_vecPQPModel.at(ii), "../../Data/RobotModel/" + std::to_string(ii + 1) + ".STL"))
+                m_vecPQPModel.at(ii), "../../StaubliRobot/Data/RobotModel/" + std::to_string(ii + 1) + ".STL"))
         {
+            ZLOG_ERR << "Failed to load robot model";
             return;
         }
     }
@@ -139,7 +137,7 @@ void CollisionDetection::InitCollisionDetectionData()
 bool CollisionDetection::IsCollision(Eigen::Vector<double, 6> &vecTheta)
 {
     std::vector<Eigen::Matrix4d> outJointTrans;
-    auto result = zl::Kinematics::FKinSpace(outJointTrans, m_matInitM, m_matSlist, vecTheta);
+    auto result = m_pStuabilKine->ForwardKinematics(vecTheta,outJointTrans);
     for (const auto &iter : m_mapCollisionDetectionPair)
     {
         std::string sLinkName = iter.first;

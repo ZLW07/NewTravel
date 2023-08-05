@@ -19,7 +19,5 @@ public:
 private:
     Eigen::Matrix4d  m_matInitM;
     Eigen::Matrix<double, 6, 6> m_matSlist;
-
-    std::map<std::string,Eigen::Matrix4d> m_mInitTrans;
 };
 #endif // NEWTRAVEL_ROBOT_STUABIL_KINEMATICS_H

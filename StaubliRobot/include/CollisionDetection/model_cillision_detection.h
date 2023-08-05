@@ -4,10 +4,12 @@
 
 #ifndef NEWTRAVEL_MODEL_COLLISION_DETECTION_H
 #define NEWTRAVEL_MODEL_COLLISION_DETECTION_H
-#include <map>
 #include <iostream>
+#include <map>
+#include <memory>
 
 #include "Model/model_data.h"
+#include "StuabilKinematics/robot_stuabil_kinematics.h"
 
 namespace zl
 {
@@ -34,8 +36,7 @@ private:
     std::map<std::string,int> m_mapLinkData;
     std::vector<PQP_Model*> m_vecPQPModel;
     std::map<std::string,Eigen::Matrix4d> m_mInitTrans;
-    Eigen::Matrix<double, 6, 6> m_matSlist;
-    Eigen::Matrix4d   m_matInitM;
+    std::shared_ptr<StuRobotKinematics> m_pStuabilKine;
 
 };
 
