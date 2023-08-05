@@ -1,8 +1,8 @@
 //
 // Created by wei on 2022/7/16.
 //
-#include "../../Include/Math/math_vector3d.h"
-#include "../../Include/Log/log.h"
+#include "Math/math_vector3d.h"
+#include "Log/log.h"
 
 namespace zl
 {

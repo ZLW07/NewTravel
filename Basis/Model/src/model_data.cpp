@@ -2,9 +2,9 @@
 // Created by wei on 2022/7/16.
 //
 
-#include "../../Include/Model/model_data.h"
-#include "../../Include/Log/log.h"
-#include "../../Include/Math/math_matrix4.h"
+#include "Model/model_data.h"
+#include "Log/log.h"
+#include "Math/math_matrix4.h"
 
 namespace zl
 {

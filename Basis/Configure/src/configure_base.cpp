@@ -2,8 +2,8 @@
 // Created by wei on 2023/1/29.
 //
 
-#include "../../Include/Configure/configure_base.h"
-#include "../../Include/Log/log.h"
+#include "Configure/configure_base.h"
+#include "Log/log.h"
 
 namespace zl
 {

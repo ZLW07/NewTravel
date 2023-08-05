@@ -2,8 +2,7 @@
 // Created by zw on 2021/10/16.
 //
 
-#include "../include/ut_math.h"
-#include "gtest/gtest.h"
+#include "ut_math.h"
 
 int main(int argc, char **argv)
 {

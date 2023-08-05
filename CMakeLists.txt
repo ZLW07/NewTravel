@@ -28,6 +28,8 @@ include_directories(Ext/Webots)
 link_directories(Ext/Webots/lib/controller)
 link_directories(Ext/Webots/lib/webots)
 
+include_directories(Basis/include)
+
 link_directories(${PROJECT_SOURCE_DIR}/Package/lib_debug)
 link_directories(${PROJECT_SOURCE_DIR}/Package/lib_release)
 
@@ -66,7 +68,7 @@ function(build_execute  MODULE_NAME)
         endforeach (arg)
     endif ()
 
-    include_directories(${${MODULE_NAME}_DIR}/include)
+    include_directories(${${MODULE_NAME}_DIR}/include/)
     file(GLOB_RECURSE MODULE_SRC ${${MODULE_NAME}_DIR}/src/*)
     message("----------------- ${${MODULE_NAME}_DIR}/src")
     foreach (file IN LISTS MODULE_SRC)

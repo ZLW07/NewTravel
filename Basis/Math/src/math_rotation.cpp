@@ -2,7 +2,7 @@
 // Created by wei on 2022/7/16.
 //
 
-#include "../../Include/Math/math_rotation.h"
+#include "Math/math_rotation.h"
 #include <iostream>
 
 namespace zl

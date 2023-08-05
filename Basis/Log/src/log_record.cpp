@@ -2,7 +2,7 @@
 // Created by zw on 2021/8/14.
 //
 
-#include "../../Include/Log/log_record.h"
+#include "Log/log_record.h"
 #include <sys/time.h>
 
 #define CLOG(sFile, LineNumber,sData) \
