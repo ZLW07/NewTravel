@@ -20,10 +20,18 @@ StuRobotKinematics::StuRobotKinematics()
         0, 0, 0, 1;
 }
 
-Eigen::Matrix4d StuRobotKinematics::ForwardKinematics(Eigen::Vector<double, 6> &vecTheta,std::vector<Eigen::Matrix4d> &outJointTransForm)
+Eigen::Matrix4d StuRobotKinematics::ForwardKinematics(Eigen::Vector<double, 6> &vecTheta,std::vector<Eigen::Matrix4d> &outJointTransForm, bool bAngleFlag)
 {
+    if(bAngleFlag)
+    {
+        for (int ii = 0; ii < 6; ++ii)
+        {
+            vecTheta[ii] = M_PI * (vecTheta[ii]) / 180;
+        }
+    }
     vecTheta[1] = vecTheta[1] + M_PI * (90) / 180;
     vecTheta[2] = vecTheta[2] + M_PI * (-90) / 180;
     return zl::Kinematics::FKinSpace(outJointTransForm, m_matInitM, m_matSlist, vecTheta);
+
 }
 

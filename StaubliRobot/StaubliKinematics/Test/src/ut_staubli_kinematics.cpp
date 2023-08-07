@@ -8,9 +8,8 @@ TEST_F(TestStaubliKinematics, ForwardKinematics)
 {
     std::vector<Eigen::Matrix4d> outJointTransForm;
     Eigen::Vector<double, 6> vecTheta;
-    vecTheta << M_PI * (112.87) / 180, M_PI * (-59.79) / 180, M_PI * (210.65) / 180, M_PI * (-160.15) / 180,
-        M_PI * (64.14) / 180, M_PI * (-81.19) / 180;
-    auto transEndLink = m_oStuRobotKinematics.ForwardKinematics(vecTheta, outJointTransForm);
+    vecTheta << 112.87, -59.79, 210.65, -160.15, 64.14, -81.19;
+    auto transEndLink = m_oStuRobotKinematics.ForwardKinematics(vecTheta, outJointTransForm,true);
     /****
         -0.94467    0.315908     -0.0883197   -0.187993
         -0.093647  -0.00169042    0.995604    0.449266
