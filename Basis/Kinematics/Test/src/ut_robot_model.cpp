@@ -1,4 +1,4 @@
-#include "../include/ut_robot_model.h"
+#include "ut_robot_model.h"
 #include "Kinematics//modern_robotics.h"
 #include "Log/log.h"
 #include <Eigen/Dense>

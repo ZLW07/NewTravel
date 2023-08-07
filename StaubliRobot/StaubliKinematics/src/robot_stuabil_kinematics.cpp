@@ -2,7 +2,7 @@
 // Created by wei on 2023/8/2.
 //
 
-#include "StuabilKinematics//robot_stuabil_kinematics.h"
+#include "StuabilKinematics/robot_stuabil_kinematics.h"
 #include "Kinematics/modern_robotics.h"
 
 StuRobotKinematics::StuRobotKinematics()

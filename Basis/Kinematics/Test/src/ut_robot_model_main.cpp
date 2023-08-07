@@ -3,7 +3,7 @@
 //
 
 
-#include "../include/ut_robot_model.h"
+#include "ut_robot_model.h"
 
 int main(int argc, char **argv)
 {

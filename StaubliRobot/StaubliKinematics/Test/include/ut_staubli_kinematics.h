@@ -5,9 +5,9 @@
 #ifndef NEWTRAVEL_UT_STAUBLI_KINEMATICS_H
 #define NEWTRAVEL_UT_STAUBLI_KINEMATICS_H
 
-#include "gtest/gtest.h"
-
 #include "StuabilKinematics/robot_stuabil_kinematics.h"
+
+#include "gtest/gtest.h"
 
 class TestStaubliKinematics : public ::testing::Test
 {
