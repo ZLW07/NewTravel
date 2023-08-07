@@ -2,7 +2,7 @@
 // Created by wei on 2023/5/11.
 //
 
-#include "../include/ut_collision_detection.h"
+#include "ut_collision_detection.h"
 
 TEST_F(TestCollision, Test1)
 {
