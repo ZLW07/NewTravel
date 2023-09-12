@@ -17,8 +17,7 @@ public:
     ~StuRobotKinematics() = default;
 
 public:
-    Eigen::Matrix4d ForwardKinematics(Eigen::Vector<double, 6> &vecTheta,
-        std::vector<Eigen::Matrix4d> &outJointTransForm);
+    Eigen::Matrix4d ForwardKinematics(Eigen::Vector<double, 6> &vecTheta, std::vector<Eigen::Matrix4d> &outJointTransForm, bool bAngleFlag = false);
     std::vector<double> IKinSpace(Eigen::Matrix4d &TargetTransForm);
 
 private:

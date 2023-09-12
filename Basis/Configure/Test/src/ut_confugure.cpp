@@ -2,8 +2,7 @@
 // Created by wei on 2023/1/29.
 //
 
-#include "../include/ut_confugure.h"
-#include "gtest/gtest.h"
+#include "ut_confugure.h"
 
 int main(int argc, char **argv)
 {
