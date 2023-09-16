@@ -7,15 +7,16 @@
 
 #include "StuabilKinematics/robot_stuabil_kinematics.h"
 #include "gtest/gtest.h"
-
+namespace zl
+{
 class TestStuabliKinematics : public ::testing::Test
 {
 public:
     TestStuabliKinematics(){};
     ~TestStuabliKinematics() {}
 
-//private:
+    // private:
     StuRobotKinematics m_oStuRobotKinematics;
 };
-
+}
 #endif // NEWTRAVEL_UT_STUABLI_KINEMATICS_H
