@@ -25,6 +25,17 @@ public:
 
     }
 
+    bool operator==(const RobotJoints &oRobotPose)
+    {
+        for (int ii = 0; ii < 6; ++ii)
+        {
+            if(std::fabs(m_dAngle[ii] - oRobotPose.m_dAngle[ii]) >0.0000001)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 
     Eigen::Vector<double, 6> ToEigenVector()
     {
@@ -65,7 +76,10 @@ public:
     ~RRTPlanner();
 
     bool Plan(std::vector<Eigen::Vector<double, 6>> &vecPath);
-
+    std::vector<RobotJoints> GetAllGenerateJoints()
+    {
+        return m_vecAllPoints;
+    }
 public:
     static double GetDistance(const RobotJoints &a, const RobotJoints &b);
 private:
@@ -81,12 +95,21 @@ private:
     void RewireChildrenNode(std::vector<std::shared_ptr<RRTNode> > &vecRRTNode, std::shared_ptr<RRTNode> pNode);
     void GePath(std::shared_ptr<RRTNode> pRRTNode, std::vector<Eigen::Vector<double, 6>> &vecPath);
     void SmoothPath(std::vector<Eigen::Vector<double, 6>> &vecPath);
+    void AddGenerateJoints(RobotJoints oRobotJoints)
+    {
+        if(m_vecAllPoints.end() == std::find(m_vecAllPoints.begin(),m_vecAllPoints.end(),oRobotJoints))
+        {
+            m_vecAllPoints.push_back(oRobotJoints);
+        }
+    }
+
 private:
     std::shared_ptr<RRTNode> m_pRootNode;
     RobotJoints m_oStartPose;
     RobotJoints m_oTargetPose;
     int m_iMaxIterations;
     CollisionDetection m_oCollisionDetection;
+    std::vector<RobotJoints> m_vecAllPoints;
 };
 } // namespace zl
 #endif // NEWTRAVEL_TRAJECTORY_GENERATION_RRT_H

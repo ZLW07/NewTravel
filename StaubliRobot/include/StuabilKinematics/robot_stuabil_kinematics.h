@@ -16,16 +16,16 @@ public:
     StuRobotKinematics();
     ~StuRobotKinematics() = default;
 
-//    struct ResultJoints
-//    {
-//        double dJoints;
-//        std::vector<ResultJoints> m_vecChirendJoints;
-//        ResultJoints(double dAngle):dJoints(dAngle){}
-//    };
+    //    struct ResultJoints
+    //    {
+    //        double dJoints;
+    //        std::vector<ResultJoints> m_vecChirendJoints;
+    //        ResultJoints(double dAngle):dJoints(dAngle){}
+    //    };
 
 public:
-    Eigen::Matrix4d ForwardKinematics(Eigen::Vector<double, 6> &vecTheta,
-        std::vector<Eigen::Matrix4d> &outJointTransForm, bool bAngleFlag = false);
+    Eigen::Matrix4d ForwardKinematics(
+        Eigen::Vector<double, 6> &vecTheta, std::vector<Eigen::Matrix4d> &outJointTransForm, bool bAngleFlag = false);
     std::vector<std::vector<double>> IKinSpace(Eigen::Matrix4d &TargetTransForm);
 
 private:
@@ -36,13 +36,24 @@ private:
         JointLimit(double dMinRad, double dMaxRad) : dMinRadJoints(dMinRad), dMaxRadJoints(dMaxRad) {}
     };
 
-
 private:
-    void GetTheta2(std::vector<std::vector<double>>  &vecAngleRad);
+    void SolvingJointTwoAndThree(std::vector<std::vector<double>> &vecAngleRad);
+    void SolvingJointFive(std::vector<std::vector<double>> &vecAngleRad);
+    std::vector<double> SolvingJointFour(std::vector<double> &vecAngleRad,double &dTheta5);
+    std::vector<double> SolvingJointSix(std::vector<double> &vecAngleRad,double &dTheta5);
+
 private:
     Eigen::Matrix4d m_matInitM;
     Eigen::Matrix<double, 6, 6> m_matSlist;
     std::vector<JointLimit> m_vecJointLimit;
+
+    double m_dNx;
+    double m_dNy;
+    double m_dNz;
+
+    double m_dOx;
+    double m_dOy;
+    double m_dOz;
 
     double m_dAx;
     double m_dAy;
@@ -51,7 +62,6 @@ private:
     double m_dPx;
     double m_dPy;
     double m_dPz;
-
 };
 } // namespace zl
 #endif // NEWTRAVEL_ROBOT_STUABIL_KINEMATICS_H

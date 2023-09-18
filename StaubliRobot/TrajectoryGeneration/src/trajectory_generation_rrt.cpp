@@ -29,6 +29,7 @@ RRTPlanner::RRTPlanner(const RobotJoints &oStartPose, const RobotJoints &oTarget
     m_pRootNode->m_oCurrentPose = oStartPose;
     m_pRootNode->m_pParentNode = nullptr;
     m_pRootNode->m_dDistanceToRootNode = 0;
+    m_vecAllPoints.clear();
 }
 
 RRTPlanner::~RRTPlanner()
@@ -87,7 +88,15 @@ double RRTPlanner::RandAngle(int i, double dJointValue)
     std::mt19937 oGenerate(oRdNumber());
     std::uniform_real_distribution<> oDis(0, 1);
     double dRandNum = oDis(oGenerate);
-    double dAngel = dJointValue + dRandNum * (m_oTargetPose.m_dAngle[i] - dJointValue);
+    double dAngel = 0.0;
+    if (dRandNum < 0.3)
+    {
+        dAngel = m_oStartPose.m_dAngle[i] + dRandNum * (m_oTargetPose.m_dAngle[i] - m_oStartPose.m_dAngle[i]);
+    }
+    else
+    {
+        dAngel = dJointValue + dRandNum * (m_oTargetPose.m_dAngle[i] - dJointValue);
+    }
     return dAngel;
 }
 
@@ -132,7 +141,7 @@ void RRTPlanner::RewireChildrenNode(std::vector<std::shared_ptr<RRTNode>> &vecRR
 //                    ZLOG_INFO << "Current parent node pose is " << pNode->m_pParentNode->m_oCurrentPose;
                     pNode->m_pParentNode = ii;
                     pNode->m_dDistanceToRootNode = dDistance;
-//                    ZLOG_INFO << "Change the parent node, the parent node pose is  " << ii->m_oCurrentPose;
+//                    ZLOG_INFO << "Change the parent node, the parent node pose is  " << ii->m_oCurrentPose << "; current is " << pNode->m_oCurrentPose;
                 }
             }
         }
@@ -166,10 +175,10 @@ bool RRTPlanner::Plan(std::vector<Eigen::Vector<double, 6>> &vecPath)
         {
             rand_pose = GetRandomNode(new_pose);
         }
-
+        AddGenerateJoints(rand_pose);
         // 寻找距离随机姿态最近的树节点
         auto nearest_node = GetNearestNode(rand_pose);
-        ZLOG_INFO << " The nearest is:  " << nearest_node->m_oCurrentPose;
+//        ZLOG_INFO << " The nearest is:  " << nearest_node->m_oCurrentPose;
         // 在两个节点之间插入新节点
         new_pose = rand_pose;
         new_node->m_oCurrentPose = new_pose;
@@ -180,9 +189,10 @@ bool RRTPlanner::Plan(std::vector<Eigen::Vector<double, 6>> &vecPath)
         // 若新节点无效，则删除该节点，重新采样随机姿态
         if (!IsReachAble(nearest_node->m_oCurrentPose, new_node->m_oCurrentPose))
         {
+            ZLOG << "======================" << new_node->m_oCurrentPose;
             continue;
         }
-        ZLOG_INFO << " the pose is reachable: " << new_node->m_oCurrentPose;
+//        ZLOG_INFO << " the pose is reachable: " << new_node->m_oCurrentPose;
         Rewire(new_node);
         if (new_node->IsEqual(m_oTargetPose))
         {
@@ -198,7 +208,7 @@ bool RRTPlanner::Plan(std::vector<Eigen::Vector<double, 6>> &vecPath)
                       << nearest_node->m_vecChildrenNode.at(nearest_node->m_vecChildrenNode.size() - 1)->m_oCurrentPose;
             GePath(pTargetNode, vecPath);
             // 如果当前节点已经在目标节点附近，则生成最短路径
-            SmoothPath(vecPath);
+//            SmoothPath(vecPath);
             return true;
         }
         // 将新节点添加到树中
@@ -247,7 +257,7 @@ bool RRTPlanner::IsReachAble(const RobotJoints &a, const RobotJoints &b)
             return false;
         }
     }
-    ZLOG_INFO << " Is ok pose: " << b;
+//    ZLOG_INFO << " Is ok pose: " << b;
     return true;
 }
 

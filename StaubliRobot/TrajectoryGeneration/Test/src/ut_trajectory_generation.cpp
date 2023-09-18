@@ -33,5 +33,11 @@ TEST_F(UTTrajectoryGeneration, VecToSO3Test)
         ZLOG_INFO << ii[0] << ", " << ii[1] << ", " << ii[2] << ", "
                   << ii[3] << ", " << ii[4] << ", " <<ii[5]  ;
     }
+
+    auto all = planner.GetAllGenerateJoints();
+    for (int ii = 0; ii < all.size(); ++ii)
+    {
+        ZLOG_INFO <<"The index " << ii << ": " << all.at(ii);
+    }
 }
 } // namespace zl
