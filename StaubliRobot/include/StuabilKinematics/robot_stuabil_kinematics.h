@@ -15,14 +15,6 @@ class StuRobotKinematics
 public:
     StuRobotKinematics();
     ~StuRobotKinematics() = default;
-
-    //    struct ResultJoints
-    //    {
-    //        double dJoints;
-    //        std::vector<ResultJoints> m_vecChirendJoints;
-    //        ResultJoints(double dAngle):dJoints(dAngle){}
-    //    };
-
 public:
     Eigen::Matrix4d ForwardKinematics(
         Eigen::Vector<double, 6> &vecTheta, std::vector<Eigen::Matrix4d> &outJointTransForm, bool bAngleFlag = false);
@@ -47,21 +39,21 @@ private:
     Eigen::Matrix<double, 6, 6> m_matSlist;
     std::vector<JointLimit> m_vecJointLimit;
 
-    double m_dNx;
-    double m_dNy;
-    double m_dNz;
+    double m_dNx{};
+    double m_dNy{};
+    double m_dNz{};
 
-    double m_dOx;
-    double m_dOy;
-    double m_dOz;
+    double m_dOx{};
+    double m_dOy{};
+    double m_dOz{};
 
-    double m_dAx;
-    double m_dAy;
-    double m_dAz;
+    double m_dAx{};
+    double m_dAy{};
+    double m_dAz{};
 
-    double m_dPx;
-    double m_dPy;
-    double m_dPz;
+    double m_dPx{};
+    double m_dPy{};
+    double m_dPz{};
 };
 } // namespace zl
 #endif // NEWTRAVEL_ROBOT_STUABIL_KINEMATICS_H
