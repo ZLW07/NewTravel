@@ -45,7 +45,7 @@ std::vector<std::vector<double>> StuRobotKinematics::IKinSpace(Eigen::Matrix4d &
 
     m_dOx = TargetTransForm(0, 1);
     m_dOy = TargetTransForm(1, 1);
-    m_dOz =TargetTransForm(2, 1);
+    m_dOz = TargetTransForm(2, 1);
 
     m_dAx = TargetTransForm(0, 2);
     m_dAy = TargetTransForm(1, 2);
@@ -65,7 +65,7 @@ std::vector<std::vector<double>> StuRobotKinematics::IKinSpace(Eigen::Matrix4d &
     double dCosTmpTheta_2 = -std::sqrt(1 - std::pow(dSinTmpTheta, 2));
     double dTheta_11 = atan2(dSinTmpTheta, dCosTmpTheta_1) - dTmpTheta;
     double dTheta_12 = atan2(dSinTmpTheta, dCosTmpTheta_2) - dTmpTheta;
-//    ZLOG_INFO << "dTheta_1: " << dTheta_11 << ": dTheta_2: " << dTheta_12 << "; dTmpTheta: " << dTmpTheta;
+    //    ZLOG_INFO << "dTheta_1: " << dTheta_11 << ": dTheta_2: " << dTheta_12 << "; dTmpTheta: " << dTmpTheta;
     if ((dTheta_11 > m_vecJointLimit.at(0).dMinRadJoints) && (dTheta_11 < m_vecJointLimit.at(0).dMaxRadJoints))
     {
         std::vector<double> vecTmp = {dTheta_11};
@@ -141,6 +141,15 @@ void StuRobotKinematics::SolvingJointFive(std::vector<std::vector<double>> &vecA
                      m_dAy * sin(dTheta23) * sin(vecJoints.at(0));
         double dTheta_51 = std::atan2(std::sqrt(1 - std::pow(Cs5, 2)), Cs5);
         double dTheta_52 = std::atan2(-std::sqrt(1 - std::pow(Cs5, 2)), Cs5);
+
+        if(std::isnan(dTheta_51))
+        {
+            dTheta_51 = 0.0;
+        }
+        if(std::isnan(dTheta_52))
+        {
+            dTheta_52 = 0.0;
+        }
         if ((dTheta_51 > m_vecJointLimit.at(4).dMinRadJoints) && (dTheta_51 < m_vecJointLimit.at(4).dMaxRadJoints))
         {
             std::vector<double> vecTheta4 = SolvingJointFour(vecAngleRad.at(iIndex), dTheta_51);
@@ -153,7 +162,8 @@ void StuRobotKinematics::SolvingJointFive(std::vector<std::vector<double>> &vecA
             }
         }
 
-        if ((dTheta_52 > m_vecJointLimit.at(4).dMinRadJoints) && (dTheta_52 < m_vecJointLimit.at(4).dMaxRadJoints))
+        if ((dTheta_52 > m_vecJointLimit.at(4).dMinRadJoints) && (dTheta_52 < m_vecJointLimit.at(4).dMaxRadJoints) &&
+            ((dTheta_51 - dTheta_52)) > 0.000001)
         {
             std::vector<double> vecTheta4 = SolvingJointFour(vecAngleRad.at(iIndex), dTheta_52);
             for (int iJ = 0; iJ < vecTheta4.size(); ++iJ)
@@ -170,7 +180,7 @@ void StuRobotKinematics::SolvingJointFive(std::vector<std::vector<double>> &vecA
     for (int ii = 0; ii < vecAngleRad.size(); ++ii)
     {
         auto Joints = vecAngleRad.at(ii);
-        auto vecTheta6 = SolvingJointSix(Joints,Joints.at(4));
+        auto vecTheta6 = SolvingJointSix(Joints, Joints.at(4));
         for (int iJ = 0; iJ < vecTheta6.size(); ++iJ)
         {
             std::vector<double> vecTmpJoints = Joints;
@@ -184,6 +194,7 @@ std::vector<double> StuRobotKinematics::SolvingJointFour(std::vector<double> &ve
 {
     std::vector<double> dResult;
     double dA4 = m_dPy * cos(vecAngleRad.at(0)) - m_dPx * sin(vecAngleRad.at(0)) - 0.02;
+
     if (std::fabs(sin(dTheta5)) > 0.0000001)
     {
         double dTheta23 = vecAngleRad.at(1) + vecAngleRad.at(2);
@@ -196,15 +207,23 @@ std::vector<double> StuRobotKinematics::SolvingJointFour(std::vector<double> &ve
         if (dTheta_41 > m_vecJointLimit.at(3).dMinRadJoints && (dTheta_41 < m_vecJointLimit.at(3).dMaxRadJoints))
         {
             dResult.push_back(dTheta_41);
-            if(((dTheta_41 + 2 * 3.1415926) > m_vecJointLimit.at(3).dMinRadJoints) && ((dTheta_41 + 2 * 3.1415926) < m_vecJointLimit.at(3).dMaxRadJoints))
+            if (((dTheta_41 + 2 * 3.1415926) > m_vecJointLimit.at(3).dMinRadJoints) &&
+                ((dTheta_41 + 2 * 3.1415926) < m_vecJointLimit.at(3).dMaxRadJoints))
             {
                 dResult.push_back(dTheta_41 + 2 * 3.1415926);
             }
-            if(((dTheta_41 - 2 * 3.1415926) > m_vecJointLimit.at(3).dMinRadJoints) && ((dTheta_41 - 2 * 3.1415926) < m_vecJointLimit.at(3).dMaxRadJoints))
+            if (((dTheta_41 - 2 * 3.1415926) > m_vecJointLimit.at(3).dMinRadJoints) &&
+                ((dTheta_41 - 2 * 3.1415926) < m_vecJointLimit.at(3).dMaxRadJoints))
             {
                 dResult.push_back(dTheta_41 - 2 * 3.1415926);
             }
         }
+    }
+    else
+    {
+        dResult.push_back(0.0);
+        dResult.push_back(3.1415926);
+        dResult.push_back(-3.1415926);
     }
     return dResult;
 }
@@ -221,18 +240,33 @@ std::vector<double> StuRobotKinematics::SolvingJointSix(std::vector<double> &vec
         double dSs6 = (m_dOz * cos(dTheta23) + m_dOx * sin(dTheta23) * cos(vecAngleRad.at(0)) +
                           m_dOy * sin(dTheta23) * sin(vecAngleRad.at(0))) /
                       sin(dTheta5);
-        double dTheta_61 = std::atan2(dSs6,dCs6);
+        double dTheta_61 = std::atan2(dSs6, dCs6);
         if (dTheta_61 > m_vecJointLimit.at(5).dMinRadJoints && (dTheta_61 < m_vecJointLimit.at(5).dMaxRadJoints))
         {
             dResult.push_back(dTheta_61);
-            if(((dTheta_61 + 2 * 3.1415926) > m_vecJointLimit.at(5).dMinRadJoints) && ((dTheta_61 + 2 * 3.1415926) < m_vecJointLimit.at(5).dMaxRadJoints))
+            if (((dTheta_61 + 2 * 3.1415926) > m_vecJointLimit.at(5).dMinRadJoints) &&
+                ((dTheta_61 + 2 * 3.1415926) < m_vecJointLimit.at(5).dMaxRadJoints))
             {
                 dResult.push_back(dTheta_61 + 2 * 3.1415926);
             }
-            if(((dTheta_61 - 2 * 3.1415926) > m_vecJointLimit.at(5).dMinRadJoints) && ((dTheta_61 - 2 * 3.1415926) < m_vecJointLimit.at(5).dMaxRadJoints))
+            if (((dTheta_61 - 2 * 3.1415926) > m_vecJointLimit.at(5).dMinRadJoints) &&
+                ((dTheta_61 - 2 * 3.1415926) < m_vecJointLimit.at(5).dMaxRadJoints))
             {
                 dResult.push_back(dTheta_61 - 2 * 3.1415926);
             }
+        }
+    }
+    else
+    {
+        double dSc46 = -(m_dOx * cos(dTheta23) * cos(vecAngleRad.at(0)) - m_dOz * sin(dTheta23) +
+                         m_dOy * cos(dTheta23) * sin(vecAngleRad.at(0)));
+        double dCc46 = (m_dOy * cos(vecAngleRad.at(0)) - m_dOx * sin(vecAngleRad.at(0)));
+        double dTheta46 = std::atan2(dSc46, dCc46);
+        double dTheta6 = dTheta46 - vecAngleRad.at(3);
+
+        if (dTheta6 > m_vecJointLimit.at(5).dMinRadJoints && (dTheta6 < m_vecJointLimit.at(5).dMaxRadJoints))
+        {
+            dResult.push_back(dTheta6);
         }
     }
     return dResult;

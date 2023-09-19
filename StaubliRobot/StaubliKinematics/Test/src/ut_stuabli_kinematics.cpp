@@ -29,9 +29,23 @@ TEST_F(TestStuabliKinematics, IKward)
         std::cout << "The resutl is: ";
         for (int ij = 0; ij < oResult.at(ii).size(); ++ij)
         {
-            std::cout << oResult.at(ii).at(ij) <<", " ;
+            std::cout << oResult.at(ii).at(ij) << ", ";
         }
-        std::cout <<"\n";
+        std::cout << "\n";
+    }
+
+    Eigen::Matrix4d oInit;
+    oInit << 0.5176, -0.8303, 0.2069, 0.2440, -0.5589, -0.5111, -0.6530, -0.7041, 0.6479, 0.2224, -0.7286, -0.2846, 0,
+        0, 0, 1;
+    oResult = m_oStuRobotKinematics.IKinSpace(oInit);
+    for (int ii = 0; ii < oResult.size(); ++ii)
+    {
+        std::cout << "The resutl is: ";
+        for (int ij = 0; ij < oResult.at(ii).size(); ++ij)
+        {
+            std::cout << oResult.at(ii).at(ij) << ", ";
+        }
+        std::cout << "\n";
     }
 }
 } // namespace zl
