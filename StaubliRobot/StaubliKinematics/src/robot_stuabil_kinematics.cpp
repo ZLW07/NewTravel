@@ -31,8 +31,8 @@ Eigen::Matrix4d StuRobotKinematics::ForwardKinematics(
             vecTheta[ii] = M_PI * (vecTheta[ii]) / 180;
         }
     }
-    vecTheta[1] = vecTheta[1] + M_PI * (90) / 180;
-    vecTheta[2] = vecTheta[2] + M_PI * (-90) / 180;
+    vecTheta[1] = vecTheta[1];
+    vecTheta[2] = vecTheta[2];
     return zl::Kinematics::FKinSpace(outJointTransForm, m_matInitM, m_matSlist, vecTheta);
 }
 
